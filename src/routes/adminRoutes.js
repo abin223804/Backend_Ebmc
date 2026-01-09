@@ -1,11 +1,9 @@
 import express from "express";
 import {
-  loginAdmin,
+  adminLogin,
   refreshAdminToken,
-  logoutAdmin,
   forgotPassword,
   resetPassword,
-  adminLogin,
   adminLogout
 } from "../controllers/adminController.js";
 

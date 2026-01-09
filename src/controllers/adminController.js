@@ -1,7 +1,8 @@
-import bcrypt from "bcrypt";
+
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
-import Admin from "../models/admin.model.js";
+import Admin from "../models/adminModel.js";
 
 const adminLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -111,8 +112,8 @@ const forgotPassword = async (req, res) => {
   return res.json({ message: "OTP sent to registered email." });
 };
 
-import bcrypt from "bcrypt";
-import Admin from "../models/admin.model.js";
+
+
 
 const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;

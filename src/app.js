@@ -1,5 +1,5 @@
 import express from 'express';
-import userRoutes from './routes/userRoutes.js';
+import adminRoutes from '../src/routes/adminRoutes.js';
 const app = express();
 
 // Middleware
@@ -10,6 +10,6 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-app.use('/api/users', userRoutes);
+app.use('/api/users', adminRoutes);
 
 export default app;
