@@ -1,8 +1,6 @@
 import User from '../models/userModel.js';
 
-// @desc    Get all users
-// @route   GET /api/users
-// @access  Public
+
 const getUsers = async (req, res) => {
     try {
         const users = await User.find();
@@ -12,9 +10,7 @@ const getUsers = async (req, res) => {
     }
 };
 
-// @desc    Create a user
-// @route   POST /api/users
-// @access  Public
+
 const createUser = async (req, res) => {
     const { name, email } = req.body;
 
