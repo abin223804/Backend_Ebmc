@@ -10,6 +10,6 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-app.use('/api/users', adminRoutes);
+app.use('/admin', adminRoutes);
 
 export default app;

@@ -1,4 +1,3 @@
-
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
@@ -111,9 +110,6 @@ const forgotPassword = async (req, res) => {
 
   return res.json({ message: "OTP sent to registered email." });
 };
-
-
-
 
 const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
