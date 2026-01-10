@@ -1,25 +1,27 @@
-const errorHandler = (err, req, res, next) => {
-  console.error("🔥 ERROR:", err);
+import logger from "../utils/logger.js";
 
-  // MongoDB duplicate key error
+const errorHandler = (err, req, res, next) => {
+  logger.error(err.message, {
+    path: req.originalUrl,
+    method: req.method,
+    stack: err.stack
+  });
+
   if (err.code === 11000) {
     const field = Object.keys(err.keyValue)[0];
     return res.status(409).json({
       success: false,
-      message: `${field.toUpperCase()} already exists`,
-      field
+      message: `${field.toUpperCase()} already exists`
     });
   }
 
-  // Mongoose validation error
-  if (err.name === "ValidationError") {
+  if (err.name === "ZodError") {
     return res.status(400).json({
       success: false,
-      message: err.message
+      message: err.errors[0].message
     });
   }
 
-  // JWT errors
   if (err.name === "JsonWebTokenError") {
     return res.status(401).json({
       success: false,
@@ -27,14 +29,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  if (err.name === "TokenExpiredError") {
-    return res.status(401).json({
-      success: false,
-      message: "Token expired"
-    });
-  }
-
-  // Default fallback
   return res.status(500).json({
     success: false,
     message: "Internal server error"
