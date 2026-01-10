@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import Admin from "../models/adminModel.js";
+import User from "../models/userModel.js";
 
 
 const adminLogin = async (req, res) => {
@@ -233,10 +234,224 @@ const resetPassword = async (req, res) => {
   }
 };
 
+
+
+//userManagement
+
+
+
+/**
+ * CREATE USER
+ */
+export const createUser = async (req, res) => {
+  try {
+    const {
+      role,
+      companyName,
+      email,
+      country,
+      state,
+      street,
+      city,
+      zipcode,
+      trn,
+      creditLimit,
+      password
+    } = req.body;
+
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(409).json({
+        success: false,
+        message: "User already exists"
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    await User.create({
+      role,
+      companyName,
+      email,
+      country,
+      state,
+      street,
+      city,
+      zipcode,
+      trn,
+      creditLimit,
+      passwordHash
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "User created successfully"
+    });
+  } catch (err) {
+    console.error("createUser error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+/**
+ * GET ALL USERS
+ */
+ const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({ isDeleted: false })
+      .select("-passwordHash")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      data: users
+    });
+  } catch (err) {
+    console.error("getUsers error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+/**
+ * GET SINGLE USER
+ */
+ const getUserById = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    }).select("-passwordHash");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (err) {
+    console.error("getUserById error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+/**
+ * UPDATE USER (NO PASSWORD)
+ */
+ const updateUser = async (req, res) => {
+  try {
+    const updated = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    ).select("-passwordHash");
+
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      data: updated
+    });
+  } catch (err) {
+    console.error("updateUser error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+/**
+ * BLOCK / UNBLOCK USER
+ */
+const toggleBlockUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user || user.isDeleted) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    user.isBlocked = !user.isBlocked;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: user.isBlocked ? "User blocked" : "User unblocked"
+    });
+  } catch (err) {
+    console.error("toggleBlockUser error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+/**
+ * DELETE USER (SOFT DELETE)
+ */
+ const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    user.isDeleted = true;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully"
+    });
+  } catch (err) {
+    console.error("deleteUser error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+
+
+
+
+
 export {
   adminLogin,
   refreshAdminToken,
   adminLogout,
   forgotPassword,
   resetPassword,
+  getUsers,
+  getUserById,
+  updateUser,
+  toggleBlockUser,
+  deleteUser
 };
