@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import nodemailer from "nodemailer";
 import Admin from "../models/adminModel.js";
 
@@ -168,7 +169,7 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(1000, 10000).toString();
 
     admin.resetOtpHash = await bcrypt.hash(otp, 10);
     admin.resetOtpExpiry = Date.now() + 5 * 60 * 1000;
