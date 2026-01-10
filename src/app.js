@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from "cookie-parser";
 import adminRoutes from '../src/routes/adminRoutes.js';
+import errorHandler from "./middleware/errorHandler.js";
 const app = express();
 
 // Middleware
@@ -13,5 +14,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/admin', adminRoutes);
+
+
+app.use(errorHandler);
 
 export default app;
