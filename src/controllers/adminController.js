@@ -4,11 +4,7 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import Admin from "../models/adminModel.js";
 
-/**
- * ======================
- * ADMIN LOGIN
- * ======================
- */
+
 const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -63,11 +59,7 @@ const adminLogin = async (req, res) => {
   }
 };
 
-/**
- * ======================
- * REFRESH ACCESS TOKEN
- * ======================
- */
+
 const refreshAdminToken = async (req, res) => {
   try {
     const token = req.cookies?.refreshToken;
@@ -123,11 +115,7 @@ const refreshAdminToken = async (req, res) => {
   }
 };
 
-/**
- * ======================
- * ADMIN LOGOUT
- * ======================
- */
+
 const adminLogout = (req, res) => {
   try {
     res.clearCookie("refreshToken", {
@@ -150,11 +138,7 @@ const adminLogout = (req, res) => {
   }
 };
 
-/**
- * ======================
- * FORGOT PASSWORD (OTP)
- * ======================
- */
+
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -206,11 +190,7 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-/**
- * ======================
- * RESET PASSWORD (OTP)
- * ======================
- */
+
 const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
