@@ -20,8 +20,8 @@ import {
   deleteUser,
 } from "../controllers/adminController.js";
 
-import { verifyAdmin } from "../middlewares/adminMiddleware.js";
-import validate from "../middlewares/validate.js";
+import { verifyAdmin } from "../middleware/adminMiddleware.js";
+import validate from "../middleware/validate.js";
 
 import { adminLoginSchema } from "../validations/admin.schema.js";
 import { createUserSchema } from "../validations/user.schema.js";

@@ -1,29 +1,58 @@
+// import mongoose from "mongoose";
+
+// const adminSchema = new mongoose.Schema(
+//   {
+//     email: {
+//       type: String,
+//       unique: true,
+//       required: true,
+//     },
+
+//     passwordHash: {
+//       type: String,
+//       required: true,
+//     },
+
+//     resetOtpHash: {
+//       type: String,
+//     },
+
+//     resetOtpExpiry: {
+//       type: Date,
+//     },
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
+
+// export default mongoose.model("Admin", adminSchema);
+
+
 import mongoose from "mongoose";
 
-const adminSchema = new mongoose.Schema(
-  {
-    email: {
-      type: String,
-      unique: true,
-      required: true,
-    },
+const sessionSchema = new mongoose.Schema({
+  refreshTokenHash: String,
+  expiresAt: Date,
 
-    passwordHash: {
-      type: String,
-      required: true,
-    },
+  ipAddress: String,
+  userAgent: String,
 
-    resetOtpHash: {
-      type: String,
-    },
-
-    resetOtpExpiry: {
-      type: Date,
-    },
-  },
-  {
-    timestamps: true,
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
-);
+});
+
+const adminSchema = new mongoose.Schema({
+  email: { type: String, unique: true, required: true },
+  passwordHash: { type: String, required: true },
+
+  resetOtpHash: String,
+  resetOtpExpiry: Date,
+
+  // 🔐 SESSION TRACKING
+  sessions: [sessionSchema]
+});
 
 export default mongoose.model("Admin", adminSchema);
