@@ -1,34 +1,3 @@
-// import mongoose from "mongoose";
-
-// const adminSchema = new mongoose.Schema(
-//   {
-//     email: {
-//       type: String,
-//       unique: true,
-//       required: true,
-//     },
-
-//     passwordHash: {
-//       type: String,
-//       required: true,
-//     },
-
-//     resetOtpHash: {
-//       type: String,
-//     },
-
-//     resetOtpExpiry: {
-//       type: Date,
-//     },
-//   },
-//   {
-//     timestamps: true,
-//   }
-// );
-
-// export default mongoose.model("Admin", adminSchema);
-
-
 import mongoose from "mongoose";
 
 const sessionSchema = new mongoose.Schema({
@@ -40,8 +9,8 @@ const sessionSchema = new mongoose.Schema({
 
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const adminSchema = new mongoose.Schema({
@@ -52,7 +21,7 @@ const adminSchema = new mongoose.Schema({
   resetOtpExpiry: Date,
 
   // 🔐 SESSION TRACKING
-  sessions: [sessionSchema]
+  sessions: [sessionSchema],
 });
 
 export default mongoose.model("Admin", adminSchema);

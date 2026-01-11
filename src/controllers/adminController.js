@@ -1,17 +1,12 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
 import Admin from "../models/adminModel.js";
 import User from "../models/userModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import hashToken from "../utils/hashToken.js";
 import { sendOtpEmail } from "../utils/sendEmail.js";
 import { sendLoginAlertEmail } from "../utils/sendEmail.js";
-
-
-
-
 
 export const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -21,7 +16,7 @@ export const adminLogin = asyncHandler(async (req, res) => {
   if (!admin) {
     return res.status(401).json({
       success: false,
-      message: "Invalid credentials"
+      message: "Invalid credentials",
     });
   }
 
@@ -30,7 +25,7 @@ export const adminLogin = asyncHandler(async (req, res) => {
   if (!isValid) {
     return res.status(401).json({
       success: false,
-      message: "Invalid credentials"
+      message: "Invalid credentials",
     });
   }
 
@@ -52,7 +47,7 @@ export const adminLogin = asyncHandler(async (req, res) => {
     refreshTokenHash: hashToken(refreshToken),
     expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
     ipAddress: req.ip,
-    userAgent: req.headers["user-agent"]
+    userAgent: req.headers["user-agent"],
   });
 
   await admin.save();
@@ -61,7 +56,7 @@ export const adminLogin = asyncHandler(async (req, res) => {
   await sendLoginAlertEmail({
     to: admin.email,
     ipAddress: req.ip,
-    userAgent: req.headers["user-agent"]
+    userAgent: req.headers["user-agent"],
   });
 
   // 6️⃣ Set refresh token cookie
@@ -70,25 +65,23 @@ export const adminLogin = asyncHandler(async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    path: "/"
+    path: "/",
   });
 
   // 7️⃣ Respond with access token
   return res.status(200).json({
     success: true,
     message: "Login successful",
-    data: { accessToken }
+    data: { accessToken },
   });
 });
-
-
 
 export const refreshAdminToken = asyncHandler(async (req, res) => {
   const token = req.cookies?.refreshToken;
   if (!token) {
     return res.status(401).json({
       success: false,
-      message: "Refresh token missing"
+      message: "Refresh token missing",
     });
   }
 
@@ -96,7 +89,7 @@ export const refreshAdminToken = asyncHandler(async (req, res) => {
   if (decoded.role !== "admin") {
     return res.status(403).json({
       success: false,
-      message: "Forbidden"
+      message: "Forbidden",
     });
   }
 
@@ -104,7 +97,7 @@ export const refreshAdminToken = asyncHandler(async (req, res) => {
   if (!adminExists) {
     return res.status(403).json({
       success: false,
-      message: "Forbidden"
+      message: "Forbidden",
     });
   }
 
@@ -117,7 +110,7 @@ export const refreshAdminToken = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Access token refreshed",
-    data: { accessToken }
+    data: { accessToken },
   });
 });
 
@@ -126,15 +119,14 @@ export const adminLogout = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    path: "/"
+    path: "/",
   });
 
   res.status(200).json({
     success: true,
-    message: "Logged out successfully"
+    message: "Logged out successfully",
   });
 });
-
 
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -144,7 +136,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   if (!admin) {
     return res.status(200).json({
       success: true,
-      message: "If the email exists, an OTP has been sent"
+      message: "If the email exists, an OTP has been sent",
     });
   }
 
@@ -156,12 +148,12 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
   await sendOtpEmail({
     to: admin.email,
-    otp
+    otp,
   });
 
   res.status(200).json({
     success: true,
-    message: "OTP sent to registered email"
+    message: "OTP sent to registered email",
   });
 });
 
@@ -170,13 +162,13 @@ export const resetPassword = asyncHandler(async (req, res) => {
 
   const admin = await Admin.findOne({
     email,
-    resetOtpExpiry: { $gt: Date.now() }
+    resetOtpExpiry: { $gt: Date.now() },
   });
 
   if (!admin) {
     return res.status(400).json({
       success: false,
-      message: "Invalid or expired OTP"
+      message: "Invalid or expired OTP",
     });
   }
 
@@ -184,7 +176,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
   if (!isOtpValid) {
     return res.status(400).json({
       success: false,
-      message: "Invalid or expired OTP"
+      message: "Invalid or expired OTP",
     });
   }
 
@@ -195,7 +187,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Password reset successful"
+    message: "Password reset successful",
   });
 });
 
@@ -217,7 +209,7 @@ export const createUser = asyncHandler(async (req, res) => {
     zipcode,
     trn,
     creditLimit,
-    password
+    password,
   } = req.body;
 
   const passwordHash = await bcrypt.hash(password, 10);
@@ -233,12 +225,12 @@ export const createUser = asyncHandler(async (req, res) => {
     zipcode,
     trn,
     creditLimit,
-    passwordHash
+    passwordHash,
   });
 
   res.status(201).json({
     success: true,
-    message: "User created successfully"
+    message: "User created successfully",
   });
 });
 
@@ -249,47 +241,45 @@ export const getUsers = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    data: users
+    data: users,
   });
 });
 
 export const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findOne({
     _id: req.params.id,
-    isDeleted: false
+    isDeleted: false,
   }).select("-passwordHash");
 
   if (!user) {
     return res.status(404).json({
       success: false,
-      message: "User not found"
+      message: "User not found",
     });
   }
 
   res.status(200).json({
     success: true,
-    data: user
+    data: user,
   });
 });
 
 export const updateUser = asyncHandler(async (req, res) => {
-  const updated = await User.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  ).select("-passwordHash");
+  const updated = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  }).select("-passwordHash");
 
   if (!updated) {
     return res.status(404).json({
       success: false,
-      message: "User not found"
+      message: "User not found",
     });
   }
 
   res.status(200).json({
     success: true,
     message: "User updated successfully",
-    data: updated
+    data: updated,
   });
 });
 
@@ -299,7 +289,7 @@ export const toggleBlockUser = asyncHandler(async (req, res) => {
   if (!user || user.isDeleted) {
     return res.status(404).json({
       success: false,
-      message: "User not found"
+      message: "User not found",
     });
   }
 
@@ -308,7 +298,7 @@ export const toggleBlockUser = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: user.isBlocked ? "User blocked" : "User unblocked"
+    message: user.isBlocked ? "User blocked" : "User unblocked",
   });
 });
 
@@ -318,7 +308,7 @@ export const deleteUser = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(404).json({
       success: false,
-      message: "User not found"
+      message: "User not found",
     });
   }
 
@@ -327,6 +317,6 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "User deleted successfully"
+    message: "User deleted successfully",
   });
 });

@@ -11,5 +11,5 @@ export const createUserSchema = z.object({
   zipcode: z.string().optional(),
   trn: z.string().optional(),
   creditLimit: z.number().min(0),
-  password: z.string().min(8, "Password must be at least 8 characters")
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });

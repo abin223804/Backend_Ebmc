@@ -5,20 +5,20 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["ADMIN", "MANAGER", "USER"],
-      required: true
+      required: true,
     },
 
     companyName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
 
     email: {
       type: String,
       required: true,
       unique: true,
-      lowercase: true
+      lowercase: true,
     },
 
     country: String,
@@ -30,28 +30,28 @@ const userSchema = new mongoose.Schema(
     trn: {
       type: String,
       unique: true,
-      sparse: true
+      sparse: true,
     },
 
     creditLimit: {
       type: Number,
-      default: 0
+      default: 0,
     },
 
     passwordHash: {
       type: String,
-      required: true
+      required: true,
     },
 
     isBlocked: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     isDeleted: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   { timestamps: true }
 );
