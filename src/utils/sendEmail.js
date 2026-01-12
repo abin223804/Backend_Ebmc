@@ -83,3 +83,21 @@ export const sendLoginAlertEmail = async ({
     `
   });
 };
+
+
+export const sendUserLoginAlertEmail = async ({
+  to,
+  ipAddress,
+  userAgent
+}) => {
+  return sendMail({
+    to,
+    subject: "New Login Detected",
+    html: `
+      <p>A new login was detected on your account.</p>
+      <p><b>IP Address:</b> ${ipAddress}</p>
+      <p><b>Device:</b> ${userAgent}</p>
+      <p>If this wasn’t you, please reset your password immediately.</p>
+    `
+  });
+};
