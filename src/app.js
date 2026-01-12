@@ -9,9 +9,11 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(cors());
+
 // Routes
 app.get('/', (req, res) => {
-    res.send('API is running...');
+    res.send('Server is running...');
 });
 
 app.use('/admin', adminRoutes);
