@@ -81,8 +81,8 @@ export const refreshUserToken = asyncHandler(async (req, res) => {
   }
 
   const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-
   const user = await User.findById(decoded.userId);
+
   if (!user) {
     return res.status(403).json({
       success: false,
@@ -90,17 +90,47 @@ export const refreshUserToken = asyncHandler(async (req, res) => {
     });
   }
 
+  const tokenHash = hashToken(token);
+
   const session = user.sessions.find(
-    s => s.refreshTokenHash === hashToken(token)
+    s => s.refreshTokenHash === tokenHash
   );
 
-  if (!session || session.expiresAt < Date.now()) {
+  if (!session) {
+    // 🚨 TOKEN REUSE / STOLEN TOKEN
+    user.sessions = [];
+    await user.save();
+
+    await sendUserLoginAlertEmail({
+      to: user.email,
+      ipAddress: req.ip,
+      userAgent: req.headers["user-agent"]
+    });
+
     return res.status(403).json({
       success: false,
-      message: "Invalid session"
+      message: "Suspicious activity detected. Please login again."
     });
   }
 
+  // 🚨 IP or Device change detection
+  if (
+    session.ipAddress !== req.ip ||
+    session.userAgent !== req.headers["user-agent"]
+  ) {
+    // Invalidate only this session
+    user.sessions = user.sessions.filter(
+      s => s.refreshTokenHash !== tokenHash
+    );
+    await user.save();
+
+    return res.status(403).json({
+      success: false,
+      message: "Session anomaly detected. Please login again."
+    });
+  }
+
+  // Issue new access token
   const newAccessToken = jwt.sign(
     { userId: user._id, role: user.role },
     process.env.JWT_ACCESS_SECRET,
@@ -112,6 +142,7 @@ export const refreshUserToken = asyncHandler(async (req, res) => {
     data: { accessToken: newAccessToken }
   });
 });
+
 
 
 export const getUserSessions = asyncHandler(async (req, res) => {
