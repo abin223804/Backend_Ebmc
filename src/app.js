@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from "cookie-parser";
 import adminRoutes from '../src/routes/adminRoutes.js';
+import userRoutes from '../src/routes/userRoutes.js';
 import errorHandler from "./middleware/errorHandler.js";
 const app = express();
 
@@ -14,7 +15,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/admin', adminRoutes);
-
+app.use('/user', userRoutes);
 
 app.use(errorHandler);
 
