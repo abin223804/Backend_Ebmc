@@ -3,7 +3,7 @@ import rateLimit from "express-rate-limit";
 
 const forgotLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  max: 5
+  max: 5,
 });
 
 import {
@@ -19,6 +19,7 @@ import {
   toggleBlockUser,
   deleteUser,
 } from "../controllers/adminController.js";
+import { createRiskAssessment } from "../controllers/riskController.js";
 
 import { verifyAdmin } from "../middleware/adminMiddleware.js";
 import validate from "../middleware/validate.js";
@@ -33,7 +34,6 @@ router.post("/login-Admin", validate(adminLoginSchema), adminLogin);
 router.post("/refresh-Admin", refreshAdminToken);
 
 router.post("/logout-Admin", adminLogout);
-
 
 router.post("/forgot-password", forgotLimiter, forgotPassword);
 
@@ -55,5 +55,7 @@ router.put("/update-user/:id", verifyAdmin, updateUser);
 router.patch("/block-user/:id", verifyAdmin, toggleBlockUser);
 
 router.delete("/delete-user/:id", verifyAdmin, deleteUser);
+
+router.post("/calculate-risk", verifyAdmin, createRiskAssessment);
 
 export default router;
