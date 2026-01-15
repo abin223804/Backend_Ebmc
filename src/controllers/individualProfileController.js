@@ -5,7 +5,35 @@ import asyncHandler from "../utils/asyncHandler.js";
 // @route   POST /api/individual-profile/create
 // @access  Private (assuming protected by auth)
 export const createIndividualProfile = asyncHandler(async (req, res) => {
-    const profileData = req.body;
+    let profileData = req.body;
+
+    // Handle File Uploads
+    if (req.files && req.files.length > 0) {
+        req.files.forEach((file) => {
+            const fileObj = {
+                fileName: file.originalname,
+                filePath: file.path,
+                fileType: file.mimetype,
+            };
+
+            // Assuming fieldname matches the path in the object, e.g., "idDetails[0][file]"
+            // We need to set this deeply in profileData. 
+            // Since req.body is already hydrated by multer for text fields, we just need to place the file object.
+            // However, with bracket notation "idDetails[0][file]", explicit setting is safer if body parser didn't fully handle deep nesting for files.
+
+            // Simple robust approach for specific known fields or using a utility to set deep value.
+            // For now, let's try to match exact known structure or use a helper.
+            // A helper `setNestedValue` is useful here.
+
+            const keys = file.fieldname.replace(/\]/g, "").split("[");
+            let current = profileData;
+            for (let i = 0; i < keys.length - 1; i++) {
+                if (!current[keys[i]]) current[keys[i]] = {}; // Should exist from body parser likely, best effort
+                current = current[keys[i]];
+            }
+            current[keys[keys.length - 1]] = fileObj;
+        });
+    }
 
     // 1. Create the profile in DB
     const newProfile = await IndividualProfile.create(profileData);
