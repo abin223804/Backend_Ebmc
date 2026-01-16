@@ -19,7 +19,7 @@ import {
   toggleBlockUser,
   deleteUser,
 } from "../controllers/adminController.js";
-import { createRiskAssessment } from "../controllers/riskController.js";
+
 
 import { verifyAdmin } from "../middleware/adminMiddleware.js";
 import validate from "../middleware/validate.js";
@@ -56,6 +56,6 @@ router.patch("/block-user/:id", verifyAdmin, toggleBlockUser);
 
 router.delete("/delete-user/:id", verifyAdmin, deleteUser);
 
-router.post("/calculate-risk", verifyAdmin, createRiskAssessment);
+
 
 export default router;
