@@ -1,5 +1,84 @@
 import IndividualProfile from "../models/individualProfileModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import axios from 'axios'; // Added for Shufti Pro API calls
+
+// Helper to check the profile against Shufti Pro API
+const checkExternalApi = async (profileData) => {
+    try {
+        const apiUrl = process.env.SHUFTIPRO_API_URL || "https://api.shuftipro.com/";
+        const clientId = process.env.SHUFTIPRO_CLIENT_ID;
+        const clientSecret = process.env.SHUFTIPRO_CLIENT_SECRET;
+
+        if (!clientId || !clientSecret) {
+            console.warn("Shufti Pro credentials missing in .env");
+            return { status: "Skipped", reason: "Missing credentials" };
+        }
+
+        // Basic Auth: Base64 encode User:Passport -> ClientID:Secret
+        const authHeader = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
+
+        // Prepare Name (Split if possible, or send as full name if API supports it,
+        // but Shufti recommends separation for best results. We will do a simple split.)
+        const nameParts = (profileData.customerName || "").trim().split(" ");
+        const firstName = nameParts[0];
+        const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+
+        // Construct Payload
+        const payload = {
+            reference: `REF-${profileData._id}`,
+            language: "en",
+            callback_url: null,
+            redirect_url: "",
+            verification_mode: "any",
+            email: profileData.email || null,
+            allow_offline: "0",
+            allow_online: "0",
+            show_consent: "0",
+            decline_on_single_step: "1",
+            manual_review: "0",
+            show_privacy_policy: "0",
+            show_results: "0",
+            show_feedback_form: "0",
+            ttl: 60,
+            enhanced_originality_checks: "0",
+
+            background_checks: {
+                name: {
+                    first_name: firstName,
+                    last_name: lastName,
+                    fuzzy_match: "1"
+                },
+                dob: profileData.dob ? new Date(profileData.dob).toISOString().split("T")[0] : "",
+                ongoing: "0",
+                filters: [
+                    "sanction",
+                    "warning",
+                    "fitness-probity",
+                    "pep",
+                    "pep-class-1",
+                    "pep-class-2",
+                    "pep-class-3",
+                    "pep-class-4"
+                ]
+            }
+        };
+
+        const response = await axios.post(apiUrl, payload, {
+            headers: {
+                Authorization: authHeader,
+                "Content-Type": "application/json",
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error calling Shufti Pro API:", error.response?.data || error.message);
+        return {
+            error: "Failed to check Shufti Pro API",
+            details: error.response?.data || error.message
+        };
+    }
+};
 
 // @desc    Create a new profile and check against external API
 // @route   POST /api/individual-profile/create
@@ -17,7 +96,7 @@ export const createIndividualProfile = asyncHandler(async (req, res) => {
             };
 
             // Assuming fieldname matches the path in the object, e.g., "idDetails[0][file]"
-            // We need to set this deeply in profileData. 
+            // We need to set this deeply in profileData.
             // Since req.body is already hydrated by multer for text fields, we just need to place the file object.
             // However, with bracket notation "idDetails[0][file]", explicit setting is safer if body parser didn't fully handle deep nesting for files.
 
@@ -37,21 +116,6 @@ export const createIndividualProfile = asyncHandler(async (req, res) => {
 
     // 1. Create the profile in DB
     const newProfile = await IndividualProfile.create(profileData);
-
-    // 2. Prepare data for External API
-    // User mentioned: "need particular field values for fetching result from an external api"
-    // extracting example fields that are commonly used for checks
-    const apiPayload = {
-        name: newProfile.customerName,
-        dob: newProfile.dob,
-        nationality: newProfile.nationality,
-        idNumber: newProfile.idDetails?.[0]?.idNumber,
-        // Add other fields as required by the specific External API
-    };
-
-    // 3. Call External API (Placeholder)
-    // TODO: Implement the actual API call here using axios or fetch
-    // const apiResponse = await axios.post('EXTERNAL_API_URL', apiPayload);
 
     // For now, we'll simulate a result or leave it null
     const simulatedApiResult = {
