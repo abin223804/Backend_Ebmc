@@ -1,8 +1,11 @@
 import express from 'express';
+import cors from 'cors';
 import cookieParser from "cookie-parser";
 import cors from 'cors';
 import adminRoutes from '../src/routes/adminRoutes.js';
 import userRoutes from '../src/routes/userRoutes.js';
+import individualProfileRoutes from '../src/routes/individualProfileRoutes.js';
+import corporateProfileRoutes from '../src/routes/corporateProfileRoutes.js';
 import errorHandler from "./middleware/errorHandler.js";
 const app = express();
 
@@ -19,6 +22,8 @@ app.get('/', (req, res) => {
 
 app.use('/admin', adminRoutes);
 app.use('/user', userRoutes);
+app.use('/individual-profile', individualProfileRoutes);
+app.use('/corporate-profile', corporateProfileRoutes);
 
 app.use(errorHandler);
 
