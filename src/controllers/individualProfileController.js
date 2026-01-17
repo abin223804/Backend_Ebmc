@@ -83,7 +83,7 @@ const checkExternalApi = async (profileData) => {
 // @desc    Create a new profile and check against external API
 // @route   POST /api/individual-profile/create
 // @access  Private (assuming protected by auth)
-export const createIndividualProfile = asyncHandler(async (req, res) => {
+export const createIndividualProfile = asyncHandler(async (req, res, next) => {
     let profileData = req.body;
 
     // Handle File Uploads
@@ -117,21 +117,32 @@ export const createIndividualProfile = asyncHandler(async (req, res) => {
     // 1. Create the profile in DB
     const newProfile = await IndividualProfile.create(profileData);
 
-    // For now, we'll simulate a result or leave it null
-    const simulatedApiResult = {
-        status: "Clean", // Example result
-        hits: 0,
-        timestamp: new Date()
-    };
+    // Attach profile to request for next middleware
+    req.individualProfile = newProfile;
+    next();
+});
 
-    // 4. Update profile with API result
-    newProfile.apiResult = simulatedApiResult;
-    await newProfile.save();
+// @desc    Process external API verification
+// @route   Middleware
+export const processExternalVerification = asyncHandler(async (req, res) => {
+    const profile = req.individualProfile;
+
+    if (!profile) {
+        res.status(500);
+        throw new Error("Profile creation failed or missing in middleware chain");
+    }
+
+    // Call external API
+    const apiResult = await checkExternalApi(profile);
+
+    // Update profile with API result
+    profile.apiResult = apiResult;
+    await profile.save();
 
     res.status(201).json({
         success: true,
         message: "Individual Profile created and checked successfully",
-        data: newProfile,
+        data: profile,
     });
 });
 

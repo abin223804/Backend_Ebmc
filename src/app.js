@@ -17,7 +17,7 @@ app.use(cors());
 
 // Routes
 app.get('/', (req, res) => {
-    res.send('Server is running...');
+    res.send('Hello World!');
 });
 
 app.use('/admin', adminRoutes);
