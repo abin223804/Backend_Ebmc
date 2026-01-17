@@ -2,39 +2,6 @@ import mongoose from "mongoose";
 
 /**
  * ======================
- * SESSION SUB-SCHEMA
- * ======================
- */
-const sessionSchema = new mongoose.Schema(
-  {
-    refreshTokenHash: {
-      type: String,
-      required: true,
-    },
-
-    expiresAt: {
-      type: Date,
-      required: true,
-    },
-
-    ipAddress: {
-      type: String,
-    },
-
-    userAgent: {
-      type: String,
-    },
-
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  { _id: true }
-);
-
-/**
- * ======================
  * USER SCHEMA
  * ======================
  */
@@ -90,16 +57,6 @@ const userSchema = new mongoose.Schema(
     isDeleted: {
       type: Boolean,
       default: false,
-    },
-
-    /**
-     * ======================
-     * SESSION TRACKING
-     * ======================
-     */
-    sessions: {
-      type: [sessionSchema],
-      default: [],
     },
   },
   { timestamps: true }

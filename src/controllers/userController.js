@@ -2,8 +2,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/userModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import hashToken from "../utils/hashToken.js";
-
 import { sendUserLoginAlertEmail } from "../utils/sendEmail.js";
 
 export const userLogin = asyncHandler(async (req, res) => {
@@ -39,16 +37,6 @@ export const userLogin = asyncHandler(async (req, res) => {
     { expiresIn: "7d" }
   );
 
-  // Create session
-  user.sessions.push({
-    refreshTokenHash: hashToken(refreshToken),
-    expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    ipAddress: req.ip,
-    userAgent: req.headers["user-agent"]
-  });
-
-  await user.save();
-
   // 📧 Login alert email
   await sendUserLoginAlertEmail({
     to: user.email,
@@ -81,111 +69,37 @@ export const refreshUserToken = asyncHandler(async (req, res) => {
     });
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-  const user = await User.findById(decoded.userId);
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    const user = await User.findById(decoded.userId);
 
-  if (!user) {
-    return res.status(403).json({
-      success: false,
-      message: "Session expired"
-    });
-  }
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "User not found"
+      });
+    }
 
-  const tokenHash = hashToken(token);
-
-  const session = user.sessions.find(
-    s => s.refreshTokenHash === tokenHash
-  );
-
-  if (!session) {
-    // 🚨 TOKEN REUSE / STOLEN TOKEN
-    user.sessions = [];
-    await user.save();
-
-    await sendUserLoginAlertEmail({
-      to: user.email,
-      ipAddress: req.ip,
-      userAgent: req.headers["user-agent"]
-    });
-
-    return res.status(403).json({
-      success: false,
-      message: "Suspicious activity detected. Please login again."
-    });
-  }
-
-  // 🚨 IP or Device change detection
-  if (
-    session.ipAddress !== req.ip ||
-    session.userAgent !== req.headers["user-agent"]
-  ) {
-    // Invalidate only this session
-    user.sessions = user.sessions.filter(
-      s => s.refreshTokenHash !== tokenHash
+    // Issue new access token
+    const newAccessToken = jwt.sign(
+      { userId: user._id, role: "USER" },
+      process.env.JWT_ACCESS_SECRET,
+      { expiresIn: "15m" }
     );
-    await user.save();
 
+    res.status(200).json({
+      success: true,
+      data: { accessToken: newAccessToken }
+    });
+  } catch (error) {
     return res.status(403).json({
       success: false,
-      message: "Session anomaly detected. Please login again."
+      message: "Invalid refresh token",
     });
   }
-
-  // Issue new access token
-  const newAccessToken = jwt.sign(
-    { userId: user._id, role: user.role },
-    process.env.JWT_ACCESS_SECRET,
-    { expiresIn: "30m" }
-  );
-
-  res.status(200).json({
-    success: true,
-    data: { accessToken: newAccessToken }
-  });
 });
 
-
-
-export const getUserSessions = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.userId);
-
-  const currentHash = hashToken(req.cookies.userRefreshToken);
-
-  const sessions = user.sessions.map(s => ({
-    id: s._id,
-    ipAddress: s.ipAddress,
-    userAgent: s.userAgent,
-    createdAt: s.createdAt,
-    isCurrent: s.refreshTokenHash === currentHash
-  }));
-
-  res.status(200).json({
-    success: true,
-    data: sessions
-  });
-});
-
-export const logoutUserSession = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.userId);
-
-  user.sessions = user.sessions.filter(
-    s => s._id.toString() !== req.params.sessionId
-  );
-
-  await user.save();
-
-  res.status(200).json({
-    success: true,
-    message: "Session logged out"
-  });
-});
-
-export const logoutAllUserSessions = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.userId);
-
-  user.sessions = [];
-  await user.save();
-
+export const logoutUser = asyncHandler(async (req, res) => {
   res.clearCookie("userRefreshToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -195,6 +109,6 @@ export const logoutAllUserSessions = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Logged out from all devices"
+    message: "Logged out successfully"
   });
 });
