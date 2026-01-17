@@ -25,11 +25,12 @@ export const userLogin = asyncHandler(async (req, res) => {
     });
   }
 
+
   // Tokens
   const accessToken = jwt.sign(
-    { userId: user._id, role: user.role },
+    { userId: user._id, role: "user" },
     process.env.JWT_ACCESS_SECRET,
-    { expiresIn: "30m" }
+    { expiresIn: "15m" }
   );
 
   const refreshToken = jwt.sign(
