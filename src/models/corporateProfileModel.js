@@ -20,7 +20,8 @@ const uboSchema = new mongoose.Schema({
     isPep: {
         type: String, // YES/NO as per UI
         default: "NO"
-    }
+    },
+    dob: Date
 });
 
 const shareholderSchema = new mongoose.Schema({
@@ -32,7 +33,8 @@ const shareholderSchema = new mongoose.Schema({
     isPep: {
         type: String,
         default: "NO"
-    }
+    },
+    dob: Date
 });
 
 const corporateProfileSchema = new mongoose.Schema(
@@ -57,6 +59,8 @@ const corporateProfileSchema = new mongoose.Schema(
             areaStreet: String,
             poBox: String
         },
+        country: String,
+        incorporationDate: Date,
 
         // 2. Trade License
         tradeLicenseNumber: String,

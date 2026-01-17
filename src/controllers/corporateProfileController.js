@@ -1,5 +1,75 @@
 import CorporateProfile from "../models/corporateProfileModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import axios from 'axios';
+
+// Helper to prepare Business AML check payload
+const prepareBusinessCheckPayload = (profile) => {
+    const incorporationDate = profile.incorporationDate
+        ? new Date(profile.incorporationDate).toISOString().split('T')[0]
+        : "";
+
+    return {
+        reference: "",
+        country: profile.country || "",
+        language: "en",
+        callback_url: null,
+        redirect_url: "",
+        verification_mode: "any",
+        email: null,
+        show_consent: "1",
+        decline_on_single_step: "1",
+        manual_review: "0",
+        show_privacy_policy: "0",
+        show_results: "0",
+        show_feedback_form: "0",
+        allow_na_ocr_inputs: "0",
+        ttl: 60,
+        enhanced_originality_checks: "0",
+
+        aml_for_businesses: {
+            business_name: profile.customerName,
+            business_incorporation_date: incorporationDate,
+            ongoing: "1",
+            filters: [
+                "sanction",
+                "fitness-probity",
+                "warning",
+                "pep"
+            ]
+        }
+    };
+};
+
+// Helper to check the corporate profile against external API
+const checkCorporateExternalApi = async (payload) => {
+    try {
+        const apiUrl = process.env.SHUFTIPRO_API_URL || "https://api.shuftipro.com/";
+        const clientId = process.env.SHUFTIPRO_CLIENT_ID;
+        const clientSecret = process.env.SHUFTIPRO_CLIENT_SECRET;
+
+        if (!clientId || !clientSecret) {
+            console.warn("Shufti Pro credentials missing in .env");
+            return { status: "Skipped", reason: "Missing credentials" };
+        }
+
+        const authHeader = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
+
+        const response = await axios.post(apiUrl, payload, {
+            headers: {
+                Authorization: authHeader,
+                "Content-Type": "application/json",
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error calling Shufti Pro API:", error.response?.data || error.message);
+        return {
+            error: "Failed to check Shufti Pro API",
+            details: error.response?.data || error.message
+        };
+    }
+};
 
 // @desc    Create a new corporate profile and check against external API
 // @route   POST /api/corporate-profile/create
@@ -36,24 +106,14 @@ export const createCorporateProfile = asyncHandler(async (req, res) => {
     // 1. Create the profile in DB
     const newProfile = await CorporateProfile.create(profileData);
 
-    // 2. Prepare data for External API
-    const apiPayload = {
-        entityName: newProfile.customerName,
-        licenseNumber: newProfile.tradeLicenseNumber,
-        // Add logic to extract UBO names if needed for screening
-        uboNames: newProfile.ubos?.map(ubo => ubo.uboName) || [],
-    };
+    // 2. Prepare data for External API (Business AML Check)
+    const apiPayload = prepareBusinessCheckPayload(newProfile);
 
-    // 3. Call External API (Placeholder)
-    // const apiResponse = await axios.post('EXTERNAL_API_URL', apiPayload);
-
-    const simulatedApiResult = {
-        status: "Clean",
-        timestamp: new Date()
-    };
+    // 3. Call External API
+    const apiResult = await checkCorporateExternalApi(apiPayload);
 
     // 4. Update profile with API result
-    newProfile.apiResult = simulatedApiResult;
+    newProfile.apiResult = apiResult;
     await newProfile.save();
 
     res.status(201).json({
