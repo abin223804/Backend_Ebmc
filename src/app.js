@@ -7,30 +7,27 @@ import individualProfileRoutes from '../src/routes/individualProfileRoutes.js';
 import corporateProfileRoutes from '../src/routes/corporateProfileRoutes.js';
 import errorHandler from "./middleware/errorHandler.js";
 const app = express();
+import cors from "cors";
+
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "https://eloquent-queijadas-4c6983.netlify.app/",
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // 🔥 CRITICAL
+
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://eloquent-queijadas-4c6983.netlify.app/",
-];
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
 
 
 // Routes
