@@ -5,27 +5,33 @@ import Admin from "../models/adminModel.js";
 
 dotenv.config();
 
+const ADMIN_EMAIL = "abinschandran1@gmail.com";
+const ADMIN_PASSWORD = "myPassword1234";
+
 const seedAdmin = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
+    console.log("✅ MongoDB connected");
 
-    const existingAdmin = await Admin.findOne({
-      email: "abinschandran1@gmail.com"
-    });
+    // 🔥 Delete existing admin with same email
+    const deleted = await Admin.deleteOne({ email: ADMIN_EMAIL });
 
-    if (existingAdmin) {
-      console.log("✅ Admin already exists. Seed skipped.");
-      process.exit(0);
+    if (deleted.deletedCount > 0) {
+      console.log("🗑️ Existing admin deleted");
+    } else {
+      console.log("ℹ️ No existing admin found");
     }
 
-    const passwordHash = await bcrypt.hash("myPassword", 10);
+    // 🔐 Hash password
+    const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 10);
 
+    // ➕ Create new admin
     await Admin.create({
-      email: "abinschandran1@gmail.com",
-      passwordHash
+      email: ADMIN_EMAIL,
+      passwordHash,
     });
 
-    console.log("🎉 Admin seeded successfully");
+    console.log("🎉 New admin created successfully");
     process.exit(0);
   } catch (error) {
     console.error("❌ Admin seeding failed:", error);
