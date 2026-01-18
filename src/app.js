@@ -14,7 +14,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://your-production-frontend.com",
+  "https://eloquent-queijadas-4c6983.netlify.app/",
 ];
 
 const corsOptions = {
