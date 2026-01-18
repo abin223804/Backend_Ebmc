@@ -12,7 +12,14 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors());
+const corsOptions = {
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type, Authorization',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // Routes
 app.get('/', (req, res) => {
