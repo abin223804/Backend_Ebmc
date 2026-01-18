@@ -15,7 +15,7 @@ const app = express();
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://eloquent-queijadas-4c6983.netlify.app/",
+    "https://eloquent-queijadas-4c6983.netlify.app",
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
