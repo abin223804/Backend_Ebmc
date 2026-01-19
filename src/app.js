@@ -8,6 +8,8 @@ import adminRoutes from '../src/routes/adminRoutes.js';
 import userRoutes from '../src/routes/userRoutes.js';
 import individualProfileRoutes from '../src/routes/individualProfileRoutes.js';
 import corporateProfileRoutes from '../src/routes/corporateProfileRoutes.js';
+import riskManagementRoutes from '../src/routes/riskManagementRoutes.js';
+import dropdownOptionsRoutes from '../src/routes/dropdownOptionsRoutes.js';
 import errorHandler from "./middleware/errorHandler.js";
 const app = express();
 
@@ -37,13 +39,15 @@ app.use(cookieParser());
 
 // Routes
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+  res.send('Hello World!');
 });
 
 app.use('/admin', adminRoutes);
 app.use('/user', userRoutes);
 app.use('/individual-profile', individualProfileRoutes);
 app.use('/corporate-profile', corporateProfileRoutes);
+app.use('/risk-management', riskManagementRoutes);
+app.use('/dropdown-options', dropdownOptionsRoutes);
 
 app.use(errorHandler);
 
