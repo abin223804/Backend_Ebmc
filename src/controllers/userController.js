@@ -87,6 +87,15 @@ export const refreshUserToken = asyncHandler(async (req, res) => {
       { expiresIn: "15m" }
     );
 
+    // Re-set the refresh token cookie to ensure it persists
+    res.cookie("userRefreshToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/"
+    });
+
     res.status(200).json({
       success: true,
       data: { accessToken: newAccessToken }
