@@ -14,15 +14,40 @@ import errorHandler from "./middleware/errorHandler.js";
 const app = express();
 
 
+// const corsOptions = {
+//   origin: [
+//     "http://localhost:5173",
+//     "https://eloquent-queijadas-4c6983.netlify.app",
+//   ],
+//   credentials: true,
+//   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+// };
+
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "https://eloquent-queijadas-4c6983.netlify.app",
-  ],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://eloquent-queijadas-4c6983.netlify.app",
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With" // 🔥 THIS FIXES IT
+  ],
 };
+
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // 🔥 CRITICAL
