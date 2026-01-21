@@ -15,6 +15,7 @@ const sessionSchema = new mongoose.Schema({
 
 const adminSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
+  role: { type: String, default: "admin" },
   passwordHash: { type: String, required: true },
 
   resetOtpHash: String,
