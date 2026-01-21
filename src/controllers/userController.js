@@ -46,8 +46,8 @@ export const userLogin = asyncHandler(async (req, res) => {
 
   res.cookie("userRefreshToken", refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: true, // Required for sameSite: "none"
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/"
   });
@@ -90,8 +90,8 @@ export const refreshUserToken = asyncHandler(async (req, res) => {
     // Re-set the refresh token cookie to ensure it persists
     res.cookie("userRefreshToken", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: true, // Required for sameSite: "none"
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: "/"
     });
@@ -111,8 +111,8 @@ export const refreshUserToken = asyncHandler(async (req, res) => {
 export const logoutUser = asyncHandler(async (req, res) => {
   res.clearCookie("userRefreshToken", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: true, // Required for sameSite: "none"
+    sameSite: "none",
     path: "/"
   });
 

@@ -44,15 +44,20 @@ const corsOptions = {
   allowedHeaders: [
     "Content-Type",
     "Authorization",
-    "X-Requested-With" // 🔥 THIS FIXES IT
+    "X-Requested-With",
+    "Cookie"
   ],
+  exposedHeaders: ["Set-Cookie"],
 };
 
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // 🔥 CRITICAL
 
-app.use(helmet());
+// Configure helmet to not interfere with cookies
+app.use(helmet({
+  contentSecurityPolicy: false,
+}));
 app.use(morgan("combined"));
 
 // Middleware
