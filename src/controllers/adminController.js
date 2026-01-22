@@ -360,14 +360,14 @@ const refreshTokenCookieOptions = {
 const signAdminAccessToken = (adminId) =>
   jwt.sign(
     { adminId, role: "admin" },
-    process.env.JWT_ACCESS_SECRET,
+    process.env.JWT_ACCESS_SECRET_ADMIN,
     { expiresIn: "15m" }
   );
 
 const signAdminRefreshToken = (adminId) =>
   jwt.sign(
     { adminId, role: "admin" },
-    process.env.JWT_REFRESH_SECRET,
+    process.env.JWT_REFRESH_SECRET_ADMIN,
     { expiresIn: "7d" }
   );
 
@@ -427,7 +427,7 @@ export const refreshAdminToken = asyncHandler(async (req, res) => {
 
   let decoded;
   try {
-    decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_ADMIN);
   } catch {
     res.clearCookie("adminRefreshToken", refreshTokenCookieOptions);
     return res.status(403).json({ success: false, message: "Invalid refresh token" });
