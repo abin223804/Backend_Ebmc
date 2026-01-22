@@ -464,29 +464,75 @@ export const refreshAdminToken = asyncHandler(async (req, res) => {
   });
 });
 
-/* ======================================================
-   ADMIN LOGOUT
-====================================================== */
+
+
 export const adminLogout = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies?.adminRefreshToken;
 
   if (refreshToken) {
-    const decoded = jwt.decode(refreshToken);
-    if (decoded?.adminId) {
-      await Admin.updateOne(
-        { _id: decoded.adminId },
-        { $pull: { sessions: { refreshTokenHash: hashToken(refreshToken) } } }
+    try {
+      // ✅ VERIFY instead of decode
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET_ADMIN
       );
+
+      if (decoded?.adminId) {
+        await Admin.updateOne(
+          { _id: decoded.adminId },
+          {
+            $pull: {
+              sessions: {
+                refreshTokenHash: hashToken(refreshToken)
+              }
+            }
+          }
+        );
+      }
+    } catch (err) {
+      // Invalid/expired token → ignore (logout must still succeed)
+      console.warn("Admin logout: invalid refresh token");
     }
   }
 
-  res.clearCookie("adminRefreshToken", refreshTokenCookieOptions);
+  // ✅ MUST match cookie options exactly
+  res.clearCookie("adminRefreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/"
+  });
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: "Logged out successfully"
   });
 });
+
+
+/* ======================================================
+   ADMIN LOGOUT
+====================================================== */
+// export const adminLogout = asyncHandler(async (req, res) => {
+//   const refreshToken = req.cookies?.adminRefreshToken;
+
+//   if (refreshToken) {
+//     const decoded = jwt.decode(refreshToken);
+//     if (decoded?.adminId) {
+//       await Admin.updateOne(
+//         { _id: decoded.adminId },
+//         { $pull: { sessions: { refreshTokenHash: hashToken(refreshToken) } } }
+//       );
+//     }
+//   }
+
+//   res.clearCookie("adminRefreshToken", refreshTokenCookieOptions);
+
+//   res.status(200).json({
+//     success: true,
+//     message: "Logged out successfully"
+//   });
+// });
 
 /* ======================================================
    FORGOT PASSWORD

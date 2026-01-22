@@ -263,14 +263,32 @@ export const refreshUserToken = asyncHandler(async (req, res) => {
 /* ======================================================
    LOGOUT
 ====================================================== */
-export const logoutUser = asyncHandler(async (req, res) => {
-  res.clearCookie("userRefreshToken", refreshTokenCookieOptions);
 
-  res.status(200).json({
+export const logoutUser = asyncHandler(async (req, res) => {
+  res.clearCookie("userRefreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/"
+  });
+
+  return res.status(200).json({
     success: true,
     message: "Logged out successfully"
   });
 });
+
+
+
+
+// export const logoutUser = asyncHandler(async (req, res) => {
+//   res.clearCookie("userRefreshToken", refreshTokenCookieOptions);
+
+//   res.status(200).json({
+//     success: true,
+//     message: "Logged out successfully"
+//   });
+// });
 
 
 // import jwt from "jsonwebtoken";
