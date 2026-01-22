@@ -42,7 +42,7 @@ router.post("/reset-password", resetPassword);
 router.post(
   "/create-user",
   verifyAdmin,
-  validate(createUserSchema),
+  // validate(createUserSchema),
   createUser
 );
 
