@@ -21,7 +21,7 @@ export const verifyUser = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
 
     // 2️⃣ Verify access token
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET_USER);
 
     // 3️⃣ Fetch user
     const user = await User.findById(decoded.userId).select(

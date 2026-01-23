@@ -5,7 +5,7 @@ export const verifyAdmin = (req, res, next) => {
   if (!token) return res.sendStatus(401);
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET_ADMIN);
     if (decoded.role !== "admin") return res.sendStatus(403);
     next();
   } catch {
