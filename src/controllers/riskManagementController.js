@@ -83,18 +83,30 @@ export const updateRiskConfiguration = asyncHandler(async (req, res) => {
 // @route   GET /api/risk-management
 // @access  Private/Admin
 export const getAllRiskConfigurations = asyncHandler(async (req, res) => {
-    const { variable, isActive } = req.query;
+    const { variable, isActive, page = 1, limit = 10 } = req.query;
+
+    const pageCount = parseInt(page) || 1;
+    const limitCount = parseInt(limit) || 10;
+    const skip = (pageCount - 1) * limitCount;
 
     // Build filter
     const filter = {};
     if (variable) filter.variable = variable;
     if (isActive !== undefined) filter.isActive = isActive === "true";
 
-    const riskConfigs = await RiskManagement.find(filter).sort({ createdAt: -1 });
+    const riskConfigs = await RiskManagement.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitCount);
+
+    const totalCount = await RiskManagement.countDocuments(filter);
 
     res.status(200).json({
         success: true,
         count: riskConfigs.length,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limitCount),
+        currentPage: pageCount,
         data: riskConfigs,
     });
 });
