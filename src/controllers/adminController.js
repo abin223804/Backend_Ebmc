@@ -264,13 +264,37 @@ export const resetPassword = asyncHandler(async (req, res) => {
 ====================================================== */
 
 export const createUser = asyncHandler(async (req, res) => {
-  const passwordHash = await bcrypt.hash(req.body.password, 10);
-  await User.create({ ...req.body, passwordHash });
+  try {
+    const passwordHash = await bcrypt.hash(req.body.password, 10);
+    await User.create({ ...req.body, passwordHash });
 
-  res.status(201).json({
-    success: true,
-    message: "User created successfully",
-  });
+    res.status(201).json({
+      success: true,
+      message: "User created successfully",
+    });
+  } catch (error) {
+    // Handle Mongoose validation errors
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: errors,
+      });
+    }
+
+    // Handle duplicate key errors (e.g., email already exists)
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${field} already exists`,
+      });
+    }
+
+    // Re-throw other errors to be handled by asyncHandler
+    throw error;
+  }
 });
 
 export const getUsers = asyncHandler(async (req, res) => {
