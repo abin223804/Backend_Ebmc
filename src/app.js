@@ -140,6 +140,18 @@ app.use(cookieParser());
 /* ======================================================
    ROUTES
 ====================================================== */
+
+// Health check endpoint for deployment platforms
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development",
+    message: "Server is healthy and running"
+  });
+});
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });

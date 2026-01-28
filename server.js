@@ -29,13 +29,34 @@ process.on("unhandledRejection", err => {
  */
 const startServer = async () => {
   try {
-    await connectDB();
+    console.log('🔄 Starting server...');
+    console.log('📍 PORT:', PORT);
+    console.log('📍 NODE_ENV:', process.env.NODE_ENV || 'development');
+    console.log('📍 MongoDB URI:', process.env.MONGODB_URI ? 'Set ✅' : 'Missing ❌');
 
-    app.listen(PORT, () => {
+    console.log('🔄 Connecting to database...');
+    await connectDB();
+    console.log('✅ Database connected successfully');
+
+    console.log('🔄 Starting HTTP server...');
+    // Bind to 0.0.0.0 to accept connections from deployment platforms
+    const server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`✅ Ready to accept connections`);
+    });
+
+    // Graceful shutdown on SIGTERM (deployment platforms use this)
+    process.on('SIGTERM', () => {
+      console.log('👋 SIGTERM received, shutting down gracefully');
+      server.close(() => {
+        console.log('✅ Server closed');
+        process.exit(0);
+      });
     });
   } catch (err) {
     console.error("❌ Server startup failed:", err);
+    console.error("Stack trace:", err.stack);
     process.exit(1);
   }
 };

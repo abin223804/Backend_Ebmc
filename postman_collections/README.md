@@ -263,6 +263,20 @@ Both profile types have a `status` field:
 
 ## 🛠️ Troubleshooting
 
+### 504 Gateway Timeout (FIXED)
+
+**Problem:** `504 Gateway Timeout - The server, working as a gateway did not get a response in time`
+
+**Solution:** The external Shufti Pro API calls now have a 30-second timeout to prevent hanging.
+
+**What happens now:**
+- ✅ Profile is always created successfully
+- ✅ External API call times out after 30 seconds if no response
+- ✅ `apiResult` field shows timeout status
+- ✅ You can retry verification later if needed
+
+**For detailed information, see:** [TROUBLESHOOTING_504.md](./TROUBLESHOOTING_504.md)
+
 ### Validation Errors
 
 **Problem:** `Cast to Embedded failed for value "" (type string)`
@@ -298,6 +312,7 @@ The backend now automatically cleans empty strings, but it's best practice to no
 - Check `.env` file has `SHUFTIPRO_CLIENT_ID` and `SHUFTIPRO_CLIENT_SECRET`
 - Verify Shufti Pro API credentials are valid
 - Check `apiResult` field in response for error details
+- If API times out, profile is still created - check server logs
 
 ## 💡 Best Practices
 
@@ -307,18 +322,26 @@ The backend now automatically cleans empty strings, but it's best practice to no
 4. **Use appropriate variants** - Choose the request that matches your use case
 5. **Disable unused file fields** - Don't leave file fields enabled but empty
 6. **Check responses** - Always verify the `apiResult` field for external API status
+7. **Monitor timeouts** - Check server logs if external API calls are slow
 
 ## 🔄 What's Fixed
 
 ### Backend Improvements
 
-The controllers now include a `cleanEmptyStrings()` helper function that:
+**v1.2 - Timeout Handling:**
+- ✅ Added 30-second timeout to all external API calls
+- ✅ Improved error handling with specific timeout detection
+- ✅ Profile creation always succeeds, even if external API fails/times out
+- ✅ Added detailed logging for debugging API calls
+
+**v1.1 - Empty String Handling:**
+The controllers include a `cleanEmptyStrings()` helper function that:
 - ✅ Removes empty strings from nested objects
 - ✅ Filters out empty objects from arrays
 - ✅ Prevents Mongoose validation errors
 - ✅ Handles deeply nested structures (UBOs, shareholders, documents)
 
-This means you can now send requests without worrying about empty string errors, but it's still best practice to only send fields you actually want to populate.
+This means you can now send requests without worrying about empty string errors or timeouts!
 
 ## 📞 Support
 
@@ -328,8 +351,16 @@ For issues or questions:
 3. Ensure file fields are properly configured (enabled with file, or disabled)
 4. Check server logs for detailed error information
 5. Verify external API credentials are configured correctly
+6. For 504 errors, see [TROUBLESHOOTING_504.md](./TROUBLESHOOTING_504.md)
 
 ## 🔄 Version History
+
+- **v1.2** - Fixed 504 Gateway Timeout errors
+  - Added 30-second timeout to external API calls
+  - Improved error handling with timeout detection
+  - Profile creation always succeeds regardless of external API status
+  - Added detailed logging for API calls
+  - Created comprehensive troubleshooting guide
 
 - **v1.1** - Fixed empty string validation errors
   - Added `cleanEmptyStrings()` helper to both controllers
@@ -341,3 +372,4 @@ For issues or questions:
   - File upload support
   - External API integration (Shufti Pro)
   - Background checks and AML verification
+
