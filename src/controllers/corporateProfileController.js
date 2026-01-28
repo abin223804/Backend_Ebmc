@@ -29,7 +29,7 @@ const prepareBusinessCheckPayload = (profile) => {
         aml_for_businesses: {
             business_name: profile.customerName,
             business_incorporation_date: incorporationDate,
-            ongoing: "1",
+            ongoing: "0",
             filters: [
                 "sanction",
                 "fitness-probity",
