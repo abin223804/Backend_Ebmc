@@ -54,19 +54,35 @@ const checkCorporateExternalApi = async (payload) => {
 
         const authHeader = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
 
+        console.log(`[Shufti Pro] Calling Business AML API for ${payload.aml_for_businesses?.business_name}...`);
+
         const response = await axios.post(apiUrl, payload, {
             headers: {
                 Authorization: authHeader,
                 "Content-Type": "application/json",
             },
+            timeout: 30000, // 30 seconds timeout to prevent hanging
         });
 
+        console.log(`[Shufti Pro] Business AML API call successful`);
         return response.data;
     } catch (error) {
-        console.error("Error calling Shufti Pro API:", error.response?.data || error.message);
+        // Handle timeout specifically
+        if (error.code === 'ECONNABORTED') {
+            console.error(`[Shufti Pro] Business AML API timeout`);
+            return {
+                status: "Timeout",
+                error: "External API request timed out after 30 seconds",
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        console.error(`[Shufti Pro] Business AML API error:`, error.response?.data || error.message);
         return {
+            status: "Error",
             error: "Failed to check Shufti Pro API",
-            details: error.response?.data || error.message
+            details: error.response?.data || error.message,
+            timestamp: new Date().toISOString()
         };
     }
 };

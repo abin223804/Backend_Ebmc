@@ -63,19 +63,35 @@ const checkExternalApi = async (profileData) => {
             }
         };
 
+        console.log(`[Shufti Pro] Calling API for profile ${profileData._id}...`);
+
         const response = await axios.post(apiUrl, payload, {
             headers: {
                 Authorization: authHeader,
                 "Content-Type": "application/json",
             },
+            timeout: 30000, // 30 seconds timeout to prevent hanging
         });
 
+        console.log(`[Shufti Pro] API call successful for profile ${profileData._id}`);
         return response.data;
     } catch (error) {
-        console.error("Error calling Shufti Pro API:", error.response?.data || error.message);
+        // Handle timeout specifically
+        if (error.code === 'ECONNABORTED') {
+            console.error(`[Shufti Pro] API timeout for profile ${profileData._id}`);
+            return {
+                status: "Timeout",
+                error: "External API request timed out after 30 seconds",
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        console.error(`[Shufti Pro] API error for profile ${profileData._id}:`, error.response?.data || error.message);
         return {
+            status: "Error",
             error: "Failed to check Shufti Pro API",
-            details: error.response?.data || error.message
+            details: error.response?.data || error.message,
+            timestamp: new Date().toISOString()
         };
     }
 };
