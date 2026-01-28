@@ -2,6 +2,41 @@ import CorporateProfile from "../models/corporateProfileModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import axios from 'axios';
 
+// Country name to ISO 3166-1 alpha-2 code mapping
+const COUNTRY_CODE_MAP = {
+    "United Arab Emirates": "AE",
+    "Saudi Arabia": "SA",
+    "Kuwait": "KW",
+    "Qatar": "QA",
+    "Bahrain": "BH",
+    "Oman": "OM",
+    "United States": "US",
+    "United Kingdom": "GB",
+    "India": "IN",
+    "Pakistan": "PK",
+    "Bangladesh": "BD",
+    "Egypt": "EG",
+    "Jordan": "JO",
+    "Lebanon": "LB",
+    // Add more countries as needed
+};
+
+// Helper to convert country name to ISO code
+const getCountryCode = (countryName) => {
+    if (!countryName) return "";
+
+    // Check if it's already a 2-character code
+    if (countryName.length === 2) return countryName.toUpperCase();
+
+    // Look up in mapping
+    const code = COUNTRY_CODE_MAP[countryName];
+    if (code) return code;
+
+    // If not found, log warning and return empty string
+    console.warn(`Country code not found for: ${countryName}. Please add to COUNTRY_CODE_MAP.`);
+    return "";
+};
+
 // Helper to prepare Business AML check payload
 const prepareBusinessCheckPayload = (profile) => {
     const incorporationDate = profile.incorporationDate
@@ -13,7 +48,7 @@ const prepareBusinessCheckPayload = (profile) => {
 
     return {
         reference: reference,
-        country: profile.country || "",
+        country: getCountryCode(profile.country),
         language: "en",
         callback_url: null,
         redirect_url: "",
