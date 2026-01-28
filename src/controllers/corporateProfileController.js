@@ -1,6 +1,7 @@
 import CorporateProfile from "../models/corporateProfileModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import axios from 'axios';
+import { logSearchHistory } from "./searchHistoryController.js";
 
 // Country name to ISO 3166-1 alpha-2 code mapping
 const COUNTRY_CODE_MAP = {
@@ -207,6 +208,18 @@ export const createCorporateProfile = asyncHandler(async (req, res) => {
     // 4. Update profile with API result
     newProfile.apiResult = apiResult;
     await newProfile.save();
+
+    // 5. Log search history
+    if (req.user && req.user.userId) {
+        await logSearchHistory(
+            req.user.userId,
+            newProfile.customerName,
+            "Corporate",
+            newProfile._id,
+            apiPayload,
+            apiResult
+        );
+    }
 
     res.status(201).json({
         success: true,

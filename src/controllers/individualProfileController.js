@@ -1,6 +1,7 @@
 import IndividualProfile from "../models/individualProfileModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import axios from 'axios'; // Added for Shufti Pro API calls
+import { logSearchHistory } from "./searchHistoryController.js";
 
 // Helper to check the profile against Shufti Pro API
 const checkExternalApi = async (profileData) => {
@@ -74,24 +75,30 @@ const checkExternalApi = async (profileData) => {
         });
 
         console.log(`[Shufti Pro] API call successful for profile ${profileData._id}`);
-        return response.data;
+        return { payload, data: response.data };
     } catch (error) {
         // Handle timeout specifically
         if (error.code === 'ECONNABORTED') {
             console.error(`[Shufti Pro] API timeout for profile ${profileData._id}`);
             return {
-                status: "Timeout",
-                error: "External API request timed out after 30 seconds",
-                timestamp: new Date().toISOString()
+                payload: error.config ? JSON.parse(error.config.data) : null,
+                data: {
+                    status: "Timeout",
+                    error: "External API request timed out after 30 seconds",
+                    timestamp: new Date().toISOString()
+                }
             };
         }
 
         console.error(`[Shufti Pro] API error for profile ${profileData._id}:`, error.response?.data || error.message);
         return {
-            status: "Error",
-            error: "Failed to check Shufti Pro API",
-            details: error.response?.data || error.message,
-            timestamp: new Date().toISOString()
+            payload: error.config ? JSON.parse(error.config.data) : null,
+            data: {
+                status: "Error",
+                error: "Failed to check Shufti Pro API",
+                details: error.response?.data || error.message,
+                timestamp: new Date().toISOString()
+            }
         };
     }
 };
@@ -187,11 +194,23 @@ export const processExternalVerification = asyncHandler(async (req, res) => {
     }
 
     // Call external API
-    const apiResult = await checkExternalApi(profile);
+    const { payload: apiPayload, data: apiResult } = await checkExternalApi(profile);
 
     // Update profile with API result
     profile.apiResult = apiResult;
     await profile.save();
+
+    // Log search history
+    if (req.user && req.user.userId) {
+        await logSearchHistory(
+            req.user.userId,
+            profile.customerName,
+            "Individual",
+            profile._id,
+            apiPayload,
+            apiResult
+        );
+    }
 
     res.status(201).json({
         success: true,
