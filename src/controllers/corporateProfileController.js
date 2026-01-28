@@ -8,8 +8,11 @@ const prepareBusinessCheckPayload = (profile) => {
         ? new Date(profile.incorporationDate).toISOString().split('T')[0]
         : "";
 
+    // Generate a unique reference string using profile ID and timestamp
+    const reference = `CORP_${profile._id}_${Date.now()}`;
+
     return {
-        reference: "",
+        reference: reference,
         country: profile.country || "",
         language: "en",
         callback_url: null,
