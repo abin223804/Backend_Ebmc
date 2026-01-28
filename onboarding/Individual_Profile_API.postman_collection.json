@@ -1,0 +1,428 @@
+{
+    "info": {
+        "_postman_id": "individual-profile-api-001",
+        "name": "Individual Profile API",
+        "description": "API endpoints for managing individual customer profiles with background checks via Shufti Pro API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create Individual Profile",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data",
+                        "type": "text",
+                        "disabled": true
+                    }
+                ],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerName",
+                            "value": "John Michael Doe",
+                            "type": "text",
+                            "description": "Full name of the customer"
+                        },
+                        {
+                            "key": "dob",
+                            "value": "1990-05-15",
+                            "type": "text",
+                            "description": "Date of birth (YYYY-MM-DD)"
+                        },
+                        {
+                            "key": "nationality",
+                            "value": "United States",
+                            "type": "text"
+                        },
+                        {
+                            "key": "birthCountry",
+                            "value": "United States",
+                            "type": "text"
+                        },
+                        {
+                            "key": "gender",
+                            "value": "Male",
+                            "type": "text",
+                            "description": "Male, Female, or Other"
+                        },
+                        {
+                            "key": "profession",
+                            "value": "Software Engineer",
+                            "type": "text"
+                        },
+                        {
+                            "key": "landline",
+                            "value": "+971-4-1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "email",
+                            "value": "john.doe@example.com",
+                            "type": "text"
+                        },
+                        {
+                            "key": "pepStatus",
+                            "value": "NO",
+                            "type": "text",
+                            "description": "Politically Exposed Person status"
+                        },
+                        {
+                            "key": "eaaCount",
+                            "value": "5",
+                            "type": "text"
+                        },
+                        {
+                            "key": "residentStatus",
+                            "value": "Resident",
+                            "type": "text"
+                        },
+                        {
+                            "key": "eaaVolume",
+                            "value": "50000",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+971-50-1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "addressLine1",
+                            "value": "Building 123, Sheikh Zayed Road",
+                            "type": "text"
+                        },
+                        {
+                            "key": "addressLine2",
+                            "value": "Apartment 456",
+                            "type": "text"
+                        },
+                        {
+                            "key": "city",
+                            "value": "Dubai",
+                            "type": "text"
+                        },
+                        {
+                            "key": "state",
+                            "value": "Dubai",
+                            "type": "text"
+                        },
+                        {
+                            "key": "poBox",
+                            "value": "12345",
+                            "type": "text"
+                        },
+                        {
+                            "key": "sponsorName",
+                            "value": "ABC Company LLC",
+                            "type": "text"
+                        },
+                        {
+                            "key": "visaNumber",
+                            "value": "784-1234-5678901-1",
+                            "type": "text"
+                        },
+                        {
+                            "key": "visaExpiryDate",
+                            "value": "2026-12-31",
+                            "type": "text"
+                        },
+                        {
+                            "key": "erpUin",
+                            "value": "ERP123456",
+                            "type": "text"
+                        },
+                        {
+                            "key": "remarks",
+                            "value": "VIP Customer - High Priority",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchBy",
+                            "value": "Name and DOB",
+                            "type": "text",
+                            "description": "Search criteria for background check"
+                        },
+                        {
+                            "key": "searchCategories",
+                            "value": "Sanction,Warning,Fitness & probity,PEP",
+                            "type": "text",
+                            "description": "Comma-separated list"
+                        },
+                        {
+                            "key": "matchScore",
+                            "value": "85",
+                            "type": "text",
+                            "description": "Matching threshold percentage"
+                        },
+                        {
+                            "key": "isExactMatch",
+                            "value": "false",
+                            "type": "text"
+                        },
+                        {
+                            "key": "includeRelatives",
+                            "value": "true",
+                            "type": "text"
+                        },
+                        {
+                            "key": "includeAliases",
+                            "value": "true",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][idType]",
+                            "value": "Passport",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][idNumber]",
+                            "value": "N1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][issueDate]",
+                            "value": "2020-01-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][expiryDate]",
+                            "value": "2030-01-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][issuedCountry]",
+                            "value": "United States",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][file]",
+                            "type": "file",
+                            "description": "Upload passport file (PDF/Image)",
+                            "src": []
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        "create"
+                    ]
+                },
+                "description": "Creates a new individual profile with background verification via Shufti Pro API. Requires authentication token in cookies."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": []
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/individual-profile/create",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "individual-profile",
+                                "create"
+                            ]
+                        }
+                    },
+                    "status": "Created",
+                    "code": 201,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\n    \"success\": true,\n    \"message\": \"Individual Profile created and checked successfully\",\n    \"data\": {\n        \"_id\": \"65a1b2c3d4e5f6g7h8i9j0k1\",\n        \"customerName\": \"John Michael Doe\",\n        \"dob\": \"1990-05-15T00:00:00.000Z\",\n        \"nationality\": \"United States\",\n        \"email\": \"john.doe@example.com\",\n        \"mobile\": \"+971-50-1234567\",\n        \"status\": \"PENDING\",\n        \"apiResult\": {\n            \"reference\": \"REF-65a1b2c3d4e5f6g7h8i9j0k1\",\n            \"event\": \"verification.accepted\"\n        },\n        \"createdAt\": \"2026-01-28T06:54:00.000Z\",\n        \"updatedAt\": \"2026-01-28T06:54:00.000Z\"\n    }\n}"
+                }
+            ]
+        },
+        {
+            "name": "Get All Individual Profiles",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile"
+                    ]
+                },
+                "description": "Retrieves all individual profiles sorted by creation date (newest first). Requires authentication."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/individual-profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "individual-profile"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"_id\": \"65a1b2c3d4e5f6g7h8i9j0k1\",\n            \"customerName\": \"John Michael Doe\",\n            \"dob\": \"1990-05-15T00:00:00.000Z\",\n            \"nationality\": \"United States\",\n            \"email\": \"john.doe@example.com\",\n            \"mobile\": \"+971-50-1234567\",\n            \"status\": \"PENDING\",\n            \"createdAt\": \"2026-01-28T06:54:00.000Z\",\n            \"updatedAt\": \"2026-01-28T06:54:00.000Z\"\n        }\n    ]\n}"
+                }
+            ]
+        },
+        {
+            "name": "Get Individual Profile by ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/:id",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "65a1b2c3d4e5f6g7h8i9j0k1",
+                            "description": "MongoDB ObjectId of the profile"
+                        }
+                    ]
+                },
+                "description": "Retrieves a single individual profile by its ID. Requires authentication."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/individual-profile/65a1b2c3d4e5f6g7h8i9j0k1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "individual-profile",
+                                "65a1b2c3d4e5f6g7h8i9j0k1"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"65a1b2c3d4e5f6g7h8i9j0k1\",\n        \"customerName\": \"John Michael Doe\",\n        \"dob\": \"1990-05-15T00:00:00.000Z\",\n        \"nationality\": \"United States\",\n        \"birthCountry\": \"United States\",\n        \"gender\": \"Male\",\n        \"profession\": \"Software Engineer\",\n        \"email\": \"john.doe@example.com\",\n        \"mobile\": \"+971-50-1234567\",\n        \"pepStatus\": \"NO\",\n        \"residentStatus\": \"Resident\",\n        \"addressLine1\": \"Building 123, Sheikh Zayed Road\",\n        \"city\": \"Dubai\",\n        \"idDetails\": [\n            {\n                \"idType\": \"Passport\",\n                \"idNumber\": \"N1234567\",\n                \"issueDate\": \"2020-01-15T00:00:00.000Z\",\n                \"expiryDate\": \"2030-01-15T00:00:00.000Z\",\n                \"issuedCountry\": \"United States\",\n                \"file\": {\n                    \"fileName\": \"passport.pdf\",\n                    \"filePath\": \"uploads/passport-123.pdf\",\n                    \"fileType\": \"application/pdf\"\n                }\n            }\n        ],\n        \"status\": \"PENDING\",\n        \"apiResult\": {\n            \"reference\": \"REF-65a1b2c3d4e5f6g7h8i9j0k1\",\n            \"event\": \"verification.accepted\"\n        },\n        \"createdAt\": \"2026-01-28T06:54:00.000Z\",\n        \"updatedAt\": \"2026-01-28T06:54:00.000Z\"\n    }\n}"
+                },
+                {
+                    "name": "Profile Not Found",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/individual-profile/invalid-id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "individual-profile",
+                                "invalid-id"
+                            ]
+                        }
+                    },
+                    "status": "Not Found",
+                    "code": 404,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\n    \"success\": false,\n    \"message\": \"Profile not found\"\n}"
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "your-jwt-access-token-here",
+            "type": "string"
+        }
+    ]
+}

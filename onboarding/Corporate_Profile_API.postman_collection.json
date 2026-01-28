@@ -1,0 +1,492 @@
+{
+    "info": {
+        "_postman_id": "corporate-profile-api-001",
+        "name": "Corporate Profile API",
+        "description": "API endpoints for managing corporate customer profiles with business AML checks via Shufti Pro API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create Corporate Profile",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data",
+                        "type": "text",
+                        "disabled": true
+                    }
+                ],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerType",
+                            "value": "Corporate",
+                            "type": "text",
+                            "description": "Type of customer"
+                        },
+                        {
+                            "key": "customerName",
+                            "value": "ABC Trading LLC",
+                            "type": "text",
+                            "description": "Company name"
+                        },
+                        {
+                            "key": "entityLegalType",
+                            "value": "Limited Liability Company",
+                            "type": "text"
+                        },
+                        {
+                            "key": "address[emirates]",
+                            "value": "Dubai",
+                            "type": "text"
+                        },
+                        {
+                            "key": "address[buildingName]",
+                            "value": "Business Tower",
+                            "type": "text"
+                        },
+                        {
+                            "key": "address[areaStreet]",
+                            "value": "Sheikh Zayed Road",
+                            "type": "text"
+                        },
+                        {
+                            "key": "address[poBox]",
+                            "value": "12345",
+                            "type": "text"
+                        },
+                        {
+                            "key": "country",
+                            "value": "United Arab Emirates",
+                            "type": "text"
+                        },
+                        {
+                            "key": "incorporationDate",
+                            "value": "2015-03-20",
+                            "type": "text",
+                            "description": "Company incorporation date (YYYY-MM-DD)"
+                        },
+                        {
+                            "key": "tradeLicenseNumber",
+                            "value": "TL-123456",
+                            "type": "text"
+                        },
+                        {
+                            "key": "tradeLicenseExpiryDate",
+                            "value": "2026-12-31",
+                            "type": "text"
+                        },
+                        {
+                            "key": "tradeLicenseFile",
+                            "type": "file",
+                            "description": "Upload trade license file",
+                            "src": []
+                        },
+                        {
+                            "key": "ubos[0][uboName]",
+                            "value": "Ahmed Ali Hassan",
+                            "type": "text",
+                            "description": "Ultimate Beneficial Owner name"
+                        },
+                        {
+                            "key": "ubos[0][uboType]",
+                            "value": "Individual",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][shareholdingPercentage]",
+                            "value": "60",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][passportName]",
+                            "value": "Ahmed Ali Hassan",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][passportNumber]",
+                            "value": "P1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][nationality]",
+                            "value": "United Arab Emirates",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][emiratesIdNumber]",
+                            "value": "784-1990-1234567-1",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][emiratesIdExpiryDate]",
+                            "value": "2027-06-30",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][isPep]",
+                            "value": "NO",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][dob]",
+                            "value": "1980-08-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][passportFile]",
+                            "type": "file",
+                            "description": "UBO passport file",
+                            "src": []
+                        },
+                        {
+                            "key": "ubos[0][emiratesIdFile]",
+                            "type": "file",
+                            "description": "UBO Emirates ID file",
+                            "src": []
+                        },
+                        {
+                            "key": "shareholders[0][name]",
+                            "value": "Sarah Mohammed",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][passportNumber]",
+                            "value": "P7654321",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][nationality]",
+                            "value": "United Arab Emirates",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][shareholdingPercentage]",
+                            "value": "40",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][isPep]",
+                            "value": "NO",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][dob]",
+                            "value": "1985-12-10",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][passportFile]",
+                            "type": "file",
+                            "description": "Shareholder passport file",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[accountOpeningForm]",
+                            "type": "file",
+                            "description": "Account Opening Form",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[amlPolicy]",
+                            "type": "file",
+                            "description": "AML Policy Document",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[sourceOfFundDeclaration]",
+                            "type": "file",
+                            "description": "Source of Fund Declaration",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[pepDeclaration]",
+                            "type": "file",
+                            "description": "PEP Declaration",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[oecdComplianceDeclaration]",
+                            "type": "file",
+                            "description": "OECD Compliance Declaration",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[lbmaDeclaration]",
+                            "type": "file",
+                            "description": "LBMA Declaration",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[supplyChainPolicy]",
+                            "type": "file",
+                            "description": "Supply Chain Policy",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[boardResolution]",
+                            "type": "file",
+                            "description": "Board Resolution",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[moa]",
+                            "type": "file",
+                            "description": "Memorandum of Association",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[vatRegistrationCertificate]",
+                            "type": "file",
+                            "description": "VAT Registration Certificate",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[corporateTaxRegistrationCertificate]",
+                            "type": "file",
+                            "description": "Corporate Tax Registration Certificate",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[staffAuthorization]",
+                            "type": "file",
+                            "description": "Staff Authorization",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[vatRcmDeclaration]",
+                            "type": "file",
+                            "description": "VAT RCM Declaration",
+                            "src": []
+                        },
+                        {
+                            "key": "documents[fiuGoAmlRegistrationScreenshot]",
+                            "type": "file",
+                            "description": "FIU GoAML Registration Screenshot",
+                            "src": []
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/corporate-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "corporate-profile",
+                        "create"
+                    ]
+                },
+                "description": "Creates a new corporate profile with business AML verification via Shufti Pro API. Requires authentication token in cookies."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": []
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/corporate-profile/create",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "corporate-profile",
+                                "create"
+                            ]
+                        }
+                    },
+                    "status": "Created",
+                    "code": 201,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\n    \"success\": true,\n    \"message\": \"Corporate Profile created and checked successfully\",\n    \"data\": {\n        \"_id\": \"65a1b2c3d4e5f6g7h8i9j0k2\",\n        \"customerType\": \"Corporate\",\n        \"customerName\": \"ABC Trading LLC\",\n        \"entityLegalType\": \"Limited Liability Company\",\n        \"country\": \"United Arab Emirates\",\n        \"incorporationDate\": \"2015-03-20T00:00:00.000Z\",\n        \"tradeLicenseNumber\": \"TL-123456\",\n        \"status\": \"PENDING\",\n        \"apiResult\": {\n            \"reference\": \"\",\n            \"event\": \"verification.accepted\"\n        },\n        \"createdAt\": \"2026-01-28T06:54:00.000Z\",\n        \"updatedAt\": \"2026-01-28T06:54:00.000Z\"\n    }\n}"
+                }
+            ]
+        },
+        {
+            "name": "Get All Corporate Profiles",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/corporate-profile",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "corporate-profile"
+                    ]
+                },
+                "description": "Retrieves all corporate profiles sorted by creation date (newest first). Requires authentication."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/corporate-profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "corporate-profile"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"_id\": \"65a1b2c3d4e5f6g7h8i9j0k2\",\n            \"customerType\": \"Corporate\",\n            \"customerName\": \"ABC Trading LLC\",\n            \"entityLegalType\": \"Limited Liability Company\",\n            \"country\": \"United Arab Emirates\",\n            \"incorporationDate\": \"2015-03-20T00:00:00.000Z\",\n            \"status\": \"PENDING\",\n            \"createdAt\": \"2026-01-28T06:54:00.000Z\",\n            \"updatedAt\": \"2026-01-28T06:54:00.000Z\"\n        }\n    ]\n}"
+                }
+            ]
+        },
+        {
+            "name": "Get Corporate Profile by ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/corporate-profile/:id",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "corporate-profile",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "65a1b2c3d4e5f6g7h8i9j0k2",
+                            "description": "MongoDB ObjectId of the corporate profile"
+                        }
+                    ]
+                },
+                "description": "Retrieves a single corporate profile by its ID. Requires authentication."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/corporate-profile/65a1b2c3d4e5f6g7h8i9j0k2",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "corporate-profile",
+                                "65a1b2c3d4e5f6g7h8i9j0k2"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"65a1b2c3d4e5f6g7h8i9j0k2\",\n        \"customerType\": \"Corporate\",\n        \"customerName\": \"ABC Trading LLC\",\n        \"entityLegalType\": \"Limited Liability Company\",\n        \"address\": {\n            \"emirates\": \"Dubai\",\n            \"buildingName\": \"Business Tower\",\n            \"areaStreet\": \"Sheikh Zayed Road\",\n            \"poBox\": \"12345\"\n        },\n        \"country\": \"United Arab Emirates\",\n        \"incorporationDate\": \"2015-03-20T00:00:00.000Z\",\n        \"tradeLicenseNumber\": \"TL-123456\",\n        \"tradeLicenseExpiryDate\": \"2026-12-31T00:00:00.000Z\",\n        \"tradeLicenseFile\": {\n            \"fileName\": \"trade-license.pdf\",\n            \"filePath\": \"uploads/trade-license-123.pdf\",\n            \"fileType\": \"application/pdf\"\n        },\n        \"ubos\": [\n            {\n                \"uboName\": \"Ahmed Ali Hassan\",\n                \"uboType\": \"Individual\",\n                \"shareholdingPercentage\": 60,\n                \"passportName\": \"Ahmed Ali Hassan\",\n                \"passportNumber\": \"P1234567\",\n                \"nationality\": \"United Arab Emirates\",\n                \"emiratesIdNumber\": \"784-1990-1234567-1\",\n                \"emiratesIdExpiryDate\": \"2027-06-30T00:00:00.000Z\",\n                \"isPep\": \"NO\",\n                \"dob\": \"1980-08-15T00:00:00.000Z\"\n            }\n        ],\n        \"shareholders\": [\n            {\n                \"name\": \"Sarah Mohammed\",\n                \"passportNumber\": \"P7654321\",\n                \"nationality\": \"United Arab Emirates\",\n                \"shareholdingPercentage\": 40,\n                \"isPep\": \"NO\",\n                \"dob\": \"1985-12-10T00:00:00.000Z\"\n            }\n        ],\n        \"documents\": {\n            \"accountOpeningForm\": {\n                \"fileName\": \"account-opening.pdf\",\n                \"filePath\": \"uploads/account-opening-123.pdf\",\n                \"fileType\": \"application/pdf\"\n            }\n        },\n        \"status\": \"PENDING\",\n        \"apiResult\": {\n            \"reference\": \"\",\n            \"event\": \"verification.accepted\"\n        },\n        \"createdAt\": \"2026-01-28T06:54:00.000Z\",\n        \"updatedAt\": \"2026-01-28T06:54:00.000Z\"\n    }\n}"
+                },
+                {
+                    "name": "Profile Not Found",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/corporate-profile/invalid-id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "corporate-profile",
+                                "invalid-id"
+                            ]
+                        }
+                    },
+                    "status": "Not Found",
+                    "code": 404,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\n    \"success\": false,\n    \"message\": \"Profile not found\"\n}"
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "your-jwt-access-token-here",
+            "type": "string"
+        }
+    ]
+}

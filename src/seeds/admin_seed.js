@@ -5,8 +5,11 @@ import Admin from "../models/adminModel.js";
 
 dotenv.config();
 
-const ADMIN_EMAIL = "abinschandran1@gmail.com";
-const ADMIN_PASSWORD = "myPassword1234";
+// const ADMIN_EMAIL = "abinschandran1@gmail.com";
+const ADMIN_EMAIL = "visakhr3093@gmail.com";
+// const ADMIN_PASSWORD = "myPassword1234";
+const ADMIN_PASSWORD = "User@1234";
+
 
 const seedAdmin = async () => {
   try {

@@ -83,6 +83,41 @@ const checkExternalApi = async (profileData) => {
 // @desc    Create a new profile and check against external API
 // @route   POST /api/individual-profile/create
 // @access  Private (assuming protected by auth)
+// Helper function to remove empty strings from nested objects/arrays
+// This prevents Mongoose validation errors when empty strings are sent for embedded schemas
+const cleanEmptyStrings = (obj) => {
+    if (Array.isArray(obj)) {
+        return obj.map(cleanEmptyStrings).filter(item => {
+            // Remove empty objects from arrays
+            if (typeof item === 'object' && item !== null) {
+                return Object.keys(item).length > 0;
+            }
+            return item !== "" && item !== null && item !== undefined;
+        });
+    } else if (obj !== null && typeof obj === 'object') {
+        const cleaned = {};
+        for (const [key, value] of Object.entries(obj)) {
+            if (value === "" || value === null || value === undefined) {
+                // Skip empty strings, null, and undefined
+                continue;
+            }
+            if (typeof value === 'object') {
+                const cleanedValue = cleanEmptyStrings(value);
+                // Only add if it's not an empty object or empty array
+                if (Array.isArray(cleanedValue)) {
+                    if (cleanedValue.length > 0) cleaned[key] = cleanedValue;
+                } else if (Object.keys(cleanedValue).length > 0) {
+                    cleaned[key] = cleanedValue;
+                }
+            } else {
+                cleaned[key] = value;
+            }
+        }
+        return cleaned;
+    }
+    return obj;
+};
+
 export const createIndividualProfile = asyncHandler(async (req, res, next) => {
     let profileData = req.body;
 
@@ -113,6 +148,9 @@ export const createIndividualProfile = asyncHandler(async (req, res, next) => {
             current[keys[keys.length - 1]] = fileObj;
         });
     }
+
+    // Clean empty strings from profileData to prevent Mongoose validation errors
+    profileData = cleanEmptyStrings(profileData);
 
     // 1. Create the profile in DB
     const newProfile = await IndividualProfile.create(profileData);
