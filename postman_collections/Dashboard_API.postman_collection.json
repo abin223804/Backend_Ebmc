@@ -1,0 +1,51 @@
+{
+    "info": {
+        "_postman_id": "dashboard-api-001",
+        "name": "Dashboard API",
+        "description": "API endpoints for fetching dashboard statistics and analytics.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get Dashboard Stats",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/dashboard/stats",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "dashboard",
+                        "stats"
+                    ]
+                },
+                "description": "Fetch comprehensive dashboard statistics including ongoing screening, risk analytics, PEP counts, and monthly trends."
+            },
+            "response": []
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000/api",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "your-jwt-access-token-here",
+            "type": "string"
+        }
+    ]
+}
