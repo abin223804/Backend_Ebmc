@@ -50,7 +50,7 @@ const checkExternalApi = async (profileData) => {
                     fuzzy_match: "1"
                 },
                 dob: profileData.dob ? new Date(profileData.dob).toISOString().split("T")[0] : "",
-                ongoing: "0",
+                ongoing: "1",
                 filters: [
                     "sanction",
                     "warning",
