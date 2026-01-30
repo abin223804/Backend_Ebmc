@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/userModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { ROLE_PERMISSIONS } from "../config/rbacConfig.js";
 import { sendUserLoginAlertEmail } from "../utils/sendEmail.js";
 
 /* ======================================================
@@ -83,6 +84,7 @@ export const userLogin = asyncHandler(async (req, res) => {
         email: user.email,
         role: user.role,
       },
+      dashboardTabs: ROLE_PERMISSIONS[user.role] || [],
     },
   });
 });
