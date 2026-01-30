@@ -94,6 +94,7 @@ import corporateProfileRoutes from "../src/routes/corporateProfileRoutes.js";
 import riskManagementRoutes from "../src/routes/riskManagementRoutes.js";
 import dropdownOptionsRoutes from "../src/routes/dropdownOptionsRoutes.js";
 import searchHistoryRoutes from "../src/routes/searchHistoryRoutes.js";
+import dashboardRoutes from "../src/routes/dashboardRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
@@ -164,6 +165,7 @@ app.use("/corporate-profile", corporateProfileRoutes);
 app.use("/risk-management", riskManagementRoutes);
 app.use("/dropdown-options", dropdownOptionsRoutes);
 app.use("/search-history", searchHistoryRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 /* ======================================================
    ERROR HANDLER (LAST)
