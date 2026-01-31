@@ -130,6 +130,14 @@ const individualProfileSchema = new mongoose.Schema(
         apiResult: {
             type: mongoose.Schema.Types.Mixed, // To store the external API result
             default: null
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false
+        },
+        deletedAt: {
+            type: Date,
+            default: null
         }
     },
     { timestamps: true }

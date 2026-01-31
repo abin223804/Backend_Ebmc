@@ -231,7 +231,7 @@ export const createCorporateProfile = asyncHandler(async (req, res) => {
 // @desc    Get all corporate profiles
 // @route   GET /api/corporate-profile
 export const getAllCorporateProfiles = asyncHandler(async (req, res) => {
-    const profiles = await CorporateProfile.find().sort({ createdAt: -1 });
+    const profiles = await CorporateProfile.find({ isDeleted: false }).sort({ createdAt: -1 });
     res.status(200).json({
         success: true,
         data: profiles,
@@ -241,7 +241,7 @@ export const getAllCorporateProfiles = asyncHandler(async (req, res) => {
 // @desc    Get single corporate profile
 // @route   GET /api/corporate-profile/:id
 export const getCorporateProfileById = asyncHandler(async (req, res) => {
-    const profile = await CorporateProfile.findById(req.params.id);
+    const profile = await CorporateProfile.findOne({ _id: req.params.id, isDeleted: false });
     if (!profile) {
         res.status(404);
         throw new Error("Profile not found");
@@ -250,4 +250,93 @@ export const getCorporateProfileById = asyncHandler(async (req, res) => {
         success: true,
         data: profile,
     });
+});
+
+// @desc    Update a corporate profile
+// @route   PUT /api/corporate-profile/:id
+// @access  Private
+export const updateCorporateProfile = asyncHandler(async (req, res) => {
+    let profile = await CorporateProfile.findOne({ _id: req.params.id, isDeleted: false });
+
+    if (!profile) {
+        res.status(404);
+        throw new Error("Profile not found");
+    }
+
+    let updateData = req.body;
+
+    // Handle File Uploads
+    if (req.files && req.files.length > 0) {
+        req.files.forEach((file) => {
+            const fileObj = {
+                fileName: file.originalname,
+                filePath: file.path,
+                fileType: file.mimetype,
+            };
+
+            const keys = file.fieldname.replace(/\]/g, "").split("[");
+            let current = updateData;
+            for (let i = 0; i < keys.length - 1; i++) {
+                if (current[keys[i]] === undefined) {
+                    current[keys[i]] = isNaN(keys[i + 1]) ? {} : [];
+                }
+                current = current[keys[i]];
+            }
+            current[keys[keys.length - 1]] = fileObj;
+        });
+    }
+
+    updateData = cleanEmptyStrings(updateData);
+
+    profile = await CorporateProfile.findByIdAndUpdate(
+        req.params.id,
+        { $set: updateData },
+        { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+        success: true,
+        message: "Corporate Profile updated successfully",
+        data: profile,
+    });
+});
+
+// @desc    Soft delete a corporate profile
+// @route   DELETE /api/corporate-profile/:id
+// @access  Private
+export const deleteCorporateProfile = asyncHandler(async (req, res) => {
+    const profile = await CorporateProfile.findOne({ _id: req.params.id, isDeleted: false });
+
+    if (!profile) {
+        res.status(404);
+        throw new Error("Profile not found");
+    }
+
+    profile.isDeleted = true;
+    profile.deletedAt = new Date();
+    await profile.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Corporate Profile deleted successfully (soft delete)",
+    });
+});
+
+// @desc    Download corporate profile as JSON
+// @route   GET /api/corporate-profile/download/:id
+// @access  Private
+export const downloadCorporateProfile = asyncHandler(async (req, res) => {
+    const profile = await CorporateProfile.findOne({ _id: req.params.id, isDeleted: false });
+
+    if (!profile) {
+        res.status(404);
+        throw new Error("Profile not found");
+    }
+
+    const fileName = `Corporate_Profile_${profile.customerName.replace(/\s+/g, '_')}_${profile._id}.json`;
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+
+    res.status(200).send(JSON.stringify(profile, null, 2));
 });

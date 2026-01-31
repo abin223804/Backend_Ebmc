@@ -100,6 +100,14 @@ const corporateProfileSchema = new mongoose.Schema(
         apiResult: {
             type: mongoose.Schema.Types.Mixed,
             default: null
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false
+        },
+        deletedAt: {
+            type: Date,
+            default: null
         }
     },
     { timestamps: true }

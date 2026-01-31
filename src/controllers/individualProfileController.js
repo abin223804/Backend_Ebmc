@@ -222,7 +222,7 @@ export const processExternalVerification = asyncHandler(async (req, res) => {
 // @desc    Get all profiles
 // @route   GET /api/individual-profile
 export const getAllProfiles = asyncHandler(async (req, res) => {
-    const profiles = await IndividualProfile.find().sort({ createdAt: -1 });
+    const profiles = await IndividualProfile.find({ isDeleted: false }).sort({ createdAt: -1 });
     res.status(200).json({
         success: true,
         data: profiles,
@@ -232,7 +232,7 @@ export const getAllProfiles = asyncHandler(async (req, res) => {
 // @desc    Get single profile
 // @route   GET /api/individual-profile/:id
 export const getProfileById = asyncHandler(async (req, res) => {
-    const profile = await IndividualProfile.findById(req.params.id);
+    const profile = await IndividualProfile.findOne({ _id: req.params.id, isDeleted: false });
     if (!profile) {
         res.status(404);
         throw new Error("Profile not found");
@@ -241,4 +241,91 @@ export const getProfileById = asyncHandler(async (req, res) => {
         success: true,
         data: profile,
     });
+});
+
+// @desc    Update a profile
+// @route   PUT /api/individual-profile/:id
+// @access  Private
+export const updateIndividualProfile = asyncHandler(async (req, res) => {
+    let profile = await IndividualProfile.findOne({ _id: req.params.id, isDeleted: false });
+
+    if (!profile) {
+        res.status(404);
+        throw new Error("Profile not found");
+    }
+
+    let updateData = req.body;
+
+    // Handle File Uploads for update
+    if (req.files && req.files.length > 0) {
+        req.files.forEach((file) => {
+            const fileObj = {
+                fileName: file.originalname,
+                filePath: file.path,
+                fileType: file.mimetype,
+            };
+
+            const keys = file.fieldname.replace(/\]/g, "").split("[");
+            let current = updateData;
+            for (let i = 0; i < keys.length - 1; i++) {
+                if (!current[keys[i]]) current[keys[i]] = {};
+                current = current[keys[i]];
+            }
+            current[keys[keys.length - 1]] = fileObj;
+        });
+    }
+
+    updateData = cleanEmptyStrings(updateData);
+
+    profile = await IndividualProfile.findByIdAndUpdate(
+        req.params.id,
+        { $set: updateData },
+        { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+        success: true,
+        message: "Profile updated successfully",
+        data: profile,
+    });
+});
+
+// @desc    Soft delete a profile
+// @route   DELETE /api/individual-profile/:id
+// @access  Private
+export const deleteIndividualProfile = asyncHandler(async (req, res) => {
+    const profile = await IndividualProfile.findOne({ _id: req.params.id, isDeleted: false });
+
+    if (!profile) {
+        res.status(404);
+        throw new Error("Profile not found");
+    }
+
+    profile.isDeleted = true;
+    profile.deletedAt = new Date();
+    await profile.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Profile deleted successfully (soft delete)",
+    });
+});
+
+// @desc    Download profile as JSON
+// @route   GET /api/individual-profile/download/:id
+// @access  Private
+export const downloadIndividualProfile = asyncHandler(async (req, res) => {
+    const profile = await IndividualProfile.findOne({ _id: req.params.id, isDeleted: false });
+
+    if (!profile) {
+        res.status(404);
+        throw new Error("Profile not found");
+    }
+
+    const fileName = `Profile_${profile.customerName.replace(/\s+/g, '_')}_${profile._id}.json`;
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+
+    res.status(200).send(JSON.stringify(profile, null, 2));
 });
