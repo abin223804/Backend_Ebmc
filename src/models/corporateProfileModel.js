@@ -39,6 +39,12 @@ const shareholderSchema = new mongoose.Schema({
 
 const corporateProfileSchema = new mongoose.Schema(
     {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+            index: true
+        },
         // 1. Customer Info
         customerType: {
             type: String,

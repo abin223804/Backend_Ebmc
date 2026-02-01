@@ -29,6 +29,12 @@ const idDetailsSchema = new mongoose.Schema({
 
 const individualProfileSchema = new mongoose.Schema(
     {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+            index: true
+        },
         // Basic Details
         customerName: {
             type: String,

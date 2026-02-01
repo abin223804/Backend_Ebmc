@@ -144,6 +144,11 @@ const cleanEmptyStrings = (obj) => {
 export const createIndividualProfile = asyncHandler(async (req, res, next) => {
     let profileData = req.body;
 
+    // Attach Logged-in User ID
+    if (req.user && req.user.userId) {
+        profileData.userId = req.user.userId;
+    }
+
     // Handle File Uploads
     if (req.files && req.files.length > 0) {
         req.files.forEach((file) => {
@@ -222,7 +227,14 @@ export const processExternalVerification = asyncHandler(async (req, res) => {
 // @desc    Get all profiles
 // @route   GET /api/individual-profile
 export const getAllProfiles = asyncHandler(async (req, res) => {
-    const profiles = await IndividualProfile.find({ isDeleted: false }).sort({ createdAt: -1 });
+    const query = { isDeleted: false };
+
+    // Filter by the logged-in user ID
+    if (req.user && req.user.userId) {
+        query.userId = req.user.userId;
+    }
+
+    const profiles = await IndividualProfile.find(query).sort({ createdAt: -1 });
     res.status(200).json({
         success: true,
         data: profiles,
