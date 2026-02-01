@@ -2,6 +2,7 @@ import CorporateProfile from "../models/corporateProfileModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import axios from 'axios';
 import { logSearchHistory } from "./searchHistoryController.js";
+import mongoose from "mongoose";
 
 // Country name to ISO 3166-1 alpha-2 code mapping
 const COUNTRY_CODE_MAP = {
@@ -132,19 +133,19 @@ const cleanEmptyStrings = (obj) => {
     if (Array.isArray(obj)) {
         return obj.map(cleanEmptyStrings).filter(item => {
             // Remove empty objects from arrays
-            if (typeof item === 'object' && item !== null) {
+            if (typeof item === 'object' && item !== null && !(item instanceof mongoose.Types.ObjectId)) {
                 return Object.keys(item).length > 0;
             }
             return item !== "" && item !== null && item !== undefined;
         });
-    } else if (obj !== null && typeof obj === 'object') {
+    } else if (obj !== null && typeof obj === 'object' && !(obj instanceof mongoose.Types.ObjectId)) {
         const cleaned = {};
         for (const [key, value] of Object.entries(obj)) {
             if (value === "" || value === null || value === undefined) {
                 // Skip empty strings, null, and undefined
                 continue;
             }
-            if (typeof value === 'object') {
+            if (typeof value === 'object' && value !== null && !(value instanceof mongoose.Types.ObjectId)) {
                 const cleanedValue = cleanEmptyStrings(value);
                 // Only add if it's not an empty object or empty array
                 if (Array.isArray(cleanedValue)) {
