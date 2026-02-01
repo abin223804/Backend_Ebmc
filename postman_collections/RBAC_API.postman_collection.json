@@ -1,0 +1,51 @@
+{
+    "info": {
+        "_postman_id": "rbac-api-001",
+        "name": "RBAC API",
+        "description": "API endpoints for fetching role-based access control permissions, such as sidebar navigation.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get Sidetab Permissions",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/rbac/sidetab-permissions",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "rbac",
+                        "sidetab-permissions"
+                    ]
+                },
+                "description": "Fetch sidebar permissions for the authenticated user based on their role (ComplianceOfficer, Owner, or SalesStaff)."
+            },
+            "response": []
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "your-jwt-access-token-here",
+            "type": "string"
+        }
+    ]
+}

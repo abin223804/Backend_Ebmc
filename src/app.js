@@ -95,6 +95,7 @@ import riskManagementRoutes from "../src/routes/riskManagementRoutes.js";
 import dropdownOptionsRoutes from "../src/routes/dropdownOptionsRoutes.js";
 import searchHistoryRoutes from "../src/routes/searchHistoryRoutes.js";
 import dashboardRoutes from "../src/routes/dashboardRoutes.js";
+import rbacRoutes from "../src/routes/rbacRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
@@ -166,6 +167,7 @@ app.use("/risk-management", riskManagementRoutes);
 app.use("/dropdown-options", dropdownOptionsRoutes);
 app.use("/search-history", searchHistoryRoutes);
 app.use("/dashboard", dashboardRoutes);
+app.use("/rbac", rbacRoutes);
 
 /* ======================================================
    ERROR HANDLER (LAST)
