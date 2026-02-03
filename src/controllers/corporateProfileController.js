@@ -213,6 +213,14 @@ export const createCorporateProfile = asyncHandler(async (req, res) => {
 
     // 4. Update profile with API result
     newProfile.apiResult = apiResult;
+
+    // Automate status update based on verification result
+    if (apiResult?.status === "accepted") {
+        newProfile.status = "APPROVED";
+    } else if (apiResult?.status === "declined") {
+        newProfile.status = "CHECK_REQUIRED";
+    }
+
     await newProfile.save();
 
     // 5. Log search history

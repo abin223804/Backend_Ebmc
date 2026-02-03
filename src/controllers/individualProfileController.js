@@ -204,6 +204,14 @@ export const processExternalVerification = asyncHandler(async (req, res) => {
 
     // Update profile with API result
     profile.apiResult = apiResult;
+
+    // Automate status update based on verification result
+    if (apiResult?.event === "verification.accepted") {
+        profile.status = "APPROVED";
+    } else if (apiResult?.event === "verification.declined") {
+        profile.status = "CHECK_REQUIRED";
+    }
+
     await profile.save();
 
     // Log search history
