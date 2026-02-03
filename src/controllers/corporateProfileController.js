@@ -164,6 +164,76 @@ const cleanEmptyStrings = (obj) => {
     return obj;
 };
 
+/**
+ * Helper to format corporate profile response to the new structure
+ */
+const formatCorporateProfileResponse = (profile) => {
+    if (!profile) return null;
+
+    return {
+        id: profile._id,
+        userId: profile.userId,
+        name: profile.customerName,
+        incorporationDate: profile.incorporationDate,
+        entityLegalType: profile.entityLegalType,
+        country: profile.country,
+        address: {
+            emirates: profile.address?.emirates,
+            building: profile.address?.buildingName,
+            area: profile.address?.areaStreet,
+            poBox: profile.address?.poBox
+        },
+        tradeLicense: {
+            number: profile.tradeLicenseNumber,
+            expiryDate: profile.tradeLicenseExpiryDate,
+            file: profile.tradeLicenseFile
+        },
+        ubos: (profile.ubos || []).map(ubo => ({
+            name: ubo.uboName,
+            type: ubo.uboType,
+            shareholding: ubo.shareholdingPercentage,
+            passport: {
+                name: ubo.passportName,
+                number: ubo.passportNumber,
+                file: ubo.passportFile
+            },
+            nationality: ubo.nationality,
+            pep: ubo.isPep === "YES",
+            dob: ubo.dob
+        })),
+        documents: profile.documents,
+        screening: {
+            status: profile.status,
+            searchBy: profile.searchBy,
+            categories: profile.searchCategories,
+            match: {
+                score: profile.matchScore,
+                exact: profile.isExactMatch
+            },
+            options: {
+                includeRelatives: profile.includeRelatives,
+                includeAliases: profile.includeAliases
+            }
+        },
+        verification: {
+            status: profile.apiResult?.status === "accepted" ? "SUCCESS" :
+                profile.apiResult?.status === "declined" ? "FAILED" :
+                    profile.apiResult?.status || "UNKNOWN",
+            provider: "ShuftiPro",
+            error: profile.apiResult?.error ? {
+                field: profile.apiResult.error.field || "unknown",
+                message: profile.apiResult.error.message || profile.apiResult.error
+            } : null,
+            reference: profile.apiResult?.reference || `CORP-${profile._id}`,
+            timestamp: profile.apiResult?.timestamp || profile.updatedAt
+        },
+        meta: {
+            createdAt: profile.createdAt,
+            updatedAt: profile.updatedAt
+        }
+    };
+};
+
 // @desc    Create a new corporate profile and check against external API
 // @route   POST /api/corporate-profile/create
 // @access  Private
@@ -240,7 +310,7 @@ export const createCorporateProfile = asyncHandler(async (req, res) => {
     res.status(201).json({
         success: true,
         message: "Corporate Profile created and checked successfully",
-        data: newProfile,
+        profile: formatCorporateProfileResponse(newProfile),
     });
 });
 
@@ -283,7 +353,7 @@ export const getAllCorporateProfiles = asyncHandler(async (req, res) => {
     res.status(200).json({
         success: true,
         count: profiles.length,
-        data: profiles,
+        profiles: profiles.map(p => formatCorporateProfileResponse(p)),
     });
 });
 
@@ -297,7 +367,7 @@ export const getCorporateProfileById = asyncHandler(async (req, res) => {
     }
     res.status(200).json({
         success: true,
-        data: profile,
+        profile: formatCorporateProfileResponse(profile),
     });
 });
 
@@ -346,7 +416,7 @@ export const updateCorporateProfile = asyncHandler(async (req, res) => {
     res.status(200).json({
         success: true,
         message: "Corporate Profile updated successfully",
-        data: profile,
+        profile: formatCorporateProfileResponse(profile),
     });
 });
 

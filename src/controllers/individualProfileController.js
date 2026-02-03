@@ -144,6 +144,70 @@ const cleanEmptyStrings = (obj) => {
     return obj;
 };
 
+/**
+ * Helper to format individual profile response to the new structure
+ */
+const formatIndividualProfileResponse = (profile) => {
+    if (!profile) return null;
+
+    return {
+        id: profile._id,
+        userId: profile.userId,
+        name: profile.customerName,
+        dob: profile.dob,
+        gender: profile.gender,
+        nationality: profile.nationality,
+        birthCountry: profile.birthCountry,
+        profession: profile.profession,
+        pep: profile.pepStatus === "YES",
+        residentStatus: profile.residentStatus,
+        contact: {
+            mobile: profile.mobile,
+            address: {
+                line1: profile.addressLine1,
+                city: profile.city,
+                state: profile.state
+            }
+        },
+        documents: (profile.idDetails || []).map(doc => ({
+            type: doc.idType,
+            number: doc.idNumber,
+            expiryDate: doc.expiryDate,
+            issuedCountry: doc.issuedCountry,
+            file: doc.file
+        })),
+        screening: {
+            status: profile.status,
+            searchBy: profile.searchBy,
+            categories: profile.searchCategories,
+            match: {
+                score: profile.matchScore,
+                exact: profile.isExactMatch
+            },
+            options: {
+                includeRelatives: profile.includeRelatives,
+                includeAliases: profile.includeAliases
+            }
+        },
+        verification: {
+            status: profile.apiResult?.event === "verification.accepted" ? "SUCCESS" :
+                profile.apiResult?.event === "verification.declined" ? "FAILED" :
+                    profile.apiResult?.status || "UNKNOWN",
+            provider: "ShuftiPro",
+            error: profile.apiResult?.error ? {
+                field: profile.apiResult.error.field || "unknown",
+                message: profile.apiResult.error.message || profile.apiResult.error
+            } : null,
+            reference: profile.apiResult?.reference || `REF-${profile._id}`,
+            timestamp: profile.apiResult?.timestamp || profile.updatedAt
+        },
+        meta: {
+            createdAt: profile.createdAt,
+            updatedAt: profile.updatedAt
+        }
+    };
+};
+
 export const createIndividualProfile = asyncHandler(async (req, res, next) => {
     let profileData = req.body;
 
@@ -231,7 +295,7 @@ export const processExternalVerification = asyncHandler(async (req, res) => {
     res.status(201).json({
         success: true,
         message: "Individual Profile created and checked successfully",
-        data: profile,
+        profile: formatIndividualProfileResponse(profile),
     });
 });
 
@@ -274,7 +338,7 @@ export const getAllProfiles = asyncHandler(async (req, res) => {
     res.status(200).json({
         success: true,
         count: profiles.length,
-        data: profiles,
+        profiles: profiles.map(p => formatIndividualProfileResponse(p)),
     });
 });
 
@@ -288,7 +352,7 @@ export const getProfileById = asyncHandler(async (req, res) => {
     }
     res.status(200).json({
         success: true,
-        data: profile,
+        profile: formatIndividualProfileResponse(profile),
     });
 });
 
@@ -335,7 +399,7 @@ export const updateIndividualProfile = asyncHandler(async (req, res) => {
     res.status(200).json({
         success: true,
         message: "Profile updated successfully",
-        data: profile,
+        profile: formatIndividualProfileResponse(profile),
     });
 });
 
