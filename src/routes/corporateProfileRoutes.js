@@ -13,6 +13,7 @@ import upload from "../middleware/uploadMiddleware.js";
 const router = express.Router();
 
 router.post("/create", verifyUser, upload.any(), createCorporateProfile);
+router.get("/", verifyUser, getAllCorporateProfiles);
 router.post("/search", verifyUser, getAllCorporateProfiles);
 router.get("/:id", verifyUser, getCorporateProfileById);
 router.put("/:id", verifyUser, upload.any(), updateCorporateProfile);

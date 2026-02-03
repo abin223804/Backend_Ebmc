@@ -15,6 +15,7 @@ const router = express.Router();
 
 // Assuming these should be protected routes
 router.post("/create", verifyUser, upload.any(), createIndividualProfile, processExternalVerification);
+router.get("/", verifyUser, getAllProfiles);
 router.post("/search", verifyUser, getAllProfiles);
 router.get("/:id", verifyUser, getProfileById);
 router.put("/:id", verifyUser, upload.any(), updateIndividualProfile);

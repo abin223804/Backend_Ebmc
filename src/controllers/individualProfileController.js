@@ -299,18 +299,24 @@ export const processExternalVerification = asyncHandler(async (req, res) => {
     });
 });
 
-// @desc    Get all profiles with filtering
-// @route   POST /api/individual-profile/search
+// @desc    Get all files with filtering and pagination
+// @route   GET /api/individual-profile OR POST /api/individual-profile/search
 export const getAllProfiles = asyncHandler(async (req, res) => {
-    const filters = req.body || {};
+    // Combine filters from body (POST) and query (GET)
+    const filters = { ...req.query, ...req.body };
     const query = { isDeleted: false };
+
+    // Pagination parameters
+    const page = parseInt(filters.page) || 1;
+    const limit = parseInt(filters.limit) || 10;
+    const skip = (page - 1) * limit;
 
     // Filter by the logged-in user ID
     if (req.user && req.user.userId) {
         query.userId = req.user.userId;
     }
 
-    // Apply filters from body
+    // Apply filters from body/query
     if (filters.customerName) {
         query.customerName = { $regex: filters.customerName, $options: "i" };
     }
@@ -334,10 +340,24 @@ export const getAllProfiles = asyncHandler(async (req, res) => {
         if (filters.endDate) query.createdAt.$lte = new Date(filters.endDate);
     }
 
-    const profiles = await IndividualProfile.find(query).sort({ createdAt: -1 });
+    // Execute query with pagination
+    const profiles = await IndividualProfile.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    // Get total count for pagination metadata
+    const total = await IndividualProfile.countDocuments(query);
+
     res.status(200).json({
         success: true,
         count: profiles.length,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        },
         profiles: profiles.map(p => formatIndividualProfileResponse(p)),
     });
 });
