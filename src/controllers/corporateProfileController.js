@@ -70,12 +70,14 @@ const prepareBusinessCheckPayload = (profile) => {
             business_name: profile.customerName,
             business_incorporation_date: incorporationDate,
             ongoing: "1",
-            filters: [
-                "sanction",
-                "fitness-probity",
-                "warning",
-                "pep"
-            ]
+            filters: (profile.searchCategories && profile.searchCategories.length > 0)
+                ? profile.searchCategories
+                : [
+                    "sanction",
+                    "fitness-probity",
+                    "warning",
+                    "pep"
+                ]
         }
     };
 };
@@ -242,9 +244,10 @@ export const createCorporateProfile = asyncHandler(async (req, res) => {
     });
 });
 
-// @desc    Get all corporate profiles
-// @route   GET /api/corporate-profile
+// @desc    Get all corporate profiles with filtering
+// @route   POST /api/corporate-profile/search
 export const getAllCorporateProfiles = asyncHandler(async (req, res) => {
+    const filters = req.body || {};
     const query = { isDeleted: false };
 
     // Filter by the logged-in user ID
@@ -252,9 +255,34 @@ export const getAllCorporateProfiles = asyncHandler(async (req, res) => {
         query.userId = req.user.userId;
     }
 
+    // Apply filters from body
+    if (filters.customerName) {
+        query.customerName = { $regex: filters.customerName, $options: "i" };
+    }
+    if (filters.tradeLicenseNumber) {
+        query.tradeLicenseNumber = { $regex: filters.tradeLicenseNumber, $options: "i" };
+    }
+    if (filters.status) {
+        query.status = filters.status;
+    }
+    if (filters.country) {
+        query.country = filters.country;
+    }
+    if (filters.entityLegalType) {
+        query.entityLegalType = filters.entityLegalType;
+    }
+
+    // Date range filter for createdAt
+    if (filters.startDate || filters.endDate) {
+        query.createdAt = {};
+        if (filters.startDate) query.createdAt.$gte = new Date(filters.startDate);
+        if (filters.endDate) query.createdAt.$lte = new Date(filters.endDate);
+    }
+
     const profiles = await CorporateProfile.find(query).sort({ createdAt: -1 });
     res.status(200).json({
         success: true,
+        count: profiles.length,
         data: profiles,
     });
 });

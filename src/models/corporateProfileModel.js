@@ -96,6 +96,36 @@ const corporateProfileSchema = new mongoose.Schema(
             vatRcmDeclaration: fileSchema,
             fiuGoAmlRegistrationScreenshot: fileSchema
         },
+        // Configuration / Search Params
+        searchBy: {
+            type: String,
+            default: "Name"
+        },
+        searchCategories: {
+            type: [String], // e.g., ["sanction", "warning", "pep"]
+            default: [
+                "sanction",
+                "fitness-probity",
+                "warning",
+                "pep"
+            ]
+        },
+        matchScore: {
+            type: Number,
+            default: 85
+        },
+        isExactMatch: {
+            type: Boolean,
+            default: false
+        },
+        includeRelatives: {
+            type: Boolean,
+            default: false
+        },
+        includeAliases: {
+            type: Boolean,
+            default: false
+        },
 
         // Status
         status: {

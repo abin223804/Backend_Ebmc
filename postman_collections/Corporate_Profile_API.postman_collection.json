@@ -7,181 +7,7 @@
     },
     "item": [
         {
-            "name": "Create Corporate Profile (Minimal)",
-            "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                    "mode": "formdata",
-                    "formdata": [
-                        {
-                            "key": "customerType",
-                            "value": "Corporate",
-                            "type": "text",
-                            "description": "REQUIRED"
-                        },
-                        {
-                            "key": "customerName",
-                            "value": "ABC Trading LLC",
-                            "type": "text",
-                            "description": "Company name (REQUIRED)"
-                        },
-                        {
-                            "key": "entityLegalType",
-                            "value": "Limited Liability Company",
-                            "type": "text",
-                            "description": "REQUIRED"
-                        },
-                        {
-                            "key": "country",
-                            "value": "United Arab Emirates",
-                            "type": "text",
-                            "description": "Optional but recommended"
-                        },
-                        {
-                            "key": "incorporationDate",
-                            "value": "2015-03-20",
-                            "type": "text",
-                            "description": "YYYY-MM-DD format (Optional)"
-                        }
-                    ]
-                },
-                "url": {
-                    "raw": "{{baseUrl}}/corporate-profile/create",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "corporate-profile",
-                        "create"
-                    ]
-                },
-                "description": "Creates a minimal corporate profile with only required fields"
-            },
-            "response": []
-        },
-        {
-            "name": "Create Corporate Profile (With UBO)",
-            "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                    "mode": "formdata",
-                    "formdata": [
-                        {
-                            "key": "customerType",
-                            "value": "Corporate",
-                            "type": "text"
-                        },
-                        {
-                            "key": "customerName",
-                            "value": "ABC Trading LLC",
-                            "type": "text"
-                        },
-                        {
-                            "key": "entityLegalType",
-                            "value": "Limited Liability Company",
-                            "type": "text"
-                        },
-                        {
-                            "key": "country",
-                            "value": "United Arab Emirates",
-                            "type": "text"
-                        },
-                        {
-                            "key": "incorporationDate",
-                            "value": "2015-03-20",
-                            "type": "text"
-                        },
-                        {
-                            "key": "address[emirates]",
-                            "value": "Dubai",
-                            "type": "text"
-                        },
-                        {
-                            "key": "address[buildingName]",
-                            "value": "Business Tower",
-                            "type": "text"
-                        },
-                        {
-                            "key": "address[areaStreet]",
-                            "value": "Sheikh Zayed Road",
-                            "type": "text"
-                        },
-                        {
-                            "key": "address[poBox]",
-                            "value": "12345",
-                            "type": "text"
-                        },
-                        {
-                            "key": "tradeLicenseNumber",
-                            "value": "TL-123456",
-                            "type": "text"
-                        },
-                        {
-                            "key": "tradeLicenseExpiryDate",
-                            "value": "2026-12-31",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][uboName]",
-                            "value": "Ahmed Ali Hassan",
-                            "type": "text",
-                            "description": "Ultimate Beneficial Owner"
-                        },
-                        {
-                            "key": "ubos[0][uboType]",
-                            "value": "Individual",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][shareholdingPercentage]",
-                            "value": "60",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][passportName]",
-                            "value": "Ahmed Ali Hassan",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][passportNumber]",
-                            "value": "P1234567",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][nationality]",
-                            "value": "United Arab Emirates",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][isPep]",
-                            "value": "NO",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][dob]",
-                            "value": "1980-08-15",
-                            "type": "text"
-                        }
-                    ]
-                },
-                "url": {
-                    "raw": "{{baseUrl}}/corporate-profile/create",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "corporate-profile",
-                        "create"
-                    ]
-                },
-                "description": "Creates a corporate profile with one UBO (no file uploads)"
-            },
-            "response": []
-        },
-        {
-            "name": "Create Corporate Profile (Complete)",
+            "name": "Create Corporate Profile (Complete Body)",
             "request": {
                 "method": "POST",
                 "header": [],
@@ -244,6 +70,36 @@
                             "type": "text"
                         },
                         {
+                            "key": "searchBy",
+                            "value": "Standard",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchCategories",
+                            "value": "sanction,fitness-probity,warning,pep",
+                            "type": "text"
+                        },
+                        {
+                            "key": "matchScore",
+                            "value": "85",
+                            "type": "text"
+                        },
+                        {
+                            "key": "isExactMatch",
+                            "value": "false",
+                            "type": "text"
+                        },
+                        {
+                            "key": "includeRelatives",
+                            "value": "true",
+                            "type": "text"
+                        },
+                        {
+                            "key": "includeAliases",
+                            "value": "true",
+                            "type": "text"
+                        },
+                        {
                             "key": "ubos[0][uboName]",
                             "value": "Ahmed Ali Hassan",
                             "type": "text"
@@ -271,16 +127,6 @@
                         {
                             "key": "ubos[0][nationality]",
                             "value": "United Arab Emirates",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][emiratesIdNumber]",
-                            "value": "784-1990-1234567-1",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][emiratesIdExpiryDate]",
-                            "value": "2027-06-30",
                             "type": "text"
                         },
                         {
@@ -322,128 +168,47 @@
                             "key": "shareholders[0][dob]",
                             "value": "1985-12-10",
                             "type": "text"
-                        }
-                    ]
-                },
-                "url": {
-                    "raw": "{{baseUrl}}/corporate-profile/create",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "corporate-profile",
-                        "create"
-                    ]
-                },
-                "description": "Complete corporate profile with UBOs and shareholders (no file uploads)"
-            },
-            "response": []
-        },
-        {
-            "name": "Create Corporate Profile (With Files)",
-            "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                    "mode": "formdata",
-                    "formdata": [
+                        },
                         {
-                            "key": "customerType",
-                            "value": "Corporate",
+                            "key": "authorizedSignatories[0][name]",
+                            "value": "John Doe",
                             "type": "text"
                         },
                         {
-                            "key": "customerName",
-                            "value": "ABC Trading LLC",
+                            "key": "authorizedSignatories[0][designation]",
+                            "value": "CEO",
                             "type": "text"
                         },
                         {
-                            "key": "entityLegalType",
-                            "value": "Limited Liability Company",
+                            "key": "authorizedSignatories[0][passportNumber]",
+                            "value": "P0987654",
                             "type": "text"
                         },
                         {
-                            "key": "country",
-                            "value": "United Arab Emirates",
+                            "key": "authorizedSignatories[0][nationality]",
+                            "value": "United Kingdom",
                             "type": "text"
                         },
                         {
-                            "key": "incorporationDate",
-                            "value": "2015-03-20",
-                            "type": "text"
-                        },
-                        {
-                            "key": "tradeLicenseNumber",
-                            "value": "TL-123456",
+                            "key": "authorizedSignatories[0][dob]",
+                            "value": "1975-01-01",
                             "type": "text"
                         },
                         {
                             "key": "tradeLicenseFile",
                             "type": "file",
-                            "description": "ENABLE and select file to upload",
                             "src": [],
                             "disabled": true
                         },
                         {
-                            "key": "ubos[0][uboName]",
-                            "value": "Ahmed Ali Hassan",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][uboType]",
-                            "value": "Individual",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][shareholdingPercentage]",
-                            "value": "60",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][passportNumber]",
-                            "value": "P1234567",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][nationality]",
-                            "value": "United Arab Emirates",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][isPep]",
-                            "value": "NO",
-                            "type": "text"
-                        },
-                        {
-                            "key": "ubos[0][dob]",
-                            "value": "1980-08-15",
-                            "type": "text"
-                        },
-                        {
                             "key": "ubos[0][passportFile]",
                             "type": "file",
-                            "description": "ENABLE to upload UBO passport",
                             "src": [],
                             "disabled": true
                         },
                         {
                             "key": "documents[accountOpeningForm]",
                             "type": "file",
-                            "description": "ENABLE to upload - Account Opening Form",
-                            "src": [],
-                            "disabled": true
-                        },
-                        {
-                            "key": "documents[amlPolicy]",
-                            "type": "file",
-                            "description": "ENABLE to upload - AML Policy",
-                            "src": [],
-                            "disabled": true
-                        },
-                        {
-                            "key": "documents[moa]",
-                            "type": "file",
-                            "description": "ENABLE to upload - Memorandum of Association",
                             "src": [],
                             "disabled": true
                         }
@@ -459,25 +224,41 @@
                         "create"
                     ]
                 },
-                "description": "Corporate profile with file upload examples. IMPORTANT: Only ENABLE file fields you want to upload - keep others DISABLED!"
+                "description": "Comprehensive creation request with every supported corporate profile field."
             },
             "response": []
         },
         {
-            "name": "Get All Corporate Profiles",
+            "name": "Search Corporate Profiles (Complete Body)",
             "request": {
-                "method": "GET",
-                "header": [],
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"customerName\": \"ABC\",\n    \"tradeLicenseNumber\": \"TL-123\",\n    \"status\": \"APPROVED\",\n    \"country\": \"United Arab Emirates\",\n    \"entityLegalType\": \"Limited Liability Company\",\n    \"startDate\": \"2024-01-01\",\n    \"endDate\": \"2024-12-31\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
                 "url": {
-                    "raw": "{{baseUrl}}/corporate-profile",
+                    "raw": "{{baseUrl}}/corporate-profile/search",
                     "host": [
                         "{{baseUrl}}"
                     ],
                     "path": [
-                        "corporate-profile"
+                        "corporate-profile",
+                        "search"
                     ]
                 },
-                "description": "Retrieves all corporate profiles sorted by creation date (newest first)"
+                "description": "Exhaustive search request with all supported filter parameters."
             },
             "response": []
         },
@@ -498,12 +279,10 @@
                     "variable": [
                         {
                             "key": "id",
-                            "value": "65a1b2c3d4e5f6g7h8i9j0k2",
-                            "description": "Replace with actual MongoDB ObjectId"
+                            "value": "65a1b2c3d4e5f6g7h8i9j0k2"
                         }
                     ]
-                },
-                "description": "Retrieves a single corporate profile by its ID"
+                }
             },
             "response": []
         },
@@ -517,7 +296,7 @@
                     "formdata": [
                         {
                             "key": "customerName",
-                            "value": "ABC Trading LLC Updated",
+                            "value": "Updated Company Name",
                             "type": "text"
                         }
                     ]
@@ -537,13 +316,12 @@
                             "value": "65a1b2c3d4e5f6g7h8i9j0k2"
                         }
                     ]
-                },
-                "description": "Updates a corporate profile."
+                }
             },
             "response": []
         },
         {
-            "name": "Delete Corporate Profile (Soft Delete)",
+            "name": "Delete Corporate Profile",
             "request": {
                 "method": "DELETE",
                 "header": [],
@@ -562,13 +340,12 @@
                             "value": "65a1b2c3d4e5f6g7h8i9j0k2"
                         }
                     ]
-                },
-                "description": "Soft deletes a corporate profile."
+                }
             },
             "response": []
         },
         {
-            "name": "Download Corporate Profile JSON",
+            "name": "Download Profile JSON",
             "request": {
                 "method": "GET",
                 "header": [],
@@ -588,8 +365,7 @@
                             "value": "65a1b2c3d4e5f6g7h8i9j0k2"
                         }
                     ]
-                },
-                "description": "Downloads the corporate profile data as a JSON file."
+                }
             },
             "response": []
         }

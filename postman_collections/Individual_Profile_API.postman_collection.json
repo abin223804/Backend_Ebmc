@@ -7,226 +7,7 @@
     },
     "item": [
         {
-            "name": "Create Individual Profile (Minimal)",
-            "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                    "mode": "formdata",
-                    "formdata": [
-                        {
-                            "key": "customerName",
-                            "value": "John Michael Doe",
-                            "type": "text",
-                            "description": "Full name of the customer (REQUIRED)"
-                        },
-                        {
-                            "key": "dob",
-                            "value": "1990-05-15",
-                            "type": "text",
-                            "description": "Date of birth YYYY-MM-DD (REQUIRED)"
-                        },
-                        {
-                            "key": "nationality",
-                            "value": "United States",
-                            "type": "text",
-                            "description": "REQUIRED"
-                        },
-                        {
-                            "key": "birthCountry",
-                            "value": "United States",
-                            "type": "text",
-                            "description": "REQUIRED"
-                        },
-                        {
-                            "key": "profession",
-                            "value": "Software Engineer",
-                            "type": "text",
-                            "description": "REQUIRED"
-                        },
-                        {
-                            "key": "pepStatus",
-                            "value": "NO",
-                            "type": "text",
-                            "description": "Politically Exposed Person status (REQUIRED)"
-                        },
-                        {
-                            "key": "residentStatus",
-                            "value": "Resident",
-                            "type": "text",
-                            "description": "REQUIRED"
-                        },
-                        {
-                            "key": "mobile",
-                            "value": "+971-50-1234567",
-                            "type": "text",
-                            "description": "REQUIRED"
-                        },
-                        {
-                            "key": "addressLine1",
-                            "value": "Building 123, Sheikh Zayed Road",
-                            "type": "text",
-                            "description": "REQUIRED"
-                        },
-                        {
-                            "key": "city",
-                            "value": "Dubai",
-                            "type": "text",
-                            "description": "REQUIRED"
-                        },
-                        {
-                            "key": "searchBy",
-                            "value": "Name and DOB",
-                            "type": "text",
-                            "description": "Search criteria (REQUIRED)"
-                        },
-                        {
-                            "key": "email",
-                            "value": "john.doe@example.com",
-                            "type": "text",
-                            "description": "Optional"
-                        }
-                    ]
-                },
-                "url": {
-                    "raw": "{{baseUrl}}/individual-profile/create",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "individual-profile",
-                        "create"
-                    ]
-                },
-                "description": "Creates a minimal individual profile with only required fields. This is the simplest way to test the endpoint."
-            },
-            "response": []
-        },
-        {
-            "name": "Create Individual Profile (With ID Details)",
-            "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                    "mode": "formdata",
-                    "formdata": [
-                        {
-                            "key": "customerName",
-                            "value": "John Michael Doe",
-                            "type": "text"
-                        },
-                        {
-                            "key": "dob",
-                            "value": "1990-05-15",
-                            "type": "text"
-                        },
-                        {
-                            "key": "nationality",
-                            "value": "United States",
-                            "type": "text"
-                        },
-                        {
-                            "key": "birthCountry",
-                            "value": "United States",
-                            "type": "text"
-                        },
-                        {
-                            "key": "profession",
-                            "value": "Software Engineer",
-                            "type": "text"
-                        },
-                        {
-                            "key": "pepStatus",
-                            "value": "NO",
-                            "type": "text"
-                        },
-                        {
-                            "key": "residentStatus",
-                            "value": "Resident",
-                            "type": "text"
-                        },
-                        {
-                            "key": "mobile",
-                            "value": "+971-50-1234567",
-                            "type": "text"
-                        },
-                        {
-                            "key": "addressLine1",
-                            "value": "Building 123, Sheikh Zayed Road",
-                            "type": "text"
-                        },
-                        {
-                            "key": "city",
-                            "value": "Dubai",
-                            "type": "text"
-                        },
-                        {
-                            "key": "searchBy",
-                            "value": "Name and DOB",
-                            "type": "text"
-                        },
-                        {
-                            "key": "email",
-                            "value": "john.doe@example.com",
-                            "type": "text"
-                        },
-                        {
-                            "key": "gender",
-                            "value": "Male",
-                            "type": "text",
-                            "description": "Male, Female, or Other"
-                        },
-                        {
-                            "key": "idDetails[0][idType]",
-                            "value": "Passport",
-                            "type": "text",
-                            "description": "IMPORTANT: Include ALL idDetails fields or NONE"
-                        },
-                        {
-                            "key": "idDetails[0][idNumber]",
-                            "value": "N1234567",
-                            "type": "text"
-                        },
-                        {
-                            "key": "idDetails[0][issueDate]",
-                            "value": "2020-01-15",
-                            "type": "text"
-                        },
-                        {
-                            "key": "idDetails[0][expiryDate]",
-                            "value": "2030-01-15",
-                            "type": "text"
-                        },
-                        {
-                            "key": "idDetails[0][issuedCountry]",
-                            "value": "United States",
-                            "type": "text"
-                        },
-                        {
-                            "key": "idDetails[0][file]",
-                            "type": "file",
-                            "description": "Upload passport file (OPTIONAL - only if you want to upload)",
-                            "src": [],
-                            "disabled": true
-                        }
-                    ]
-                },
-                "url": {
-                    "raw": "{{baseUrl}}/individual-profile/create",
-                    "host": [
-                        "{{baseUrl}}"
-                    ],
-                    "path": [
-                        "individual-profile",
-                        "create"
-                    ]
-                },
-                "description": "Creates an individual profile with ID details. NOTE: If you don't want to upload a file, DISABLE or DELETE the file field - don't leave it empty!"
-            },
-            "response": []
-        },
-        {
-            "name": "Create Individual Profile (Complete)",
+            "name": "Create Individual Profile (Complete Body)",
             "request": {
                 "method": "POST",
                 "header": [],
@@ -355,7 +136,7 @@
                         },
                         {
                             "key": "searchCategories",
-                            "value": "Sanction,Warning,Fitness & probity,PEP",
+                            "value": "sanction,warning,fitness-probity,pep,pep-class-1,pep-class-2,pep-class-3,pep-class-4",
                             "type": "text"
                         },
                         {
@@ -402,6 +183,12 @@
                             "key": "idDetails[0][issuedCountry]",
                             "value": "United States",
                             "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][file]",
+                            "type": "file",
+                            "src": [],
+                            "disabled": true
                         }
                     ]
                 },
@@ -415,25 +202,41 @@
                         "create"
                     ]
                 },
-                "description": "Complete individual profile with all optional fields (no file uploads)"
+                "description": "Comprehensive creation request with every supported individual profile field."
             },
             "response": []
         },
         {
-            "name": "Get All Individual Profiles",
+            "name": "Search Individual Profiles (Complete Body)",
             "request": {
-                "method": "GET",
-                "header": [],
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"customerName\": \"John\",\n    \"status\": \"APPROVED\",\n    \"nationality\": \"United States\",\n    \"residentStatus\": \"Resident\",\n    \"pepStatus\": \"NO\",\n    \"startDate\": \"2024-01-01\",\n    \"endDate\": \"2024-12-31\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
                 "url": {
-                    "raw": "{{baseUrl}}/individual-profile",
+                    "raw": "{{baseUrl}}/individual-profile/search",
                     "host": [
                         "{{baseUrl}}"
                     ],
                     "path": [
-                        "individual-profile"
+                        "individual-profile",
+                        "search"
                     ]
                 },
-                "description": "Retrieves all individual profiles sorted by creation date (newest first)"
+                "description": "Exhaustive search request with all supported filter parameters."
             },
             "response": []
         },
@@ -454,12 +257,10 @@
                     "variable": [
                         {
                             "key": "id",
-                            "value": "65a1b2c3d4e5f6g7h8i9j0k1",
-                            "description": "Replace with actual MongoDB ObjectId"
+                            "value": "65a1b2c3d4e5f6g7h8i9j0k1"
                         }
                     ]
-                },
-                "description": "Retrieves a single individual profile by its ID"
+                }
             },
             "response": []
         },
@@ -473,12 +274,7 @@
                     "formdata": [
                         {
                             "key": "customerName",
-                            "value": "John Michael Doe Updated",
-                            "type": "text"
-                        },
-                        {
-                            "key": "profession",
-                            "value": "Senior Software Engineer",
+                            "value": "Updated Name",
                             "type": "text"
                         }
                     ]
@@ -498,13 +294,12 @@
                             "value": "65a1b2c3d4e5f6g7h8i9j0k1"
                         }
                     ]
-                },
-                "description": "Updates an individual profile. Can send any fields to update."
+                }
             },
             "response": []
         },
         {
-            "name": "Delete Individual Profile (Soft Delete)",
+            "name": "Delete Individual Profile",
             "request": {
                 "method": "DELETE",
                 "header": [],
@@ -523,13 +318,12 @@
                             "value": "65a1b2c3d4e5f6g7h8i9j0k1"
                         }
                     ]
-                },
-                "description": "Soft deletes an individual profile by setting isDeleted to true."
+                }
             },
             "response": []
         },
         {
-            "name": "Download Individual Profile JSON",
+            "name": "Download Profile JSON",
             "request": {
                 "method": "GET",
                 "header": [],
@@ -549,8 +343,7 @@
                             "value": "65a1b2c3d4e5f6g7h8i9j0k1"
                         }
                     ]
-                },
-                "description": "Downloads the individual profile data as a JSON file."
+                }
             },
             "response": []
         }

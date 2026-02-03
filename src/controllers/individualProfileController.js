@@ -52,16 +52,18 @@ const checkExternalApi = async (profileData) => {
                 },
                 dob: profileData.dob ? new Date(profileData.dob).toISOString().split("T")[0] : "",
                 ongoing: "1",
-                filters: [
-                    "sanction",
-                    "warning",
-                    "fitness-probity",
-                    "pep",
-                    "pep-class-1",
-                    "pep-class-2",
-                    "pep-class-3",
-                    "pep-class-4"
-                ]
+                filters: (profileData.searchCategories && profileData.searchCategories.length > 0)
+                    ? profileData.searchCategories
+                    : [
+                        "sanction",
+                        "warning",
+                        "fitness-probity",
+                        "pep",
+                        "pep-class-1",
+                        "pep-class-2",
+                        "pep-class-3",
+                        "pep-class-4"
+                    ]
             }
         };
 
@@ -233,9 +235,10 @@ export const processExternalVerification = asyncHandler(async (req, res) => {
     });
 });
 
-// @desc    Get all profiles
-// @route   GET /api/individual-profile
+// @desc    Get all profiles with filtering
+// @route   POST /api/individual-profile/search
 export const getAllProfiles = asyncHandler(async (req, res) => {
+    const filters = req.body || {};
     const query = { isDeleted: false };
 
     // Filter by the logged-in user ID
@@ -243,9 +246,34 @@ export const getAllProfiles = asyncHandler(async (req, res) => {
         query.userId = req.user.userId;
     }
 
+    // Apply filters from body
+    if (filters.customerName) {
+        query.customerName = { $regex: filters.customerName, $options: "i" };
+    }
+    if (filters.status) {
+        query.status = filters.status;
+    }
+    if (filters.nationality) {
+        query.nationality = filters.nationality;
+    }
+    if (filters.residentStatus) {
+        query.residentStatus = filters.residentStatus;
+    }
+    if (filters.pepStatus) {
+        query.pepStatus = filters.pepStatus;
+    }
+
+    // Date range filter for createdAt
+    if (filters.startDate || filters.endDate) {
+        query.createdAt = {};
+        if (filters.startDate) query.createdAt.$gte = new Date(filters.startDate);
+        if (filters.endDate) query.createdAt.$lte = new Date(filters.endDate);
+    }
+
     const profiles = await IndividualProfile.find(query).sort({ createdAt: -1 });
     res.status(200).json({
         success: true,
+        count: profiles.length,
         data: profiles,
     });
 });

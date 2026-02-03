@@ -104,8 +104,17 @@ const individualProfileSchema = new mongoose.Schema(
             required: true
         },
         searchCategories: {
-            type: [String], // e.g., ["Sanction", "Warning", "Fitness & probity"]
-            default: []
+            type: [String], // e.g., ["sanction", "warning", "pep"]
+            default: [
+                "sanction",
+                "warning",
+                "fitness-probity",
+                "pep",
+                "pep-class-1",
+                "pep-class-2",
+                "pep-class-3",
+                "pep-class-4"
+            ]
         },
         matchScore: {
             type: Number,
