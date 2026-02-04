@@ -35,6 +35,11 @@ const individualProfileSchema = new mongoose.Schema(
             required: true,
             index: true
         },
+        customerType: {
+            type: String,
+            enum: ["Individual", "Corporate"],
+            default: "Individual",
+        },
         // Basic Details
         customerName: {
             type: String,

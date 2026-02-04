@@ -96,6 +96,7 @@ import dropdownOptionsRoutes from "../src/routes/dropdownOptionsRoutes.js";
 import searchHistoryRoutes from "../src/routes/searchHistoryRoutes.js";
 import dashboardRoutes from "../src/routes/dashboardRoutes.js";
 import rbacRoutes from "../src/routes/rbacRoutes.js";
+import quickProfileRoutes from "../src/routes/quickProfileRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
@@ -168,6 +169,7 @@ app.use("/dropdown-options", dropdownOptionsRoutes);
 app.use("/search-history", searchHistoryRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/rbac", rbacRoutes);
+app.use("/quick-profile", quickProfileRoutes);
 
 /* ======================================================
    ERROR HANDLER (LAST)
