@@ -56,7 +56,6 @@ const individualProfileSchema = new mongoose.Schema(
         },
         birthCountry: {
             type: String,
-            required: true,
         },
         gender: {
             type: String,
@@ -64,7 +63,6 @@ const individualProfileSchema = new mongoose.Schema(
         },
         profession: {
             type: String,
-            required: true,
         },
         landline: String,
         email: {
