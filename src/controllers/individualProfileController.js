@@ -154,6 +154,7 @@ export const formatIndividualProfileResponse = (profile) => {
     return {
         id: profile._id,
         userId: profile.userId,
+        coreCustId: profile.coreCustId, // New field for UI
         name: profile.customerName,
         dob: profile.dob,
         gender: profile.gender,

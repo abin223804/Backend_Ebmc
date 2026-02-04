@@ -98,6 +98,7 @@ import dashboardRoutes from "../src/routes/dashboardRoutes.js";
 import rbacRoutes from "../src/routes/rbacRoutes.js";
 import quickProfileRoutes from "../src/routes/quickProfileRoutes.js";
 import searchRoutes from "../src/routes/searchRoutes.js";
+import profileRoutes from "../src/routes/profileRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
@@ -172,6 +173,7 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/rbac", rbacRoutes);
 app.use("/quick-profile", quickProfileRoutes);
 app.use("/search", searchRoutes);
+app.use("/profiles", profileRoutes);
 
 /* ======================================================
    ERROR HANDLER (LAST)

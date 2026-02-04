@@ -1,0 +1,224 @@
+{
+    "info": {
+        "_postman_id": "unified-profile-api-001",
+        "name": "Unified Profile API (Profile View)",
+        "description": "API for the 'Profile View' table. Handles both Individual and Corporate profiles via a single unified facade.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "List All Profiles (Results Table)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/profiles?page=1&limit=10",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "profiles"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "1"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10"
+                        }
+                    ]
+                },
+                "description": "Returns a mixed list of Individual and Corporate profiles, sorted by newest first."
+            },
+            "response": []
+        },
+        {
+            "name": "Search by Name (Generic)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/profiles?search=Jane",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "profiles"
+                    ],
+                    "query": [
+                        {
+                            "key": "search",
+                            "value": "Jane"
+                        }
+                    ]
+                },
+                "description": "Searches for profiles where Customer Name matches the query string."
+            },
+            "response": []
+        },
+        {
+            "name": "Search by Core Customer ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/profiles?searchType=Core customer number&searchValue=123",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "profiles"
+                    ],
+                    "query": [
+                        {
+                            "key": "searchType",
+                            "value": "Core customer number"
+                        },
+                        {
+                            "key": "searchValue",
+                            "value": "123"
+                        }
+                    ]
+                },
+                "description": "Example of filtering by Core Cust ID using the UI dropdown parameters."
+            },
+            "response": []
+        },
+        {
+            "name": "Search by Name / Value",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/profiles?searchType=Value&searchValue=Jane",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "profiles"
+                    ],
+                    "query": [
+                        {
+                            "key": "searchType",
+                            "value": "Value"
+                        },
+                        {
+                            "key": "searchValue",
+                            "value": "Jane"
+                        }
+                    ]
+                },
+                "description": "Generic search by 'Name' or 'Value'."
+            },
+            "response": []
+        },
+        {
+            "name": "Get Profile by ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/profiles/:id",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "profiles",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "YOUR_PROFILE_ID_HERE"
+                        }
+                    ]
+                },
+                "description": "Returns full details. Auto-detects if Individual or Corporate."
+            },
+            "response": []
+        },
+        {
+            "name": "Update Profile",
+            "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"coreCustId\": \"NEW-ID-123\",\n    \"mobile\": \"9876543210\",\n    \"status\": \"APPROVED\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/profiles/:id",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "profiles",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "YOUR_PROFILE_ID_HERE"
+                        }
+                    ]
+                },
+                "description": "Updates ANY field. Works for both types."
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Profile",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/profiles/:id",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "profiles",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "YOUR_PROFILE_ID_HERE"
+                        }
+                    ]
+                },
+                "description": "Soft deletes the profile."
+            },
+            "response": []
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000/api",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "your-jwt-access-token-here",
+            "type": "string"
+        }
+    ]
+}

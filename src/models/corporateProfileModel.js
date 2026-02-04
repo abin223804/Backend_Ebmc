@@ -50,6 +50,14 @@ const corporateProfileSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        coreCustId: {
+            type: String, // Core Customer ID from UI
+            trim: true
+        },
+        mobile: {
+            type: String, // Added to support UI table view
+            trim: true
+        },
         customerName: {
             type: String,
             required: true,

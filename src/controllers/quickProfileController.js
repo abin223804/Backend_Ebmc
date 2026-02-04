@@ -159,6 +159,8 @@ export const createQuickProfile = asyncHandler(async (req, res) => {
         const corporateData = {
             userId: inputData.userId,
             customerType: "Corporate",
+            coreCustId: inputData.coreCustId, // New field for UI
+            mobile: inputData.mobile,         // New field for UI (Corporate mobile)
             customerName: inputData.customerName,
             entityLegalType: inputData.entityLegalType || "Corporate",
             incorporationDate: inputData.dob, // Mapping DOB to Incorporation Date

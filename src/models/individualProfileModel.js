@@ -40,6 +40,10 @@ const individualProfileSchema = new mongoose.Schema(
             enum: ["Individual", "Corporate"],
             default: "Individual",
         },
+        coreCustId: {
+            type: String, // Core Customer ID from UI
+            trim: true
+        },
         // Basic Details
         customerName: {
             type: String,

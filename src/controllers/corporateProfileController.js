@@ -174,6 +174,8 @@ export const formatCorporateProfileResponse = (profile) => {
     return {
         id: profile._id,
         userId: profile.userId,
+        coreCustId: profile.coreCustId, // New field for UI
+        mobile: profile.mobile,         // New field for UI
         name: profile.customerName,
         incorporationDate: profile.incorporationDate,
         entityLegalType: profile.entityLegalType,
