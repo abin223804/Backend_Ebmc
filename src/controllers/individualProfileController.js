@@ -147,7 +147,8 @@ const cleanEmptyStrings = (obj) => {
 /**
  * Helper to format individual profile response to the new structure
  */
-const formatIndividualProfileResponse = (profile) => {
+// Helper to format response (exclude internal fields if needed)
+export const formatIndividualProfileResponse = (profile) => {
     if (!profile) return null;
 
     return {

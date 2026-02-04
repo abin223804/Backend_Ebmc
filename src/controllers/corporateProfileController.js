@@ -167,7 +167,8 @@ const cleanEmptyStrings = (obj) => {
 /**
  * Helper to format corporate profile response to the new structure
  */
-const formatCorporateProfileResponse = (profile) => {
+// Helper to format response (exclude internal fields if needed)
+export const formatCorporateProfileResponse = (profile) => {
     if (!profile) return null;
 
     return {
