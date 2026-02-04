@@ -1,0 +1,119 @@
+{
+    "info": {
+        "_postman_id": "search-api-002",
+        "name": "Search API (Updated)",
+        "description": "Consolidated Search API. Supports searching by name across Individuals, Corporates, or both. No limits/pagination for rapid profile lookup.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Unified Search (Global)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"customerName\": \"Jane\",\n    \"category\": \"all\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/search/unified",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "search",
+                        "unified"
+                    ]
+                },
+                "description": "Global search across the whole database. \nCategory can be: \"all\" (default), \"individual\", or \"corporate\"."
+            },
+            "response": []
+        },
+        {
+            "name": "Category Search (Individual)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"customerName\": \"Jane\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/individual-profile/search",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "individual-profile",
+                        "search"
+                    ]
+                },
+                "description": "Searches only Individuals. Internally calls unified search with category: 'individual'."
+            },
+            "response": []
+        },
+        {
+            "name": "Category Search (Corporate)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"customerName\": \"Corp\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/corporate-profile/search",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "corporate-profile",
+                        "search"
+                    ]
+                },
+                "description": "Searches only Corporates. Internally calls unified search with category: 'corporate'."
+            },
+            "response": []
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "your-jwt-access-token-here",
+            "type": "string"
+        }
+    ]
+}

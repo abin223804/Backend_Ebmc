@@ -241,7 +241,7 @@
                 ],
                 "body": {
                     "mode": "raw",
-                    "raw": "{\n    \"customerName\": \"ABC\",\n    \"tradeLicenseNumber\": \"TL-123\",\n    \"status\": \"APPROVED\",\n    \"country\": \"United Arab Emirates\",\n    \"entityLegalType\": \"Limited Liability Company\",\n    \"startDate\": \"2024-01-01\",\n    \"endDate\": \"2024-12-31\"\n}",
+                    "raw": "{\n    \"customerName\": \"ABC\"\n}",
                     "options": {
                         "raw": {
                             "language": "json"

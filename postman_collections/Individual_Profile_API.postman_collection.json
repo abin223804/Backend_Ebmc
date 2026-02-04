@@ -219,7 +219,7 @@
                 ],
                 "body": {
                     "mode": "raw",
-                    "raw": "{\n    \"customerName\": \"John\",\n    \"status\": \"APPROVED\",\n    \"nationality\": \"United States\",\n    \"residentStatus\": \"Resident\",\n    \"pepStatus\": \"NO\",\n    \"startDate\": \"2024-01-01\",\n    \"endDate\": \"2024-12-31\"\n}",
+                    "raw": "{\n    \"customerName\": \"John\"\n}",
                     "options": {
                         "raw": {
                             "language": "json"

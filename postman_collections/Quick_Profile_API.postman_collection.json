@@ -40,6 +40,18 @@
                             "type": "text"
                         },
                         {
+                            "key": "birthCountry",
+                            "value": "United Kingdom",
+                            "type": "text",
+                            "disabled": true
+                        },
+                        {
+                            "key": "profession",
+                            "value": "Doctor",
+                            "type": "text",
+                            "disabled": true
+                        },
+                        {
                             "key": "email",
                             "value": "jane.smith@example.com",
                             "type": "text"
