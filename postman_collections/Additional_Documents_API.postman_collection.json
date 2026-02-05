@@ -1,0 +1,384 @@
+{
+    "info": {
+        "_postman_id": "additional-docs-api-001",
+        "name": "Additional Documents API",
+        "description": "API endpoints for uploading and managing additional documents for Individual and Corporate profiles",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Upload Additional Document",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{userAccessToken}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "file",
+                            "type": "file",
+                            "src": []
+                        },
+                        {
+                            "key": "profileId",
+                            "value": "{{profileId}}",
+                            "description": "ObjectId of the Individual or Corporate profile",
+                            "type": "text"
+                        },
+                        {
+                            "key": "profileType",
+                            "value": "Individual",
+                            "description": "Either 'Individual' or 'Corporate'",
+                            "type": "text"
+                        },
+                        {
+                            "key": "uploadDocumentType",
+                            "value": "Profile based",
+                            "description": "Type of upload (e.g., 'Profile based')",
+                            "type": "text"
+                        },
+                        {
+                            "key": "documentType",
+                            "value": "Passport copy",
+                            "description": "One of: Passport copy, Nationality ID copy, Bank statement, Withdrawal slip, Invoice, Others",
+                            "type": "text"
+                        },
+                        {
+                            "key": "customerName",
+                            "value": "John Doe",
+                            "description": "Customer name snapshot",
+                            "type": "text"
+                        },
+                        {
+                            "key": "transactionNumber",
+                            "value": "TXN123456",
+                            "description": "Optional transaction number",
+                            "type": "text"
+                        },
+                        {
+                            "key": "remarks",
+                            "value": "Additional remarks here",
+                            "description": "Optional remarks",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/additional-documents/upload",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "additional-documents",
+                        "upload"
+                    ]
+                },
+                "description": "Upload an additional document for a profile. Requires authentication and a valid profile ID."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": []
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/additional-documents/upload",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "additional-documents",
+                                "upload"
+                            ]
+                        }
+                    },
+                    "status": "Created",
+                    "code": 201,
+                    "_postman_previewlanguage": "json",
+                    "header": [],
+                    "cookie": [],
+                    "body": "{\n    \"message\": \"Document uploaded successfully\",\n    \"data\": {\n        \"_id\": \"65f1234567890abcdef12345\",\n        \"userId\": \"65e9876543210fedcba98765\",\n        \"profileId\": \"65f0000011111222223333344\",\n        \"profileType\": \"IndividualProfile\",\n        \"customerName\": \"John Doe\",\n        \"transactionNumber\": \"TXN123456\",\n        \"uploadDocumentType\": \"Profile based\",\n        \"documentType\": \"Passport copy\",\n        \"file\": {\n            \"fileName\": \"passport.pdf\",\n            \"fileUrl\": \"https://res.cloudinary.com/...\",\n            \"fileType\": \"application/pdf\",\n            \"publicId\": \"ebmc_uploads/abc123\"\n        },\n        \"remarks\": \"Additional remarks here\",\n        \"status\": \"Uploaded\",\n        \"isDeleted\": false,\n        \"deletedAt\": null,\n        \"createdAt\": \"2024-03-13T10:30:00.000Z\",\n        \"updatedAt\": \"2024-03-13T10:30:00.000Z\"\n    }\n}"
+                }
+            ]
+        },
+        {
+            "name": "Get All Documents",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{userAccessToken}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/additional-documents?page=1&limit=10",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "additional-documents"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "1",
+                            "description": "Page number (default: 1)"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10",
+                            "description": "Items per page (default: 10)"
+                        }
+                    ]
+                },
+                "description": "Get all additional documents with pagination. Returns only non-deleted documents."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/additional-documents?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "additional-documents"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [],
+                    "cookie": [],
+                    "body": "{\n    \"data\": [\n        {\n            \"_id\": \"65f1234567890abcdef12345\",\n            \"userId\": \"65e9876543210fedcba98765\",\n            \"profileId\": \"65f0000011111222223333344\",\n            \"profileType\": \"IndividualProfile\",\n            \"customerName\": \"John Doe\",\n            \"documentType\": \"Passport copy\",\n            \"file\": {\n                \"fileName\": \"passport.pdf\",\n                \"fileUrl\": \"https://res.cloudinary.com/...\"\n            },\n            \"status\": \"Uploaded\",\n            \"createdAt\": \"2024-03-13T10:30:00.000Z\"\n        }\n    ],\n    \"pagination\": {\n        \"total\": 25,\n        \"page\": 1,\n        \"limit\": 10,\n        \"pages\": 3\n    }\n}"
+                }
+            ]
+        },
+        {
+            "name": "Get Documents by Profile",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{userAccessToken}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/additional-documents?profileId={{profileId}}&page=1&limit=10",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "additional-documents"
+                    ],
+                    "query": [
+                        {
+                            "key": "profileId",
+                            "value": "{{profileId}}",
+                            "description": "Filter by specific profile ID"
+                        },
+                        {
+                            "key": "page",
+                            "value": "1",
+                            "description": "Page number (default: 1)"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10",
+                            "description": "Items per page (default: 10)"
+                        }
+                    ]
+                },
+                "description": "Get all additional documents for a specific profile with pagination."
+            },
+            "response": []
+        },
+        {
+            "name": "Update Document",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{userAccessToken}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "file",
+                            "type": "file",
+                            "src": [],
+                            "description": "Optional: New file to replace existing"
+                        },
+                        {
+                            "key": "documentType",
+                            "value": "Bank statement",
+                            "description": "Optional: Update document type",
+                            "type": "text"
+                        },
+                        {
+                            "key": "remarks",
+                            "value": "Updated remarks",
+                            "description": "Optional: Update remarks",
+                            "type": "text"
+                        },
+                        {
+                            "key": "status",
+                            "value": "Verified",
+                            "description": "Optional: Update status (Uploaded, Verified, Rejected)",
+                            "type": "text"
+                        },
+                        {
+                            "key": "transactionNumber",
+                            "value": "TXN123456-UPDATED",
+                            "description": "Optional: Update transaction number",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/additional-documents/{{documentId}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "additional-documents",
+                        "{{documentId}}"
+                    ]
+                },
+                "description": "Update an existing additional document. Can update metadata and/or replace the file. Old file is automatically deleted from Cloudinary if a new file is uploaded."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": []
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/additional-documents/{{documentId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "additional-documents",
+                                "{{documentId}}"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [],
+                    "cookie": [],
+                    "body": "{\\n    \\\"message\\\": \\\"Document updated successfully\\\",\\n    \\\"data\\\": {\\n        \\\"_id\\\": \\\"65f1234567890abcdef12345\\\",\\n        \\\"userId\\\": \\\"65e9876543210fedcba98765\\\",\\n        \\\"profileId\\\": \\\"65f0000011111222223333344\\\",\\n        \\\"profileType\\\": \\\"IndividualProfile\\\",\\n        \\\"customerName\\\": \\\"John Doe\\\",\\n        \\\"transactionNumber\\\": \\\"TXN123456-UPDATED\\\",\\n        \\\"uploadDocumentType\\\": \\\"Profile based\\\",\\n        \\\"documentType\\\": \\\"Bank statement\\\",\\n        \\\"file\\\": {\\n            \\\"fileName\\\": \\\"updated_document.pdf\\\",\\n            \\\"fileUrl\\\": \\\"https://res.cloudinary.com/...\\\",\\n            \\\"fileType\\\": \\\"application/pdf\\\",\\n            \\\"publicId\\\": \\\"ebmc_uploads/xyz789\\\"\\n        },\\n        \\\"remarks\\\": \\\"Updated remarks\\\",\\n        \\\"status\\\": \\\"Verified\\\",\\n        \\\"isDeleted\\\": false,\\n        \\\"deletedAt\\\": null,\\n        \\\"createdAt\\\": \\\"2024-03-13T10:30:00.000Z\\\",\\n        \\\"updatedAt\\\": \\\"2024-03-13T14:45:00.000Z\\\"\\n    }\\n}"
+                }
+            ]
+        },
+        {
+            "name": "Delete Document (Soft Delete)",
+            "request": {
+                "method": "DELETE",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{userAccessToken}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/additional-documents/{{documentId}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "additional-documents",
+                        "{{documentId}}"
+                    ]
+                },
+                "description": "Soft delete an additional document. Sets isDeleted to true and records deletedAt timestamp."
+            },
+            "response": [
+                {
+                    "name": "Success Response",
+                    "originalRequest": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/additional-documents/{{documentId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "additional-documents",
+                                "{{documentId}}"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [],
+                    "cookie": [],
+                    "body": "{\n    \"message\": \"Document deleted successfully\"\n}"
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "userAccessToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "profileId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "documentId",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
