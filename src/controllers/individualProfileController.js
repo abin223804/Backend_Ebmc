@@ -58,11 +58,9 @@ const checkExternalApi = async (profileData) => {
                         "sanction",
                         "warning",
                         "fitness-probity",
-                        "pep",
-                        "pep-class-1",
-                        "pep-class-2",
-                        "pep-class-3",
-                        "pep-class-4"
+                        "pep"
+                        // Removed invalid filters: pep-class-1, pep-class-2, pep-class-3, pep-class-4
+                        // Shufti Pro only accepts: sanction, warning, fitness-probity, pep, adverse-media
                     ]
             }
         };
@@ -180,6 +178,7 @@ export const formatIndividualProfileResponse = (profile) => {
         })),
         screening: {
             status: profile.status,
+            apiStatus: profile.apiStatus, // Exact Shufti Pro API event/status
             searchBy: profile.searchBy,
             categories: profile.searchCategories,
             match: {
@@ -195,10 +194,15 @@ export const formatIndividualProfileResponse = (profile) => {
             status: profile.apiResult?.event === "verification.accepted" ? "SUCCESS" :
                 profile.apiResult?.event === "verification.declined" ? "FAILED" :
                     profile.apiResult?.status || "UNKNOWN",
+            apiStatus: profile.apiStatus, // Exact status/event from Shufti Pro API
             provider: "ShuftiPro",
-            error: profile.apiResult?.error ? {
-                field: profile.apiResult.error.field || "unknown",
-                message: profile.apiResult.error.message || profile.apiResult.error
+            error: profile.apiError ? {
+                event: profile.apiError.event,
+                service: profile.apiError.service,
+                field: profile.apiError.field,
+                message: profile.apiError.message,
+                code: profile.apiError.code,
+                timestamp: profile.apiError.timestamp
             } : null,
             reference: profile.apiResult?.reference || `REF-${profile._id}`,
             timestamp: profile.apiResult?.timestamp || profile.updatedAt
@@ -273,12 +277,53 @@ export const processExternalVerification = asyncHandler(async (req, res) => {
     // Update profile with API result
     profile.apiResult = apiResult;
 
-    // Automate status update based on verification result
-    if (apiResult?.event === "verification.accepted") {
-        profile.status = "APPROVED";
-    } else if (apiResult?.event === "verification.declined") {
-        profile.status = "CHECK_REQUIRED";
+    // Comprehensive status update based on Shufti Pro API events
+    // Reference: https://developers.shuftipro.com/docs/responses
+
+    const event = apiResult?.event;
+    const status = apiResult?.status;
+
+    // Store the exact API status/event in both fields
+    const exactStatus = event || status || "No API Result";
+    profile.status = exactStatus;
+    profile.apiStatus = exactStatus;
+
+    // Capture and store API errors
+    const errorStatuses = [
+        'verification.declined',
+        'request.invalid',
+        'request.timeout',
+        'request.unauthorized',
+        'verification.cancelled',
+        'Error',
+        'Timeout',
+        'No API Result'
+    ];
+
+    if (errorStatuses.includes(exactStatus)) {
+        profile.apiError = {
+            event: event || status || 'No API Result',
+            service: apiResult?.error?.service || 'unknown',
+            field: apiResult?.error?.key || apiResult?.error?.field || null,
+            message: apiResult?.error?.message || apiResult?.error || 'Unknown error',
+            code: apiResult?.error?.code || null,
+            timestamp: new Date(),
+            fullError: apiResult?.error || apiResult || { message: 'No API result received' }
+        };
+
+        console.log(`[Error] Profile ${profile._id} error captured:`, {
+            event: profile.apiError.event,
+            service: profile.apiError.service,
+            field: profile.apiError.field,
+            message: profile.apiError.message
+        });
+    } else {
+        // Clear error if status is successful
+        profile.apiError = null;
     }
+
+    // Log the exact status
+    console.log(`[Status] Profile ${profile._id} set to: ${exactStatus}`);
 
     await profile.save();
 

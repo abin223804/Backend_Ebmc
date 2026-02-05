@@ -135,14 +135,54 @@ const corporateProfileSchema = new mongoose.Schema(
             default: false
         },
 
-        // Status
+        // Status - Using exact Shufti Pro API events
         status: {
             type: String,
-            enum: ["PENDING", "APPROVED", "REJECTED", "CHECK_REQUIRED"],
-            default: "PENDING"
+            enum: [
+                // Success
+                "verification.accepted",
+                // Pending/In-Progress
+                "request.pending",
+                "request.received",
+                "review.pending",
+                // Declined/Errors
+                "verification.declined",
+                "request.invalid",
+                "request.timeout",
+                "request.unauthorized",
+                "verification.cancelled",
+                "verification.status.changed",
+                "request.data.changed",
+                // Deleted
+                "request.deleted",
+                // Legacy/Fallback
+                "accepted",
+                "declined",
+                // Custom error states
+                "Error",
+                "Timeout",
+                "No API Result"
+            ],
+            default: "request.pending"
+        },
+        apiStatus: {
+            type: String, // Duplicate of status for backward compatibility
+            default: null
         },
         apiResult: {
             type: mongoose.Schema.Types.Mixed,
+            default: null
+        },
+        apiError: {
+            type: {
+                event: String,              // Error event type (e.g., "request.invalid")
+                service: String,            // Service that failed (e.g., "background_checks")
+                field: String,              // Field that caused error
+                message: String,            // Error message
+                code: String,               // Error code if available
+                timestamp: Date,            // When the error occurred
+                fullError: mongoose.Schema.Types.Mixed  // Complete error object
+            },
             default: null
         },
         isDeleted: {

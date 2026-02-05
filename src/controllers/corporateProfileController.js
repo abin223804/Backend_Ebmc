@@ -41,9 +41,21 @@ const getCountryCode = (countryName) => {
 
 // Helper to prepare Business AML check payload
 const prepareBusinessCheckPayload = (profile) => {
-    const incorporationDate = profile.incorporationDate
-        ? new Date(profile.incorporationDate).toISOString().split('T')[0]
-        : "";
+    let incorporationDate = "";
+
+    if (profile.incorporationDate) {
+        const incDate = new Date(profile.incorporationDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to start of day
+
+        // If incorporation date is in the future, use today's date instead
+        if (incDate > today) {
+            console.warn(`[Validation] Incorporation date ${incDate.toISOString()} is in the future. Using today's date instead.`);
+            incorporationDate = today.toISOString().split('T')[0];
+        } else {
+            incorporationDate = incDate.toISOString().split('T')[0];
+        }
+    }
 
     // Generate a unique reference string using profile ID and timestamp
     const reference = `CORP_${profile._id}_${Date.now()}`;
@@ -207,6 +219,7 @@ export const formatCorporateProfileResponse = (profile) => {
         documents: profile.documents,
         screening: {
             status: profile.status,
+            apiStatus: profile.apiStatus, // Exact Shufti Pro API event/status
             searchBy: profile.searchBy,
             categories: profile.searchCategories,
             match: {
@@ -222,10 +235,15 @@ export const formatCorporateProfileResponse = (profile) => {
             status: profile.apiResult?.status === "accepted" ? "SUCCESS" :
                 profile.apiResult?.status === "declined" ? "FAILED" :
                     profile.apiResult?.status || "UNKNOWN",
+            apiStatus: profile.apiStatus, // Exact status/event from Shufti Pro API
             provider: "ShuftiPro",
-            error: profile.apiResult?.error ? {
-                field: profile.apiResult.error.field || "unknown",
-                message: profile.apiResult.error.message || profile.apiResult.error
+            error: profile.apiError ? {
+                event: profile.apiError.event,
+                service: profile.apiError.service,
+                field: profile.apiError.field,
+                message: profile.apiError.message,
+                code: profile.apiError.code,
+                timestamp: profile.apiError.timestamp
             } : null,
             reference: profile.apiResult?.reference || `CORP-${profile._id}`,
             timestamp: profile.apiResult?.timestamp || profile.updatedAt
@@ -289,12 +307,53 @@ export const createCorporateProfile = asyncHandler(async (req, res) => {
     // 4. Update profile with API result
     newProfile.apiResult = apiResult;
 
-    // Automate status update based on verification result
-    if (apiResult?.status === "accepted") {
-        newProfile.status = "APPROVED";
-    } else if (apiResult?.status === "declined") {
-        newProfile.status = "CHECK_REQUIRED";
+    // Comprehensive status update based on Shufti Pro API events
+    // Reference: https://developers.shuftipro.com/docs/responses
+
+    const event = apiResult?.event;
+    const status = apiResult?.status;
+
+    // Store the exact API status/event in both fields
+    const exactStatus = event || status || "No API Result";
+    newProfile.status = exactStatus;
+    newProfile.apiStatus = exactStatus;
+
+    // Capture and store API errors
+    const errorStatuses = [
+        'verification.declined',
+        'request.invalid',
+        'request.timeout',
+        'request.unauthorized',
+        'verification.cancelled',
+        'Error',
+        'Timeout',
+        'No API Result'
+    ];
+
+    if (errorStatuses.includes(exactStatus)) {
+        newProfile.apiError = {
+            event: event || status || 'No API Result',
+            service: apiResult?.error?.service || 'unknown',
+            field: apiResult?.error?.key || apiResult?.error?.field || null,
+            message: apiResult?.error?.message || apiResult?.error || 'Unknown error',
+            code: apiResult?.error?.code || null,
+            timestamp: new Date(),
+            fullError: apiResult?.error || apiResult || { message: 'No API result received' }
+        };
+
+        console.log(`[Error] Corporate Profile ${newProfile._id} error captured:`, {
+            event: newProfile.apiError.event,
+            service: newProfile.apiError.service,
+            field: newProfile.apiError.field,
+            message: newProfile.apiError.message
+        });
+    } else {
+        // Clear error if status is successful
+        newProfile.apiError = null;
     }
+
+    // Log the exact status
+    console.log(`[Status] Corporate Profile ${newProfile._id} set to: ${exactStatus}`);
 
     await newProfile.save();
 
