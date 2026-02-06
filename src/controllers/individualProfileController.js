@@ -52,9 +52,19 @@ const checkExternalApi = async (profileData) => {
                 },
                 dob: profileData.dob ? new Date(profileData.dob).toISOString().split("T")[0] : "2021-07-11",
                 ongoing: "0",
-                filters: (profileData.searchCategories && profileData.searchCategories.length > 0)
-                    ? profileData.searchCategories
-                    : [
+                filters: (() => {
+                    // Handle searchCategories as string (comma-separated from form-data) or array
+                    if (profileData.searchCategories) {
+                        if (typeof profileData.searchCategories === 'string') {
+                            // Split comma-separated string into array
+                            const categories = profileData.searchCategories.split(',').map(cat => cat.trim()).filter(cat => cat);
+                            if (categories.length > 0) return categories;
+                        } else if (Array.isArray(profileData.searchCategories) && profileData.searchCategories.length > 0) {
+                            return profileData.searchCategories;
+                        }
+                    }
+                    // Default filters if none provided
+                    return [
                         "sanction",
                         "warning",
                         "fitness-probity",
@@ -63,7 +73,8 @@ const checkExternalApi = async (profileData) => {
                         "pep-class-2",
                         "pep-class-3",
                         "pep-class-4"
-                    ]
+                    ];
+                })()
             }
         };
 
