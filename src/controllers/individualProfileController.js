@@ -50,17 +50,19 @@ const checkExternalApi = async (profileData) => {
                     last_name: lastName,
                     fuzzy_match: "1"
                 },
-                dob: profileData.dob ? new Date(profileData.dob).toISOString().split("T")[0] : "",
-                ongoing: "1",
+                dob: profileData.dob ? new Date(profileData.dob).toISOString().split("T")[0] : "2021-07-11",
+                ongoing: "0",
                 filters: (profileData.searchCategories && profileData.searchCategories.length > 0)
                     ? profileData.searchCategories
                     : [
                         "sanction",
                         "warning",
                         "fitness-probity",
-                        "pep"
-                        // Removed invalid filters: pep-class-1, pep-class-2, pep-class-3, pep-class-4
-                        // Shufti Pro only accepts: sanction, warning, fitness-probity, pep, adverse-media
+                        "pep",
+                        "pep-class-1",
+                        "pep-class-2",
+                        "pep-class-3",
+                        "pep-class-4"
                     ]
             }
         };

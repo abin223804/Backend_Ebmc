@@ -1,0 +1,448 @@
+{
+    "info": {
+        "_postman_id": "individual-profile-api-002",
+        "name": "Individual Profile API (Updated - Feb 2026)",
+        "description": "Updated API endpoints for managing individual customer profiles with Shufti Pro background checks. Includes all PEP class filters (pep-class-1 through pep-class-4) as per Shufti Pro mandatory requirements.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create Individual Profile (Complete)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerName",
+                            "value": "John Michael Doe",
+                            "type": "text",
+                            "description": "Full name of the customer"
+                        },
+                        {
+                            "key": "dob",
+                            "value": "1990-05-15",
+                            "type": "text",
+                            "description": "Date of birth (YYYY-MM-DD format)"
+                        },
+                        {
+                            "key": "nationality",
+                            "value": "United States",
+                            "type": "text"
+                        },
+                        {
+                            "key": "birthCountry",
+                            "value": "United States",
+                            "type": "text"
+                        },
+                        {
+                            "key": "gender",
+                            "value": "Male",
+                            "type": "text"
+                        },
+                        {
+                            "key": "profession",
+                            "value": "Software Engineer",
+                            "type": "text"
+                        },
+                        {
+                            "key": "landline",
+                            "value": "+971-4-1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "email",
+                            "value": "john.doe@example.com",
+                            "type": "text"
+                        },
+                        {
+                            "key": "pepStatus",
+                            "value": "NO",
+                            "type": "text",
+                            "description": "YES or NO"
+                        },
+                        {
+                            "key": "eaaCount",
+                            "value": "5",
+                            "type": "text"
+                        },
+                        {
+                            "key": "residentStatus",
+                            "value": "Resident",
+                            "type": "text"
+                        },
+                        {
+                            "key": "eaaVolume",
+                            "value": "50000",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+971-50-1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "addressLine1",
+                            "value": "Building 123, Sheikh Zayed Road",
+                            "type": "text"
+                        },
+                        {
+                            "key": "addressLine2",
+                            "value": "Apartment 456",
+                            "type": "text"
+                        },
+                        {
+                            "key": "city",
+                            "value": "Dubai",
+                            "type": "text"
+                        },
+                        {
+                            "key": "state",
+                            "value": "Dubai",
+                            "type": "text"
+                        },
+                        {
+                            "key": "poBox",
+                            "value": "12345",
+                            "type": "text"
+                        },
+                        {
+                            "key": "sponsorName",
+                            "value": "ABC Company LLC",
+                            "type": "text"
+                        },
+                        {
+                            "key": "visaNumber",
+                            "value": "784-1234-5678901-1",
+                            "type": "text"
+                        },
+                        {
+                            "key": "visaExpiryDate",
+                            "value": "2026-12-31",
+                            "type": "text"
+                        },
+                        {
+                            "key": "erpUin",
+                            "value": "ERP123456",
+                            "type": "text"
+                        },
+                        {
+                            "key": "remarks",
+                            "value": "VIP Customer - High Priority",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchBy",
+                            "value": "Name and DOB",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchCategories",
+                            "value": "sanction,warning,fitness-probity,pep,pep-class-1,pep-class-2,pep-class-3,pep-class-4",
+                            "type": "text",
+                            "description": "Updated with all PEP class filters as per Shufti Pro mandatory requirements"
+                        },
+                        {
+                            "key": "matchScore",
+                            "value": "85",
+                            "type": "text"
+                        },
+                        {
+                            "key": "isExactMatch",
+                            "value": "false",
+                            "type": "text"
+                        },
+                        {
+                            "key": "includeRelatives",
+                            "value": "true",
+                            "type": "text"
+                        },
+                        {
+                            "key": "includeAliases",
+                            "value": "true",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][idType]",
+                            "value": "Passport",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][idNumber]",
+                            "value": "N1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][issueDate]",
+                            "value": "2020-01-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][expiryDate]",
+                            "value": "2030-01-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][issuedCountry]",
+                            "value": "United States",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][file]",
+                            "type": "file",
+                            "src": [],
+                            "disabled": true,
+                            "description": "Optional: Upload passport/ID document file"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        "create"
+                    ]
+                },
+                "description": "Creates a new individual profile and performs Shufti Pro background check with all mandatory filters including pep-class-1 through pep-class-4."
+            },
+            "response": []
+        },
+        {
+            "name": "Create Individual Profile (Minimal)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerName",
+                            "value": "Jane Smith",
+                            "type": "text"
+                        },
+                        {
+                            "key": "dob",
+                            "value": "1985-03-20",
+                            "type": "text"
+                        },
+                        {
+                            "key": "nationality",
+                            "value": "United Kingdom",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+44-20-1234567",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        "create"
+                    ]
+                },
+                "description": "Minimal profile creation with only required fields. Default filters will be applied automatically."
+            },
+            "response": []
+        },
+        {
+            "name": "Search Individual Profiles",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"customerName\": \"John\",\n    \"page\": 1,\n    \"limit\": 10\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/search",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        "search"
+                    ]
+                },
+                "description": "Search profiles with filters"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Individual Profile by ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/:id",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "65a1b2c3d4e5f6g7h8i9j0k1",
+                            "description": "Replace with actual profile ID"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Individual Profile",
+            "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerName",
+                            "value": "Updated Name",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+971-50-9999999",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/:id",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "65a1b2c3d4e5f6g7h8i9j0k1"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Individual Profile (Soft Delete)",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/:id",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "65a1b2c3d4e5f6g7h8i9j0k1"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Download Profile JSON",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/download/:id",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        "download",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "65a1b2c3d4e5f6g7h8i9j0k1"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "https://starfish-app-bqn3p.ondigitalocean.app",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "your-jwt-access-token-here",
+            "type": "string"
+        }
+    ]
+}
