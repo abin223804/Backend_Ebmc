@@ -134,6 +134,10 @@ const corporateProfileSchema = new mongoose.Schema(
             type: Boolean,
             default: false
         },
+        countries: {
+            type: [String], // Array of ISO country codes for AML search (e.g., ["gb", "cy"])
+            default: []
+        },
 
         // Status - Using exact Shufti Pro API events
         status: {

@@ -1,0 +1,415 @@
+{
+    "info": {
+        "_postman_id": "corporate-profile-api-001",
+        "name": "Abin - Corporate Profile API",
+        "description": "Corporate Profile API with searchCategories using array notation and all Shufti Pro AML fields (alias_search, rca_search, match_score, countries)",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create Corporate Profile (Complete - Array Format)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerType",
+                            "value": "Corporate",
+                            "type": "text"
+                        },
+                        {
+                            "key": "coreCustId",
+                            "value": "CORP-2024-001",
+                            "type": "text",
+                            "description": "Core Customer ID from UI"
+                        },
+                        {
+                            "key": "customerName",
+                            "value": "ShuftiPro Technologies LLC",
+                            "type": "text"
+                        },
+                        {
+                            "key": "entityLegalType",
+                            "value": "Limited Liability Company",
+                            "type": "text"
+                        },
+                        {
+                            "key": "incorporationDate",
+                            "value": "2016-01-01",
+                            "type": "text"
+                        },
+                        {
+                            "key": "country",
+                            "value": "United Arab Emirates",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+971-50-1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "address[emirates]",
+                            "value": "Dubai",
+                            "type": "text"
+                        },
+                        {
+                            "key": "address[buildingName]",
+                            "value": "Business Bay Tower",
+                            "type": "text"
+                        },
+                        {
+                            "key": "address[areaStreet]",
+                            "value": "Sheikh Zayed Road",
+                            "type": "text"
+                        },
+                        {
+                            "key": "address[poBox]",
+                            "value": "12345",
+                            "type": "text"
+                        },
+                        {
+                            "key": "tradeLicenseNumber",
+                            "value": "TL-123456",
+                            "type": "text"
+                        },
+                        {
+                            "key": "tradeLicenseExpiryDate",
+                            "value": "2025-12-31",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][uboName]",
+                            "value": "Ahmed Ali Hassan",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][uboType]",
+                            "value": "Individual",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][shareholdingPercentage]",
+                            "value": "60",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][passportName]",
+                            "value": "Ahmed Ali Hassan",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][passportNumber]",
+                            "value": "P1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][nationality]",
+                            "value": "United Arab Emirates",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][isPep]",
+                            "value": "NO",
+                            "type": "text"
+                        },
+                        {
+                            "key": "ubos[0][dob]",
+                            "value": "1980-08-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][name]",
+                            "value": "Sarah Mohammed",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][passportNumber]",
+                            "value": "P7654321",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][nationality]",
+                            "value": "United Arab Emirates",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][shareholdingPercentage]",
+                            "value": "40",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][isPep]",
+                            "value": "NO",
+                            "type": "text"
+                        },
+                        {
+                            "key": "shareholders[0][dob]",
+                            "value": "1985-12-10",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchBy",
+                            "value": "Name",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "sanction",
+                            "type": "text",
+                            "description": "Filter 1 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "warning",
+                            "type": "text",
+                            "description": "Filter 2 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "fitness-probity",
+                            "type": "text",
+                            "description": "Filter 3 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep",
+                            "type": "text",
+                            "description": "Filter 4 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep-class-1",
+                            "type": "text",
+                            "description": "Filter 5 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep-class-2",
+                            "type": "text",
+                            "description": "Filter 6 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep-class-3",
+                            "type": "text",
+                            "description": "Filter 7 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep-class-4",
+                            "type": "text",
+                            "description": "Filter 8 of 8"
+                        },
+                        {
+                            "key": "matchScore",
+                            "value": "100",
+                            "type": "text",
+                            "disabled": true,
+                            "description": "Optional - Match threshold (0-100). Default: 100"
+                        },
+                        {
+                            "key": "includeAliases",
+                            "value": "false",
+                            "type": "text",
+                            "disabled": true,
+                            "description": "Optional - Search business aliases"
+                        },
+                        {
+                            "key": "includeRelatives",
+                            "value": "false",
+                            "type": "text",
+                            "disabled": true,
+                            "description": "Optional - Search related/connected companies"
+                        },
+                        {
+                            "key": "countries[]",
+                            "value": "ae",
+                            "type": "text",
+                            "disabled": true,
+                            "description": "Optional - ISO country code"
+                        },
+                        {
+                            "key": "tradeLicenseFile",
+                            "type": "file",
+                            "src": [],
+                            "disabled": true,
+                            "description": "Trade license document"
+                        },
+                        {
+                            "key": "ubos[0][passportFile]",
+                            "type": "file",
+                            "src": [],
+                            "disabled": true,
+                            "description": "UBO passport file"
+                        },
+                        {
+                            "key": "documents[accountOpeningForm]",
+                            "type": "file",
+                            "src": [],
+                            "disabled": true,
+                            "description": "Account opening form"
+                        },
+                        {
+                            "key": "documents[amlPolicy]",
+                            "type": "file",
+                            "src": [],
+                            "disabled": true,
+                            "description": "AML policy document"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/corporate-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "corporate-profile",
+                        "create"
+                    ]
+                },
+                "description": "Creates corporate profile with searchCategories using array notation (8 separate rows with [] brackets) and all Shufti Pro AML fields"
+            },
+            "response": []
+        },
+        {
+            "name": "Create Corporate Profile (String Format)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerType",
+                            "value": "Corporate",
+                            "type": "text"
+                        },
+                        {
+                            "key": "customerName",
+                            "value": "ABC Trading Company",
+                            "type": "text"
+                        },
+                        {
+                            "key": "entityLegalType",
+                            "value": "LLC",
+                            "type": "text"
+                        },
+                        {
+                            "key": "incorporationDate",
+                            "value": "2020-06-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "country",
+                            "value": "United Kingdom",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+44-20-1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchCategories",
+                            "value": "sanction,warning,fitness-probity,pep,pep-class-1,pep-class-2,pep-class-3,pep-class-4",
+                            "type": "text",
+                            "description": "Comma-separated string format (all 8 filters)"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/corporate-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "corporate-profile",
+                        "create"
+                    ]
+                },
+                "description": "Creates corporate profile with searchCategories as comma-separated string"
+            },
+            "response": []
+        },
+        {
+            "name": "Create Corporate Profile (Minimal - Use Defaults)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerType",
+                            "value": "Corporate",
+                            "type": "text"
+                        },
+                        {
+                            "key": "customerName",
+                            "value": "Test Company Ltd",
+                            "type": "text"
+                        },
+                        {
+                            "key": "entityLegalType",
+                            "value": "Ltd",
+                            "type": "text"
+                        },
+                        {
+                            "key": "incorporationDate",
+                            "value": "2018-03-20",
+                            "type": "text"
+                        },
+                        {
+                            "key": "country",
+                            "value": "United States",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+1-555-1234567",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/corporate-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "corporate-profile",
+                        "create"
+                    ]
+                },
+                "description": "Creates corporate profile WITHOUT optional fields - backend automatically uses all 8 default filters and default AML settings"
+            },
+            "response": []
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "https://starfish-app-bqn3p.ondigitalocean.app",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "your-jwt-access-token-here",
+            "type": "string"
+        }
+    ]
+}

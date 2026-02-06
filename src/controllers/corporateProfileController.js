@@ -81,15 +81,36 @@ const prepareBusinessCheckPayload = (profile) => {
         aml_for_businesses: {
             business_name: profile.customerName,
             business_incorporation_date: incorporationDate,
-            ongoing: "1",
-            filters: (profile.searchCategories && profile.searchCategories.length > 0)
-                ? profile.searchCategories
-                : [
+            ongoing: "0",
+            alias_search: profile.includeAliases === true || profile.includeAliases === "true" ? "1" : "0",
+            rca_search: profile.includeRelatives === true || profile.includeRelatives === "true" ? "1" : "0",
+            match_score: profile.matchScore ? String(profile.matchScore) : "100",
+            countries: profile.countries && Array.isArray(profile.countries) && profile.countries.length > 0
+                ? profile.countries
+                : (profile.country ? [getCountryCode(profile.country)] : []),
+            filters: (() => {
+                // Handle searchCategories as string (comma-separated from form-data) or array
+                if (profile.searchCategories) {
+                    if (typeof profile.searchCategories === 'string') {
+                        // Split comma-separated string into array
+                        const categories = profile.searchCategories.split(',').map(cat => cat.trim()).filter(cat => cat);
+                        if (categories.length > 0) return categories;
+                    } else if (Array.isArray(profile.searchCategories) && profile.searchCategories.length > 0) {
+                        return profile.searchCategories;
+                    }
+                }
+                // Default filters if none provided (all 8 mandatory filters)
+                return [
                     "sanction",
-                    "fitness-probity",
                     "warning",
-                    "pep"
-                ]
+                    "fitness-probity",
+                    "pep",
+                    "pep-class-1",
+                    "pep-class-2",
+                    "pep-class-3",
+                    "pep-class-4"
+                ];
+            })()
         }
     };
 };
