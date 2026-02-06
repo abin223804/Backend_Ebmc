@@ -1,0 +1,320 @@
+{
+    "info": {
+        "_postman_id": "individual-profile-api-003",
+        "name": "Abin - Individual Profile API",
+        "description": "Individual Profile API with searchCategories using array notation (multiple rows). This format makes it easier to see and modify individual filter values.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create Individual Profile (Array Format)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerName",
+                            "value": "Abin Michael Doe",
+                            "type": "text"
+                        },
+                        {
+                            "key": "dob",
+                            "value": "1990-05-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "nationality",
+                            "value": "United States",
+                            "type": "text"
+                        },
+                        {
+                            "key": "birthCountry",
+                            "value": "United States",
+                            "type": "text"
+                        },
+                        {
+                            "key": "gender",
+                            "value": "Male",
+                            "type": "text"
+                        },
+                        {
+                            "key": "profession",
+                            "value": "Software Engineer",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+971-50-1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "email",
+                            "value": "john.doe@example.com",
+                            "type": "text"
+                        },
+                        {
+                            "key": "pepStatus",
+                            "value": "NO",
+                            "type": "text"
+                        },
+                        {
+                            "key": "residentStatus",
+                            "value": "Resident",
+                            "type": "text"
+                        },
+                        {
+                            "key": "addressLine1",
+                            "value": "Building 123, Sheikh Zayed Road",
+                            "type": "text"
+                        },
+                        {
+                            "key": "city",
+                            "value": "Dubai",
+                            "type": "text"
+                        },
+                        {
+                            "key": "state",
+                            "value": "Dubai",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchBy",
+                            "value": "Name and DOB",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "sanction",
+                            "type": "text",
+                            "description": "Filter 1 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "warning",
+                            "type": "text",
+                            "description": "Filter 2 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "fitness-probity",
+                            "type": "text",
+                            "description": "Filter 3 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep",
+                            "type": "text",
+                            "description": "Filter 4 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep-class-1",
+                            "type": "text",
+                            "description": "Filter 5 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep-class-2",
+                            "type": "text",
+                            "description": "Filter 6 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep-class-3",
+                            "type": "text",
+                            "description": "Filter 7 of 8"
+                        },
+                        {
+                            "key": "searchCategories[]",
+                            "value": "pep-class-4",
+                            "type": "text",
+                            "description": "Filter 8 of 8"
+                        },
+                        {
+                            "key": "matchScore",
+                            "value": "85",
+                            "type": "text",
+                            "disabled": true,
+                            "description": "Optional - Only send if needed"
+                        },
+                        {
+                            "key": "isExactMatch",
+                            "value": "true",
+                            "type": "text",
+                            "description": "Set to true for exact name matching only (no fuzzy/similar names)"
+                        },
+                        {
+                            "key": "includeRelatives",
+                            "value": "true",
+                            "type": "text",
+                            "disabled": true,
+                            "description": "Optional - Only send from frontend when needed"
+                        },
+                        {
+                            "key": "includeAliases",
+                            "value": "true",
+                            "type": "text",
+                            "disabled": true,
+                            "description": "Optional - Only send from frontend when needed"
+                        },
+                        {
+                            "key": "idDetails[0][idType]",
+                            "value": "Passport",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][idNumber]",
+                            "value": "N1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][issueDate]",
+                            "value": "2020-01-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][expiryDate]",
+                            "value": "2030-01-15",
+                            "type": "text"
+                        },
+                        {
+                            "key": "idDetails[0][issuedCountry]",
+                            "value": "United States",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        "create"
+                    ]
+                },
+                "description": "Creates individual profile with searchCategories using array notation (8 separate rows with [] brackets)"
+            },
+            "response": []
+        },
+        {
+            "name": "Create Individual Profile (String Format)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerName",
+                            "value": "Jane Smith",
+                            "type": "text"
+                        },
+                        {
+                            "key": "dob",
+                            "value": "1985-03-20",
+                            "type": "text"
+                        },
+                        {
+                            "key": "nationality",
+                            "value": "United Kingdom",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+44-20-1234567",
+                            "type": "text"
+                        },
+                        {
+                            "key": "searchCategories",
+                            "value": "sanction,warning,fitness-probity,pep,pep-class-1,pep-class-2,pep-class-3,pep-class-4",
+                            "type": "text",
+                            "description": "Comma-separated string format (all 8 filters)"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        "create"
+                    ]
+                },
+                "description": "Creates individual profile with searchCategories as comma-separated string"
+            },
+            "response": []
+        },
+        {
+            "name": "Create Individual Profile (No Filters - Use Defaults)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerName",
+                            "value": "Test User",
+                            "type": "text"
+                        },
+                        {
+                            "key": "dob",
+                            "value": "1992-08-10",
+                            "type": "text"
+                        },
+                        {
+                            "key": "nationality",
+                            "value": "Canada",
+                            "type": "text"
+                        },
+                        {
+                            "key": "mobile",
+                            "value": "+1-416-1234567",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/individual-profile/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "individual-profile",
+                        "create"
+                    ]
+                },
+                "description": "Creates individual profile WITHOUT searchCategories - backend automatically uses all 8 default filters"
+            },
+            "response": []
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "https://starfish-app-bqn3p.ondigitalocean.app",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "your-jwt-access-token-here",
+            "type": "string"
+        }
+    ]
+}

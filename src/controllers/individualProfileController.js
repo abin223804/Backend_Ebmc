@@ -48,7 +48,7 @@ const checkExternalApi = async (profileData) => {
                 name: {
                     first_name: firstName,
                     last_name: lastName,
-                    fuzzy_match: "1"
+                    fuzzy_match: profileData.isExactMatch === true || profileData.isExactMatch === "true" ? "0" : "1"
                 },
                 dob: profileData.dob ? new Date(profileData.dob).toISOString().split("T")[0] : "2021-07-11",
                 ongoing: "0",
