@@ -12,6 +12,7 @@ import { sendOtpEmail, sendLoginAlertEmail } from "../utils/sendEmail.js";
 ====================================================== */
 const isProduction = process.env.NODE_ENV === "production";
 
+
 const refreshTokenCookieOptions = {
   httpOnly: true,
   secure: isProduction,
