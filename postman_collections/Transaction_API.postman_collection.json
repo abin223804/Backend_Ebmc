@@ -1,0 +1,244 @@
+{
+    "info": {
+        "_postman_id": "transaction-api-collection",
+        "name": "Transaction & Customer Management API",
+        "description": "API collection for managing transactions and customer profiles (view, edit, delete, download) via the transaction route.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Transaction",
+            "item": [
+                {
+                    "name": "Create Transaction",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"customerId\": \"1000659\", \n    \"customerType\": \"IndividualProfile\",\n    \"transactionDate\": \"2023-10-27\",\n    \"transactionTime\": \"14:30\",\n    \"branch\": \"Main Branch\",\n    \"invoiceNumber\": \"INV-001\",\n    \"invoiceAmount\": 1000,\n    \"source\": \"Online\",\n    \"transactionType\": \"Deposit\",\n    \"product\": \"Savings\",\n    \"payments\": [\n        { \"mode\": \"Cash\", \"amount\": 500 },\n        { \"mode\": \"Card\", \"amount\": 500 }\n    ],\n    \"totalAmount\": 1000\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/transaction",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "transaction"
+                            ]
+                        },
+                        "description": "Creates a new transaction entry. Requires 'customerId' (match by Core Cust ID or Mongo ID)."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Customer Management (Transaction Route)",
+            "item": [
+                {
+                    "name": "List Customers (Table)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/transaction/customers?page=1&limit=10&search=John",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "transaction",
+                                "customers"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "John",
+                                    "description": "Search by customer name"
+                                }
+                            ]
+                        },
+                        "description": "Lists customers with fields optimized for the transaction entry table (Cust ID, Name, Mobile, Country, ID Number, Expiry)."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Single Customer",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/transaction/customers/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "transaction",
+                                "customers",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "CUSTOMER_ID_HERE",
+                                    "description": "The MongoDB _id of the customer"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves full details of a specific customer profile."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Customer",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"customerName\": \"Updated Name\",\n    \"mobile\": \"971500000000\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/transaction/customers/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "transaction",
+                                "customers",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "CUSTOMER_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Updates customer details."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Customer (Soft)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/transaction/customers/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "transaction",
+                                "customers",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "CUSTOMER_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Performs a soft delete on the customer profile."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Download Customer (JSON)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/transaction/customers/download/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "transaction",
+                                "customers",
+                                "download",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "CUSTOMER_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Downloads the customer profile as a JSON file."
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "YOUR_JWT_TOKEN",
+            "type": "string"
+        }
+    ]
+}

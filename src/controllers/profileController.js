@@ -174,3 +174,33 @@ export const updateProfile = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Profile not found");
 });
+
+// @desc    Download profile by ID (Unified)
+// @route   GET /api/profiles/download/:id
+// @access  Private
+export const downloadProfile = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    // Try Individual
+    let profile = await IndividualProfile.findOne({ _id: id, userId, isDeleted: false });
+    let type = 'Individual';
+
+    if (!profile) {
+        // Try Corporate
+        profile = await CorporateProfile.findOne({ _id: id, userId, isDeleted: false });
+        type = 'Corporate';
+    }
+
+    if (!profile) {
+        res.status(404);
+        throw new Error("Profile not found");
+    }
+
+    const fileName = `${type}_Profile_${profile.customerName.replace(/\s+/g, '_')}_${profile._id}.json`;
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+
+    res.status(200).send(JSON.stringify(profile, null, 2));
+});

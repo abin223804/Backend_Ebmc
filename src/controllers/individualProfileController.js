@@ -166,6 +166,8 @@ export const formatIndividualProfileResponse = (profile) => {
         id: profile._id,
         userId: profile.userId,
         coreCustId: profile.coreCustId, // New field for UI
+        mobile: profile.mobile,         // Exposed at root for table
+        country: profile.nationality,   // Exposed as country for table
         name: profile.customerName,
         dob: profile.dob,
         gender: profile.gender,
@@ -174,6 +176,8 @@ export const formatIndividualProfileResponse = (profile) => {
         profession: profile.profession,
         pep: profile.pepStatus === "YES",
         residentStatus: profile.residentStatus,
+        idNumber: profile.idDetails && profile.idDetails.length > 0 ? profile.idDetails[0].idNumber : "", // Exposed for table
+        idExpDate: profile.idDetails && profile.idDetails.length > 0 ? profile.idDetails[0].expiryDate : "", // Exposed for table
         contact: {
             mobile: profile.mobile,
             address: {

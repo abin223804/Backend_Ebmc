@@ -100,6 +100,7 @@ import quickProfileRoutes from "../src/routes/quickProfileRoutes.js";
 import searchRoutes from "../src/routes/searchRoutes.js";
 import profileRoutes from "../src/routes/profileRoutes.js";
 import additionalDocumentRoutes from "../src/routes/additionalDocumentRoutes.js";
+import transactionRoutes from "../src/routes/transactionRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
@@ -176,6 +177,7 @@ app.use("/quick-profile", quickProfileRoutes);
 app.use("/search", searchRoutes);
 app.use("/profiles", profileRoutes);
 app.use("/additional-documents", additionalDocumentRoutes);
+app.use("/transaction", transactionRoutes);
 
 /* ======================================================
    ERROR HANDLER (LAST)

@@ -213,6 +213,8 @@ export const formatCorporateProfileResponse = (profile) => {
         incorporationDate: profile.incorporationDate,
         entityLegalType: profile.entityLegalType,
         country: profile.country,
+        idNumber: profile.tradeLicenseNumber || "", // Exposed as ID Number for table
+        idExpDate: profile.tradeLicenseExpiryDate || "", // Exposed as ID Exp Date for table
         address: {
             emirates: profile.address?.emirates,
             building: profile.address?.buildingName,
