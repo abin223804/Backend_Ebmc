@@ -22,6 +22,7 @@ export const uploadDocument = async (req, res) => {
 
         // 1. Verify Profile Exists & Map Type
         let modelName;
+        let profile;
         if (profileType === "Individual" || profileType === "IndividualProfile") {
             modelName = "IndividualProfile";
             profile = await IndividualProfile.findById(profileId);
