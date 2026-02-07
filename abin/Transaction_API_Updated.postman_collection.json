@@ -1,8 +1,8 @@
 {
     "info": {
-        "_postman_id": "transaction-api-collection",
+        "_postman_id": "transaction-api-collection-updated",
         "name": "Transaction & Customer Management API",
-        "description": "API collection for managing transactions and customer profiles (view, edit, delete, download) via the transaction route.",
+        "description": "API collection for managing transactions (create, cancel, list) and customer profiles (view, edit, delete, download) via the transaction route.",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
@@ -41,14 +41,9 @@
                         "description": "Creates a new transaction entry. Requires 'customerId' (match by Core Cust ID or Mongo ID)."
                     },
                     "response": []
-                }
-            ]
-        },
-        {
-            "name": "Customer Management (Transaction Route)",
-            "item": [
+                },
                 {
-                    "name": "List Customers (Table)",
+                    "name": "Get Transactions (List/Search/Filter)",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -59,7 +54,91 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/transaction/customers?page=1&limit=10&search=John",
+                            "raw": "{{base_url}}/transaction?page=1&limit=10&status=Success&search=INV",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "transaction"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default: 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "Items per page (default: 10)"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Success",
+                                    "description": "Filter by status: Success, Pending, Cancelled, Failed"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "INV",
+                                    "description": "Search by Invoice Number or Receipt Number"
+                                }
+                            ]
+                        },
+                        "description": "Retrieve a list of transactions with optional filtering, searching, and pagination."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Cancel Transaction",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/transaction/:id/cancel",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "transaction",
+                                ":id",
+                                "cancel"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "TRANSACTION_ID_HERE",
+                                    "description": "The MongoDB _id of the transaction to cancel"
+                                }
+                            ]
+                        },
+                        "description": "Cancels an existing transaction by ID. Updates status to 'Cancelled'."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Customer Management (Transaction Route)",
+            "item": [
+                {
+                    "name": "List Customers (Table/Search)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/transaction/customers?page=1&limit=10&customerType=Individual&searchType=Mobile&searchValue=9715",
                             "host": [
                                 "{{base_url}}"
                             ],
@@ -77,13 +156,23 @@
                                     "value": "10"
                                 },
                                 {
-                                    "key": "search",
-                                    "value": "John",
-                                    "description": "Search by customer name"
+                                    "key": "customerType",
+                                    "value": "Individual",
+                                    "description": "Individual or Corporate"
+                                },
+                                {
+                                    "key": "searchType",
+                                    "value": "Mobile",
+                                    "description": "Name, Customer ID, Mobile"
+                                },
+                                {
+                                    "key": "searchValue",
+                                    "value": "9715",
+                                    "description": "Value to search for"
                                 }
                             ]
                         },
-                        "description": "Lists customers with fields optimized for the transaction entry table (Cust ID, Name, Mobile, Country, ID Number, Expiry)."
+                        "description": "Lists customers with support for UI transaction entry filtering."
                     },
                     "response": []
                 },
@@ -111,8 +200,7 @@
                             "variable": [
                                 {
                                     "key": "id",
-                                    "value": "CUSTOMER_ID_HERE",
-                                    "description": "The MongoDB _id of the customer"
+                                    "value": "CUSTOMER_ID_HERE"
                                 }
                             ]
                         },

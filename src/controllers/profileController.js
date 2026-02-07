@@ -8,7 +8,7 @@ import { formatCorporateProfileResponse } from "./corporateProfileController.js"
 // @route   GET /api/profiles
 // @access  Private
 export const getAllProfiles = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, searchType, searchValue } = req.query;
+    const { page = 1, limit = 10, searchType, searchValue, customerType } = req.query;
 
     // Base Query: filter by userId and not deleted
     const query = {
@@ -17,12 +17,14 @@ export const getAllProfiles = asyncHandler(async (req, res) => {
     };
 
     // Apply specific search if provided
-    // Apply specific search if provided
     if (searchType && searchValue) {
-        if (searchType === "Core customer number") {
-            query.coreCustId = { $regex: searchValue, $options: "i" };
+        const regex = { $regex: searchValue, $options: "i" };
+        if (searchType === "Core customer number" || searchType === "Customer ID") {
+            query.coreCustId = regex;
         } else if (searchType === "Value" || searchType === "Name") {
-            query.customerName = { $regex: searchValue, $options: "i" };
+            query.customerName = regex;
+        } else if (searchType === "Mobile") {
+            query.mobile = regex;
         }
     } else {
         // Generic "Search..." bar support (searches Name by default)
@@ -32,14 +34,21 @@ export const getAllProfiles = asyncHandler(async (req, res) => {
         }
     }
 
-    // Parallel Fetch (No total count optimization for now to keep it simple, or we can add it)
-    // We will fetch ALL matching sorted by date, then manually paginate in memory 
-    // (This is inefficient for huge datasets but fine for <10k records, ensuring mixed sort order)
+    // Fetch data based on Customer Type preference
+    let individuals = [];
+    let corporates = [];
 
-    const [individuals, corporates] = await Promise.all([
-        IndividualProfile.find(query).sort({ createdAt: -1 }).lean(),
-        CorporateProfile.find(query).sort({ createdAt: -1 }).lean()
-    ]);
+    if (customerType === 'Individual') {
+        individuals = await IndividualProfile.find(query).sort({ createdAt: -1 }).lean();
+    } else if (customerType === 'Corporate') {
+        corporates = await CorporateProfile.find(query).sort({ createdAt: -1 }).lean();
+    } else {
+        // Fetch both if no specific type selected
+        [individuals, corporates] = await Promise.all([
+            IndividualProfile.find(query).sort({ createdAt: -1 }).lean(),
+            CorporateProfile.find(query).sort({ createdAt: -1 }).lean()
+        ]);
+    }
 
     // Combine and Sort
     const allProfiles = [
