@@ -2,11 +2,12 @@ import express from "express";
 import { createTransaction, cancelTransaction, getTransactions } from "../controllers/transactionController.js";
 import { getAllProfiles, getProfileById, updateProfile, deleteProfile, downloadProfile } from "../controllers/profileController.js";
 import { verifyUser } from "../middleware/userMiddleware.js";
+import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
 // Create a new transaction
-router.post("/", verifyUser, createTransaction);
+router.post("/", verifyUser, upload.single("file"), createTransaction);
 
 // Get all transactions (with filters)
 router.get("/", verifyUser, getTransactions);

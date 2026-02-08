@@ -1,0 +1,93 @@
+{
+    "info": {
+        "_postman_id": "ebmc-transaction-upload",
+        "name": "EBMC Transaction Upload",
+        "description": "Collection to test transaction creation with file upload",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create Transaction (With File)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerId",
+                            "value": "REPLACE_WITH_ACTUAL_CUSTOMER_ID",
+                            "type": "text",
+                            "description": "MongoDB _id or coreCustId of the customer"
+                        },
+                        {
+                            "key": "customerType",
+                            "value": "IndividualProfile",
+                            "type": "text",
+                            "description": "IndividualProfile or CorporateProfile"
+                        },
+                        {
+                            "key": "file",
+                            "type": "file",
+                            "description": "Upload the PDF or Image here"
+                        },
+                        {
+                            "key": "payments",
+                            "value": "[{\"mode\": \"Cash\", \"amount\": 100}]",
+                            "type": "text",
+                            "description": "JSON String needed for complex objects in form-data"
+                        },
+                        {
+                            "key": "totalAmount",
+                            "value": "100",
+                            "type": "text"
+                        },
+                        {
+                            "key": "transactionType",
+                            "value": "Deposit",
+                            "type": "text"
+                        },
+                        {
+                            "key": "product",
+                            "value": "Savings",
+                            "type": "text"
+                        },
+                        {
+                            "key": "branch",
+                            "value": "Main Branch",
+                            "type": "text"
+                        },
+                        {
+                            "key": "invoiceNumber",
+                            "value": "INV-1001",
+                            "type": "text"
+                        },
+                        {
+                            "key": "transactionDate",
+                            "value": "2023-10-27",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/transactions",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "transactions"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        }
+    ]
+}

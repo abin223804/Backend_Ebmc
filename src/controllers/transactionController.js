@@ -5,7 +5,7 @@ import CorporateProfile from "../models/corporateProfileModel.js";
 // Create a new transaction
 export const createTransaction = async (req, res) => {
     try {
-        const {
+        let {
             customerId,
             customerType,
             transactionDate,
@@ -18,13 +18,24 @@ export const createTransaction = async (req, res) => {
             transactionType,
             product,
             remark,
-            file,
             currency,
             exchangeRate,
             payments,
             totalAmount,
             status
         } = req.body;
+
+        // Handle file upload (priority to uploaded file, fallback to body url if any)
+        const file = req.file ? req.file.path : req.body.file;
+
+        // Parse payments if it's a string (common in multipart/form-data)
+        if (typeof payments === 'string') {
+            try {
+                payments = JSON.parse(payments);
+            } catch (error) {
+                return res.status(400).json({ message: "Invalid payments format. Expected JSON string." });
+            }
+        }
 
         // Basic validation
         if (!customerId || !customerType || !branch || !transactionType || !product || !totalAmount) {
