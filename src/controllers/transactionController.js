@@ -278,7 +278,7 @@ export const cancelTransaction = async (req, res) => {
       return res.status(400).json({ message: "Transaction ID is required" });
     }
 
-    const transaction = await Transaction.findById(transactionId);
+    const transaction = await Transaction.findOne({ _id: transactionId });
 
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
@@ -398,7 +398,7 @@ export const deleteTransaction = async (req, res) => {
       return res.status(400).json({ message: "Transaction ID is required" });
     }
 
-    const transaction = await Transaction.findById(transactionId);
+    const transaction = await Transaction.findOne({ _id: transactionId });
 
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
