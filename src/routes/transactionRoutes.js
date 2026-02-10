@@ -7,7 +7,7 @@ import upload from "../middleware/uploadMiddleware.js";
 const router = express.Router();
 
 // Create a new transaction
-router.post("/", verifyUser, upload.single("file"), createTransaction);
+router.post("/createTransaction", verifyUser, upload.single("file"), createTransaction);
 
 // Get all transactions (with filters)
 router.get("/", verifyUser, getTransactions);
