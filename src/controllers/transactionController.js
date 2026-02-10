@@ -42,6 +42,9 @@ export const createTransaction = async (req, res) => {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
+        console.log("customerId",customerId);
+        
+
         // Validate customer existence
         let customer;
         if (customerType === 'IndividualProfile') {
