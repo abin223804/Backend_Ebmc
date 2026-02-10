@@ -15,13 +15,13 @@ router.get("/getTransactions", verifyUser, getTransactions);
 
 // Cancel a transaction
 // router.patch("/:id/cancel", verifyUser, cancelTransaction);
-router.patch("/transaction/:transactionId/cancel",cancelTransaction);
+router.patch("/:transactionId/cancel",cancelTransaction);
 
 
 // Soft Delete a transaction
 // router.delete("/:id", verifyUser, deleteTransaction);
 
-router.patch("/transaction/:transactionId/delete",deleteTransaction);
+router.patch("/:transactionId/delete",deleteTransaction);
 
 
 
