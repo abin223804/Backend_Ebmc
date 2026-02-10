@@ -10,7 +10,7 @@ const router = express.Router();
 router.post("/createTransaction", verifyUser, upload.single("file"), createTransaction);
 
 // Get all transactions (with filters)
-router.get("/", verifyUser, getTransactions);
+router.get("/getTransactions", verifyUser, getTransactions);
 
 // Cancel a transaction
 router.patch("/:id/cancel", verifyUser, cancelTransaction);
