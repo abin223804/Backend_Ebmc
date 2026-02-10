@@ -242,33 +242,70 @@ export const createTransaction = async (req, res) => {
 
 
 // Cancel a transaction
+// export const cancelTransaction = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const transaction = await Transaction.findById(id);
+
+//     if (!transaction) {
+//       return res.status(404).json({ message: "Transaction not found" });
+//     }
+
+//     if (transaction.status === 'Cancelled') {
+//       return res.status(400).json({ message: "Transaction is already cancelled" });
+//     }
+
+//     transaction.status = 'Cancelled';
+//     await transaction.save();
+
+//     res.status(200).json({
+//       message: "Transaction cancelled successfully",
+//       transaction
+//     });
+
+//   } catch (error) {
+//     console.error("Error cancelling transaction:", error);
+//     res.status(500).json({ message: "Internal server error", error: error.message });
+//   }
+// };
+
 export const cancelTransaction = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { transactionId } = req.params;
 
-    const transaction = await Transaction.findById(id);
+    if (!transactionId) {
+      return res.status(400).json({ message: "Transaction ID is required" });
+    }
+
+    const transaction = await Transaction.findById(transactionId);
 
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
     }
 
-    if (transaction.status === 'Cancelled') {
-      return res.status(400).json({ message: "Transaction is already cancelled" });
+    if (transaction.status === "Cancelled") {
+      return res.status(400).json({
+        message: "Transaction is already cancelled"
+      });
     }
 
-    transaction.status = 'Cancelled';
+    transaction.status = "Cancelled";
     await transaction.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Transaction cancelled successfully",
       transaction
     });
 
   } catch (error) {
     console.error("Error cancelling transaction:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
+    return res.status(500).json({
+      message: "Internal server error"
+    });
   }
 };
+
 
 // Get transactions with filtering and pagination
 export const getTransactions = async (req, res) => {
@@ -324,31 +361,68 @@ export const getTransactions = async (req, res) => {
 };
 
 // Soft delete a transaction
+// export const deleteTransaction = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const transaction = await Transaction.findById(id);
+
+//     if (!transaction) {
+//       return res.status(404).json({ message: "Transaction not found" });
+//     }
+
+//     if (transaction.isDeleted) {
+//       return res.status(400).json({ message: "Transaction is already deleted" });
+//     }
+
+//     transaction.isDeleted = true;
+//     transaction.deletedAt = new Date();
+//     await transaction.save();
+
+//     res.status(200).json({
+//       message: "Transaction deleted successfully",
+//       transaction
+//     });
+
+//   } catch (error) {
+//     console.error("Error deleting transaction:", error);
+//     res.status(500).json({ message: "Internal server error", error: error.message });
+//   }
+// };
+
 export const deleteTransaction = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { transactionId } = req.params;
 
-    const transaction = await Transaction.findById(id);
+    if (!transactionId) {
+      return res.status(400).json({ message: "Transaction ID is required" });
+    }
+
+    const transaction = await Transaction.findById(transactionId);
 
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
     }
 
     if (transaction.isDeleted) {
-      return res.status(400).json({ message: "Transaction is already deleted" });
+      return res.status(400).json({
+        message: "Transaction is already deleted"
+      });
     }
 
     transaction.isDeleted = true;
     transaction.deletedAt = new Date();
     await transaction.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Transaction deleted successfully",
       transaction
     });
 
   } catch (error) {
     console.error("Error deleting transaction:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
+    return res.status(500).json({
+      message: "Internal server error"
+    });
   }
 };
