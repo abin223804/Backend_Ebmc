@@ -279,8 +279,8 @@ export const cancelTransaction = async (req, res) => {
     }
 
     const transaction = await Transaction.findOne({ _id: transactionId });
-    console.log("transaction",transaction);
-    
+    console.log("transaction", transaction);
+
 
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
@@ -342,12 +342,20 @@ export const getTransactions = async (req, res) => {
       .populate('customerId', 'fullName name profileImage mobile email coreCustId') // Populate basic customer info
       .sort({ transactionDate: -1, createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(parseInt(limit))
+      .lean();
+
+    const formattedTransactions = transactions.map(t => ({
+      ...t,
+      transactionId: t._id,
+      id: t._id
+    }));
+
 
     const total = await Transaction.countDocuments(query);
 
     res.status(200).json({
-      data: transactions,
+      data: formattedTransactions,
       pagination: {
         total,
         page: parseInt(page),
@@ -401,7 +409,7 @@ export const deleteTransaction = async (req, res) => {
     }
 
     const transaction = await Transaction.findOne({ _id: transactionId });
-    console.log("transaction",transaction);
+    console.log("transaction", transaction);
 
 
     if (!transaction) {
