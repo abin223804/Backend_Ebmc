@@ -243,82 +243,112 @@ export const createTransaction = async (req, res) => {
 
 // Cancel a transaction
 export const cancelTransaction = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-        const transaction = await Transaction.findById(id);
+    const transaction = await Transaction.findById(id);
 
-        if (!transaction) {
-            return res.status(404).json({ message: "Transaction not found" });
-        }
-
-        if (transaction.status === 'Cancelled') {
-            return res.status(400).json({ message: "Transaction is already cancelled" });
-        }
-
-        transaction.status = 'Cancelled';
-        await transaction.save();
-
-        res.status(200).json({
-            message: "Transaction cancelled successfully",
-            transaction
-        });
-
-    } catch (error) {
-        console.error("Error cancelling transaction:", error);
-        res.status(500).json({ message: "Internal server error", error: error.message });
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
     }
+
+    if (transaction.status === 'Cancelled') {
+      return res.status(400).json({ message: "Transaction is already cancelled" });
+    }
+
+    transaction.status = 'Cancelled';
+    await transaction.save();
+
+    res.status(200).json({
+      message: "Transaction cancelled successfully",
+      transaction
+    });
+
+  } catch (error) {
+    console.error("Error cancelling transaction:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
 };
 
 // Get transactions with filtering and pagination
 export const getTransactions = async (req, res) => {
-    try {
-        const {
-            page = 1,
-            limit = 10,
-            status,
-            search,
-            displayType // 'all', 'today', 'month', 'year' - optional handy filter
-        } = req.query;
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      search,
+      displayType // 'all', 'today', 'month', 'year' - optional handy filter
+    } = req.query;
 
-        const query = {};
+    const query = { isDeleted: false };
 
-        // Filter by Status
-        if (status) {
-            query.status = status;
-        }
-
-        // Search by Invoice or Receipt Number
-        if (search) {
-            query.$or = [
-                { invoiceNumber: { $regex: search, $options: "i" } },
-                { receiptNumber: { $regex: search, $options: "i" } },
-                // Note: Searching by customer name would require aggregation or post-processing due to dynamic ref
-            ];
-        }
-
-        const skip = (page - 1) * limit;
-
-        const transactions = await Transaction.find(query)
-            .populate('customerId', 'fullName name profileImage mobile email coreCustId') // Populate basic customer info
-            .sort({ transactionDate: -1, createdAt: -1 })
-            .skip(skip)
-            .limit(parseInt(limit));
-
-        const total = await Transaction.countDocuments(query);
-
-        res.status(200).json({
-            data: transactions,
-            pagination: {
-                total,
-                page: parseInt(page),
-                limit: parseInt(limit),
-                pages: Math.ceil(total / limit)
-            }
-        });
-
-    } catch (error) {
-        console.error("Error fetching transactions:", error);
-        res.status(500).json({ message: "Internal server error", error: error.message });
+    // Filter by Status
+    if (status) {
+      query.status = status;
     }
+
+    // Search by Invoice or Receipt Number
+    if (search) {
+      query.$or = [
+        { invoiceNumber: { $regex: search, $options: "i" } },
+        { receiptNumber: { $regex: search, $options: "i" } },
+        // Note: Searching by customer name would require aggregation or post-processing due to dynamic ref
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+
+    const transactions = await Transaction.find(query)
+      .populate('customerId', 'fullName name profileImage mobile email coreCustId') // Populate basic customer info
+      .sort({ transactionDate: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Transaction.countDocuments(query);
+
+    res.status(200).json({
+      data: transactions,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(total / limit)
+      }
+    });
+
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// Soft delete a transaction
+export const deleteTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const transaction = await Transaction.findById(id);
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    if (transaction.isDeleted) {
+      return res.status(400).json({ message: "Transaction is already deleted" });
+    }
+
+    transaction.isDeleted = true;
+    transaction.deletedAt = new Date();
+    await transaction.save();
+
+    res.status(200).json({
+      message: "Transaction deleted successfully",
+      transaction
+    });
+
+  } catch (error) {
+    console.error("Error deleting transaction:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
 };

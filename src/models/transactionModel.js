@@ -88,6 +88,14 @@ const transactionSchema = new mongoose.Schema(
             required: true,
             enum: ['Success', 'Pending', 'Failed', 'Cancelled'],
             default: 'Success'
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false
+        },
+        deletedAt: {
+            type: Date,
+            default: null
         }
     },
     { timestamps: true }

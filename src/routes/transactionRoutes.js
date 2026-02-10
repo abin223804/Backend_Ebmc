@@ -1,5 +1,5 @@
 import express from "express";
-import { createTransaction, cancelTransaction, getTransactions } from "../controllers/transactionController.js";
+import { createTransaction, cancelTransaction, getTransactions, deleteTransaction } from "../controllers/transactionController.js";
 import { getAllProfiles, getProfileById, updateProfile, deleteProfile, downloadProfile } from "../controllers/profileController.js";
 import { verifyUser } from "../middleware/userMiddleware.js";
 import upload from "../middleware/uploadMiddleware.js";
@@ -12,8 +12,13 @@ router.post("/createTransaction", verifyUser, upload.single("file"), createTrans
 // Get all transactions (with filters)
 router.get("/getTransactions", verifyUser, getTransactions);
 
+
 // Cancel a transaction
 router.patch("/:id/cancel", verifyUser, cancelTransaction);
+
+// Soft Delete a transaction
+router.delete("/:id", verifyUser, deleteTransaction);
+
 
 // =========================================================================
 // CUSTOMER MANAGEMENT (Accessible via Transaction Route for UI Convenience)
