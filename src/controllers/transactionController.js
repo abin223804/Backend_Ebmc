@@ -71,6 +71,9 @@ export const createTransaction = async (req, res) => {
             return res.status(404).json({ message: "Customer not found" });
         }
 
+        console.log("customer",customer);
+        
+
         // Create transaction object
         const newTransaction = new Transaction({
             customerId: customer._id, // Use the MongoDB _id
