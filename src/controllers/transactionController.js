@@ -3,112 +3,6 @@ import IndividualProfile from "../models/individualProfileModel.js";
 import CorporateProfile from "../models/corporateProfileModel.js";
 
 // Create a new transaction
-// export const createTransaction = async (req, res) => {
-//     try {
-//         let {
-//             customerId,
-//             customerType,
-//             transactionDate,
-//             transactionTime,
-//             branch,
-//             invoiceNumber,
-//             invoiceAmount,
-//             receiptNumber,
-//             source,
-//             transactionType,
-//             product,
-//             remark,
-//             currency,
-//             exchangeRate,
-//             payments,
-//             totalAmount,
-//             status
-//         } = req.body;
-
-//         // Handle file upload (priority to uploaded file, fallback to body url if any)
-//         const file = req.file ? req.file.path : req.body.file;
-
-//         // Parse payments if it's a string (common in multipart/form-data)
-//         if (typeof payments === 'string') {
-//             try {
-//                 payments = JSON.parse(payments);
-//             } catch (error) {
-//                 return res.status(400).json({ message: "Invalid payments format. Expected JSON string." });
-//             }
-//         }
-
-//         // Basic validation
-//         if (!customerId || !customerType || !branch || !transactionType || !product || !totalAmount) {
-//             return res.status(400).json({ message: "Missing required fields" });
-//         }
-
-//         console.log("customerId", customerId);
-
-
-//         // Validate customer existence
-//         let customer;
-//         if (customerType === 'IndividualProfile') {
-//             // Try finding by ID first if it looks like an ObjectId
-//             if (customerId.match(/^[0-9a-fA-F]{24}$/)) {
-//                 customer = await IndividualProfile.findById(customerId);
-//             }
-//             // Fallback to coreCustId if not found or not an ID
-//             if (!customer) {
-//                 customer = await IndividualProfile.findOne({ coreCustId: customerId });
-//             }
-//         } else if (customerType === 'CorporateProfile') {
-//             if (customerId.match(/^[0-9a-fA-F]{24}$/)) {
-//                 customer = await CorporateProfile.findById(customerId);
-//             }
-//             if (!customer) {
-//                 customer = await CorporateProfile.findOne({ coreCustId: customerId });
-//             }
-//         } else {
-//             return res.status(400).json({ message: "Invalid customer type" });
-//         }
-
-//         if (!customer) {
-//             return res.status(404).json({ message: "Customer not found" });
-//         }
-
-//         console.log("customer", customer);
-
-
-//         // Create transaction object
-//         const newTransaction = new Transaction({
-//             customerId: customer._id, // Use the MongoDB _id
-//             customerType,
-//             transactionDate,
-//             transactionTime,
-//             branch,
-//             invoiceNumber,
-//             invoiceAmount,
-//             receiptNumber,
-//             source,
-//             transactionType,
-//             product,
-//             remark,
-//             file,
-//             currency,
-//             exchangeRate,
-//             payments,
-//             totalAmount,
-//             status: status || 'Success'
-//         });
-
-//         const savedTransaction = await newTransaction.save();
-
-//         res.status(201).json({
-//             message: "Transaction created successfully",
-//             transaction: savedTransaction
-//         });
-
-//     } catch (error) {
-//         console.error("Error creating transaction:", error);
-//         res.status(500).json({ message: "Internal server error", error: error.message });
-//     }
-// };
-
 export const createTransaction = async (req, res) => {
   try {
     let {
@@ -136,86 +30,60 @@ export const createTransaction = async (req, res) => {
     }
     const userId = req.user.userId;
 
-    // Handle file upload
+    // Handle file upload (priority to uploaded file, fallback to body url if any)
     const file = req.file ? req.file.path : req.body.file;
 
-    // Parse payments (multipart safety)
-    if (typeof payments === "string") {
+    // Parse payments if it's a string (common in multipart/form-data)
+    if (typeof payments === 'string') {
       try {
         payments = JSON.parse(payments);
-      } catch {
-        return res
-          .status(400)
-          .json({ message: "Invalid payments format. Expected JSON string." });
+      } catch (error) {
+        return res.status(400).json({ message: "Invalid payments format. Expected JSON string." });
       }
     }
 
     // Basic validation
-    if (!customerId || !branch || !transactionType || !product || !totalAmount) {
+    if (!customerId || !customerType || !branch || !transactionType || !product || !totalAmount) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const isObjectId = /^[0-9a-fA-F]{24}$/.test(customerId);
+    console.log("customerId", customerId);
 
-    let customer = null;
-    let resolvedCustomerType = customerType;
 
-    const findIndividual = async () => {
-      if (isObjectId) {
-        return IndividualProfile.findById(customerId);
+    // Validate customer existence
+    let customer;
+    if (customerType === 'IndividualProfile') {
+      // Try finding by ID first if it looks like an ObjectId
+      if (customerId.match(/^[0-9a-fA-F]{24}$/)) {
+        customer = await IndividualProfile.findById(customerId);
       }
-      return IndividualProfile.findOne({ coreCustId: customerId });
-    };
-
-    const findCorporate = async () => {
-      if (isObjectId) {
-        return CorporateProfile.findById(customerId);
-      }
-      return CorporateProfile.findOne({ coreCustId: customerId });
-    };
-
-    // 1️⃣ Try provided customerType first (if any)
-    if (customerType === "IndividualProfile") {
-      customer = await findIndividual();
+      // Fallback to coreCustId if not found or not an ID
       if (!customer) {
-        customer = await findCorporate();
-        resolvedCustomerType = customer ? "CorporateProfile" : customerType;
+        customer = await IndividualProfile.findOne({ coreCustId: customerId });
       }
-    } else if (customerType === "CorporateProfile") {
-      customer = await findCorporate();
+    } else if (customerType === 'CorporateProfile') {
+      if (customerId.match(/^[0-9a-fA-F]{24}$/)) {
+        customer = await CorporateProfile.findById(customerId);
+      }
       if (!customer) {
-        customer = await findIndividual();
-        resolvedCustomerType = customer ? "IndividualProfile" : customerType;
+        customer = await CorporateProfile.findOne({ coreCustId: customerId });
       }
     } else {
-      // 2️⃣ If customerType missing or invalid → auto-detect
-      customer = await findIndividual();
-      if (customer) {
-        resolvedCustomerType = "IndividualProfile";
-      } else {
-        customer = await findCorporate();
-        resolvedCustomerType = customer ? "CorporateProfile" : null;
-      }
+      return res.status(400).json({ message: "Invalid customer type" });
     }
 
     if (!customer) {
-      return res.status(404).json({
-        message: "Customer not found",
-        customerId,
-        attemptedType: customerType
-      });
+      return res.status(404).json({ message: "Customer not found" });
     }
 
-    // Security Check: Verify customer belongs to logged-in user
-    if (customer.userId.toString() !== userId) {
-      return res.status(403).json({ message: "Unauthorized: Customer does not belong to you" });
-    }
+    console.log("customer", customer);
 
-    // Create transaction
+
+    // Create transaction object
     const newTransaction = new Transaction({
-      customerId: customer._id,
-      userId, // Save userId directly
-      customerType: resolvedCustomerType,
+      customerId: customer._id, // Use the MongoDB _id
+      userId, // Save userId to the transaction
+      customerType,
       transactionDate,
       transactionTime,
       branch,
@@ -231,33 +99,171 @@ export const createTransaction = async (req, res) => {
       exchangeRate,
       payments,
       totalAmount,
-      status: status || "Success"
+      status: status || 'Success'
     });
 
     const savedTransaction = await newTransaction.save();
 
     res.status(201).json({
       message: "Transaction created successfully",
-      customerType: resolvedCustomerType,
       transaction: savedTransaction
     });
+
   } catch (error) {
     console.error("Error creating transaction:", error);
-    res.status(500).json({
-      message: "Internal server error",
-      error: error.message
-    });
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-
-
-// Cancel a transaction
-// export const cancelTransaction = async (req, res) => {
+// export const createTransaction = async (req, res) => {
 //   try {
-//     const { id } = req.params;
+//     let {
+//       customerId,
+//       customerType,
+//       transactionDate,
+//       transactionTime,
+//       branch,
+//       invoiceNumber,
+//       invoiceAmount,
+//       receiptNumber,
+//       source,
+//       transactionType,
+//       product,
+//       remark,
+//       currency,
+//       exchangeRate,
+//       payments,
+//       totalAmount,
+//       status
+//     } = req.body;
 
-//     const transaction = await Transaction.findById(id);
+//     if (!req.user || !req.user.userId) {
+//       return res.status(401).json({ message: "User not authenticated" });
+//     }
+//     const userId = req.user.userId;
+
+//     // Handle file upload
+//     const file = req.file ? req.file.path : req.body.file;
+
+//     // Parse payments (multipart safety)
+//     if (typeof payments === "string") {
+//       try {
+//         payments = JSON.parse(payments);
+//       } catch {
+//         return res
+//           .status(400)
+//           .json({ message: "Invalid payments format. Expected JSON string." });
+//       }
+//     }
+
+//     // Basic validation
+//     if (!customerId || !branch || !transactionType || !product || !totalAmount) {
+//       return res.status(400).json({ message: "Missing required fields" });
+//     }
+
+//     const isObjectId = /^[0-9a-fA-F]{24}$/.test(customerId);
+
+//     let customer = null;
+//     let resolvedCustomerType = customerType;
+
+//     const findIndividual = async () => {
+//       if (isObjectId) {
+//         return IndividualProfile.findById(customerId);
+//       }
+//       return IndividualProfile.findOne({ coreCustId: customerId });
+//     };
+
+//     const findCorporate = async () => {
+//       if (isObjectId) {
+//         return CorporateProfile.findById(customerId);
+//       }
+//       return CorporateProfile.findOne({ coreCustId: customerId });
+//     };
+
+//     // 1️⃣ Try provided customerType first (if any)
+//     if (customerType === "IndividualProfile") {
+//       customer = await findIndividual();
+//       if (!customer) {
+//         customer = await findCorporate();
+//         resolvedCustomerType = customer ? "CorporateProfile" : customerType;
+//       }
+//     } else if (customerType === "CorporateProfile") {
+//       customer = await findCorporate();
+//       if (!customer) {
+//         customer = await findIndividual();
+//         resolvedCustomerType = customer ? "IndividualProfile" : customerType;
+//       }
+//     } else {
+//       // 2️⃣ If customerType missing or invalid → auto-detect
+//       customer = await findIndividual();
+//       if (customer) {
+//         resolvedCustomerType = "IndividualProfile";
+//       } else {
+//         customer = await findCorporate();
+//         resolvedCustomerType = customer ? "CorporateProfile" : null;
+//       }
+//     }
+
+//     if (!customer) {
+//       return res.status(404).json({
+//         message: "Customer not found",
+//         customerId,
+//         attemptedType: customerType
+//       });
+//     }
+
+//     // Security Check: Verify customer belongs to logged-in user
+//     if (customer.userId.toString() !== userId) {
+//       return res.status(403).json({ message: "Unauthorized: Customer does not belong to you" });
+//     }
+
+//     // Create transaction
+//     const newTransaction = new Transaction({
+//       customerId: customer._id,
+//       userId, // Save userId directly
+//       customerType: resolvedCustomerType,
+//       transactionDate,
+//       transactionTime,
+//       branch,
+//       invoiceNumber,
+//       invoiceAmount,
+//       receiptNumber,
+//       source,
+//       transactionType,
+//       product,
+//       remark,
+//       file,
+//       currency,
+//       exchangeRate,
+//       payments,
+//       totalAmount,
+//       status: status || "Success"
+//     });
+
+//     const savedTransaction = await newTransaction.save();
+
+//     res.status(201).json({
+//       message: "Transaction created successfully",
+//       customerType: resolvedCustomerType,
+//       transaction: savedTransaction
+//     });
+//   } catch (error) {
+//     console.error("Error creating transaction:", error);
+//     res.status(500).json({
+//       message: "Internal server error",
+//       error: error.message
+//     });
+//   }
+// };
+
+
+
+// // Cancel a transaction
+// // export const cancelTransaction = async (req, res) => {
+// //   try {
+// //     const { id } = req.params;
+
+// //     const transaction = await Transaction.findById(id);
 
 //     if (!transaction) {
 //       return res.status(404).json({ message: "Transaction not found" });
@@ -293,36 +299,12 @@ export const cancelTransaction = async (req, res) => {
       return res.status(401).json({ message: "User not authenticated" });
     }
 
-    const transaction = await Transaction.findOne({ _id: transactionId });
+    const userId = req.user.userId;
+
+    // Optimize: Find transaction by ID AND UserID directly
+    const transaction = await Transaction.findOne({ _id: transactionId, userId });
 
     if (!transaction) {
-      return res.status(404).json({ message: "Transaction not found" });
-    }
-
-    // Security Check: Verify ownership
-    const userId = req.user.userId;
-    let isOwner = false;
-
-    if (transaction.userId && transaction.userId.toString() === userId) {
-      isOwner = true;
-    } else {
-      const [individualProfiles, corporateProfiles] = await Promise.all([
-        IndividualProfile.find({ userId }).select('_id'),
-        CorporateProfile.find({ userId }).select('_id')
-      ]);
-
-      const userProfileIds = [
-        ...individualProfiles.map(p => p._id.toString()),
-        ...corporateProfiles.map(p => p._id.toString())
-      ];
-
-      if (userProfileIds.includes(transaction.customerId.toString())) {
-        isOwner = true;
-      }
-    }
-
-    if (!isOwner) {
-      // Return 404 to hide existence or 403 for forbidden. 404 matches "not found for this user" logic.
       return res.status(404).json({ message: "Transaction not found" });
     }
 
@@ -519,43 +501,10 @@ export const getTransactions = async (req, res) => {
 
     const userId = req.user.userId;
 
-    // Find profiles linked to this user
-    const [individualProfiles, corporateProfiles] = await Promise.all([
-      IndividualProfile.find({ userId }).select("_id"),
-      CorporateProfile.find({ userId }).select("_id")
-    ]);
-
-    const userProfileIds = [
-      ...individualProfiles.map((p) => p._id),
-      ...corporateProfiles.map((p) => p._id)
-    ];
-
-    // If user has no profiles, they have no transactions (unless they have transactions with userId but no profiles? Unlikely in this app flow)
-    if (userProfileIds.length === 0) {
-      // Even if no profiles found, we might have transactions with userId directly?
-      // But usually transaction implies a customer profile.
-      // Let's safe check: query only userId if no profiles.
-
-      const directUserTransactions = await Transaction.countDocuments({ userId, isDeleted: false });
-      if (directUserTransactions === 0) {
-        return res.status(200).json({
-          data: [],
-          pagination: {
-            total: 0,
-            page: parseInt(page),
-            limit: parseInt(limit),
-            pages: 0
-          }
-        });
-      }
-    }
-
+    // Optimize: Filter directly by userId
     const query = {
-      isDeleted: false,
-      $or: [
-        { userId: userId },
-        { customerId: { $in: userProfileIds } }
-      ]
+      userId,
+      isDeleted: false
     };
 
     const skip = (page - 1) * limit;
@@ -641,35 +590,12 @@ export const deleteTransaction = async (req, res) => {
       return res.status(401).json({ message: "User not authenticated" });
     }
 
-    const transaction = await Transaction.findOne({ _id: transactionId });
+    const userId = req.user.userId;
+
+    // Optimize: Find transaction by ID AND UserID directly
+    const transaction = await Transaction.findOne({ _id: transactionId, userId });
 
     if (!transaction) {
-      return res.status(404).json({ message: "Transaction not found" });
-    }
-
-    // Security Check: Verify ownership
-    const userId = req.user.userId;
-    let isOwner = false;
-
-    if (transaction.userId && transaction.userId.toString() === userId) {
-      isOwner = true;
-    } else {
-      const [individualProfiles, corporateProfiles] = await Promise.all([
-        IndividualProfile.find({ userId }).select('_id'),
-        CorporateProfile.find({ userId }).select('_id')
-      ]);
-
-      const userProfileIds = [
-        ...individualProfiles.map(p => p._id.toString()),
-        ...corporateProfiles.map(p => p._id.toString())
-      ];
-
-      if (userProfileIds.includes(transaction.customerId.toString())) {
-        isOwner = true;
-      }
-    }
-
-    if (!isOwner) {
       return res.status(404).json({ message: "Transaction not found" });
     }
 
