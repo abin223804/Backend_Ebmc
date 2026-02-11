@@ -278,11 +278,30 @@ export const cancelTransaction = async (req, res) => {
       return res.status(400).json({ message: "Transaction ID is required" });
     }
 
-    const transaction = await Transaction.findOne({ _id: transactionId });
-    console.log("transaction", transaction);
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
 
+    const transaction = await Transaction.findOne({ _id: transactionId });
 
     if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    // Security Check: Verify ownership
+    const userId = req.user.userId;
+    const [individualProfiles, corporateProfiles] = await Promise.all([
+      IndividualProfile.find({ userId }).select('_id'),
+      CorporateProfile.find({ userId }).select('_id')
+    ]);
+
+    const userProfileIds = [
+      ...individualProfiles.map(p => p._id.toString()),
+      ...corporateProfiles.map(p => p._id.toString())
+    ];
+
+    if (!userProfileIds.includes(transaction.customerId.toString())) {
+      // Return 404 to hide existence or 403 for forbidden. 404 matches "not found for this user" logic.
       return res.status(404).json({ message: "Transaction not found" });
     }
 
@@ -587,11 +606,29 @@ export const deleteTransaction = async (req, res) => {
       return res.status(400).json({ message: "Transaction ID is required" });
     }
 
-    const transaction = await Transaction.findOne({ _id: transactionId });
-    console.log("transaction", transaction);
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
 
+    const transaction = await Transaction.findOne({ _id: transactionId });
 
     if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    // Security Check: Verify ownership
+    const userId = req.user.userId;
+    const [individualProfiles, corporateProfiles] = await Promise.all([
+      IndividualProfile.find({ userId }).select('_id'),
+      CorporateProfile.find({ userId }).select('_id')
+    ]);
+
+    const userProfileIds = [
+      ...individualProfiles.map(p => p._id.toString()),
+      ...corporateProfiles.map(p => p._id.toString())
+    ];
+
+    if (!userProfileIds.includes(transaction.customerId.toString())) {
       return res.status(404).json({ message: "Transaction not found" });
     }
 
