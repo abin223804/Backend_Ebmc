@@ -131,6 +131,11 @@ export const createTransaction = async (req, res) => {
       status
     } = req.body;
 
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+    const userId = req.user.userId;
+
     // Handle file upload
     const file = req.file ? req.file.path : req.body.file;
 
@@ -201,9 +206,15 @@ export const createTransaction = async (req, res) => {
       });
     }
 
+    // Security Check: Verify customer belongs to logged-in user
+    if (customer.userId.toString() !== userId) {
+      return res.status(403).json({ message: "Unauthorized: Customer does not belong to you" });
+    }
+
     // Create transaction
     const newTransaction = new Transaction({
       customerId: customer._id,
+      userId, // Save userId directly
       customerType: resolvedCustomerType,
       transactionDate,
       transactionTime,
@@ -290,17 +301,27 @@ export const cancelTransaction = async (req, res) => {
 
     // Security Check: Verify ownership
     const userId = req.user.userId;
-    const [individualProfiles, corporateProfiles] = await Promise.all([
-      IndividualProfile.find({ userId }).select('_id'),
-      CorporateProfile.find({ userId }).select('_id')
-    ]);
+    let isOwner = false;
 
-    const userProfileIds = [
-      ...individualProfiles.map(p => p._id.toString()),
-      ...corporateProfiles.map(p => p._id.toString())
-    ];
+    if (transaction.userId && transaction.userId.toString() === userId) {
+      isOwner = true;
+    } else {
+      const [individualProfiles, corporateProfiles] = await Promise.all([
+        IndividualProfile.find({ userId }).select('_id'),
+        CorporateProfile.find({ userId }).select('_id')
+      ]);
 
-    if (!userProfileIds.includes(transaction.customerId.toString())) {
+      const userProfileIds = [
+        ...individualProfiles.map(p => p._id.toString()),
+        ...corporateProfiles.map(p => p._id.toString())
+      ];
+
+      if (userProfileIds.includes(transaction.customerId.toString())) {
+        isOwner = true;
+      }
+    }
+
+    if (!isOwner) {
       // Return 404 to hide existence or 403 for forbidden. 404 matches "not found for this user" logic.
       return res.status(404).json({ message: "Transaction not found" });
     }
@@ -509,22 +530,32 @@ export const getTransactions = async (req, res) => {
       ...corporateProfiles.map((p) => p._id)
     ];
 
-    // If user has no profiles, they have no transactions
+    // If user has no profiles, they have no transactions (unless they have transactions with userId but no profiles? Unlikely in this app flow)
     if (userProfileIds.length === 0) {
-      return res.status(200).json({
-        data: [],
-        pagination: {
-          total: 0,
-          page: parseInt(page),
-          limit: parseInt(limit),
-          pages: 0
-        }
-      });
+      // Even if no profiles found, we might have transactions with userId directly?
+      // But usually transaction implies a customer profile.
+      // Let's safe check: query only userId if no profiles.
+
+      const directUserTransactions = await Transaction.countDocuments({ userId, isDeleted: false });
+      if (directUserTransactions === 0) {
+        return res.status(200).json({
+          data: [],
+          pagination: {
+            total: 0,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            pages: 0
+          }
+        });
+      }
     }
 
     const query = {
       isDeleted: false,
-      customerId: { $in: userProfileIds }
+      $or: [
+        { userId: userId },
+        { customerId: { $in: userProfileIds } }
+      ]
     };
 
     const skip = (page - 1) * limit;
@@ -618,17 +649,27 @@ export const deleteTransaction = async (req, res) => {
 
     // Security Check: Verify ownership
     const userId = req.user.userId;
-    const [individualProfiles, corporateProfiles] = await Promise.all([
-      IndividualProfile.find({ userId }).select('_id'),
-      CorporateProfile.find({ userId }).select('_id')
-    ]);
+    let isOwner = false;
 
-    const userProfileIds = [
-      ...individualProfiles.map(p => p._id.toString()),
-      ...corporateProfiles.map(p => p._id.toString())
-    ];
+    if (transaction.userId && transaction.userId.toString() === userId) {
+      isOwner = true;
+    } else {
+      const [individualProfiles, corporateProfiles] = await Promise.all([
+        IndividualProfile.find({ userId }).select('_id'),
+        CorporateProfile.find({ userId }).select('_id')
+      ]);
 
-    if (!userProfileIds.includes(transaction.customerId.toString())) {
+      const userProfileIds = [
+        ...individualProfiles.map(p => p._id.toString()),
+        ...corporateProfiles.map(p => p._id.toString())
+      ];
+
+      if (userProfileIds.includes(transaction.customerId.toString())) {
+        isOwner = true;
+      }
+    }
+
+    if (!isOwner) {
       return res.status(404).json({ message: "Transaction not found" });
     }
 

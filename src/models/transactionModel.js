@@ -7,6 +7,11 @@ const transactionSchema = new mongoose.Schema(
             required: true,
             refPath: 'customerType'
         },
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            index: true
+        },
         customerType: {
             type: String,
             required: true,
