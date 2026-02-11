@@ -315,42 +315,146 @@ export const getTransactions = async (req, res) => {
     const {
       page = 1,
       limit = 10,
-      status,
-      search,
-      displayType // 'all', 'today', 'month', 'year' - optional handy filter
+      customerType,
+      searchType,
+      searchValue,
+      fromDate,
+      toDate,
+      branch,
+      transactionType,
+      paymentMode,
+      status, // keep existing status filter if sent
     } = req.query;
 
     const query = { isDeleted: false };
 
-    // Filter by Status
-    if (status) {
-      query.status = status;
+    // 1. Customer Filters (if applicable)
+    if (searchValue) {
+      let matchingCustomerIds = [];
+
+      // Helper to build profile query
+      const buildProfileQuery = () => {
+        const profileQuery = { isDeleted: false };
+        if (searchType === "Name") {
+          profileQuery.customerName = { $regex: searchValue, $options: "i" };
+        } else if (searchType === "Core customer number") {
+          profileQuery.coreCustId = { $regex: searchValue, $options: "i" };
+        } else if (searchType === "Mobile") {
+          profileQuery.mobile = { $regex: searchValue, $options: "i" };
+        }
+        return profileQuery;
+      };
+
+      const profileOps = [];
+
+      // Determine which collections to search
+      // UI likely sends "Individual" or "Corporate" or "Select" (empty/null)
+      // Mongoose models are "IndividualProfile" and "CorporateProfile"
+      // or check how they are stored in Transaction model (customerType field)
+
+      const shouldSearchIndividual =
+        !customerType ||
+        customerType === "Select" ||
+        customerType === "Individual" ||
+        customerType === "IndividualProfile";
+
+      const shouldSearchCorporate =
+        !customerType ||
+        customerType === "Select" ||
+        customerType === "Corporate" ||
+        customerType === "CorporateProfile";
+
+      if (shouldSearchIndividual) {
+        profileOps.push(IndividualProfile.find(buildProfileQuery()).select("_id"));
+      }
+      if (shouldSearchCorporate) {
+        profileOps.push(CorporateProfile.find(buildProfileQuery()).select("_id"));
+      }
+
+      const results = await Promise.all(profileOps);
+      results.forEach((profiles) => {
+        matchingCustomerIds.push(...profiles.map((p) => p._id));
+      });
+
+      // If we searched but found no customers, we should probably return empty or ensure query finds nothing
+      if (matchingCustomerIds.length === 0) {
+        // Force empty result if search criteria yielded no profiles
+        query.customerId = null;
+        // OR: query._id = { $exists: false }; // a way to return 0 docs
+      } else {
+        query.customerId = { $in: matchingCustomerIds };
+      }
+    } else if (customerType && customerType !== 'Select') {
+      // If only customerType is selected but no search value
+      // We might want to filter transactions by customerType field in Transaction model if it exists
+      // Transaction model has `customerType`: 'IndividualProfile' or 'CorporateProfile'
+
+      if (customerType === 'Individual' || customerType === 'IndividualProfile') {
+        query.customerType = 'IndividualProfile';
+      } else if (customerType === 'Corporate' || customerType === 'CorporateProfile') {
+        query.customerType = 'CorporateProfile';
+      }
     }
 
-    // Search by Invoice or Receipt Number
-    if (search) {
-      query.$or = [
-        { invoiceNumber: { $regex: search, $options: "i" } },
-        { receiptNumber: { $regex: search, $options: "i" } },
-        // Note: Searching by customer name would require aggregation or post-processing due to dynamic ref
-      ];
+    // 2. Transaction Filters
+
+    // Date Range
+    if (fromDate || toDate) {
+      query.transactionDate = {};
+      if (fromDate) {
+        query.transactionDate.$gte = new Date(fromDate);
+      }
+      if (toDate) {
+        // Set to end of day if only date string is provided, or rely on client sending full ISO
+        // Usually good to ensure end of day for 'toDate' inclusive
+        const endQueryParams = new Date(toDate);
+        endQueryParams.setHours(23, 59, 59, 999);
+        query.transactionDate.$lte = endQueryParams;
+      }
+    }
+
+    // Branch
+    if (branch && branch !== 'Select') {
+      query.branch = branch;
+    }
+
+    // Transaction Type
+    if (transactionType && transactionType !== 'Select') {
+      query.transactionType = transactionType;
+    }
+
+    // Payment Mode (Array filter)
+    if (paymentMode && paymentMode !== 'Select') {
+      query["payments.mode"] = paymentMode; // Filter if ANY payment mode matches
+    }
+
+    // Status
+    if (status && status !== 'Select') {
+      query.status = status;
     }
 
     const skip = (page - 1) * limit;
 
     const transactions = await Transaction.find(query)
-      .populate('customerId', 'fullName name profileImage mobile email coreCustId') // Populate basic customer info
+      .populate(
+        "customerId",
+        "customerName name fullName profileImage mobile email coreCustId"
+      ) // Populate fields. Note: Individual has 'customerName', Corporate has 'customerName'. individual might have fullName/name aliases?
+      // Checking models: Individual has 'customerName', Corporate has 'customerName'.
+      // But standard populated result structure depends on schema.
       .sort({ transactionDate: -1, createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
       .lean();
 
-    const formattedTransactions = transactions.map(t => ({
+    const formattedTransactions = transactions.map((t) => ({
       ...t,
       transactionId: t._id,
-      id: t._id
+      id: t._id,
+      // Normalize customer name if needed, though 'customerId' population should give the object
+      customerName: t.customerId?.customerName || t.customerId?.name || "Unknown",
+      coreCustId: t.customerId?.coreCustId || "N/A"
     }));
-
 
     const total = await Transaction.countDocuments(query);
 
@@ -360,13 +464,14 @@ export const getTransactions = async (req, res) => {
         total,
         page: parseInt(page),
         limit: parseInt(limit),
-        pages: Math.ceil(total / limit)
-      }
+        pages: Math.ceil(total / limit),
+      },
     });
-
   } catch (error) {
     console.error("Error fetching transactions:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
