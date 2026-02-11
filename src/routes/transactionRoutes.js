@@ -25,24 +25,5 @@ router.patch("/:transactionId/delete", verifyUser, deleteTransaction);
 
 
 
-// =========================================================================
-// CUSTOMER MANAGEMENT (Accessible via Transaction Route for UI Convenience)
-// =========================================================================
-
-// List Customers (Profiles) for Selection Table
-router.get("/customers", verifyUser, getAllProfiles);
-
-// Get Single Customer
-router.get("/customers/:id", verifyUser, getProfileById);
-
-// Update Customer
-router.put("/customers/:id", verifyUser, updateProfile);
-
-// Soft Delete Customer
-router.delete("/customers/:id", verifyUser, deleteProfile);
-
-// Download Customer Profile
-router.get("/customers/download/:id", verifyUser, downloadProfile);
-
 
 export default router;
