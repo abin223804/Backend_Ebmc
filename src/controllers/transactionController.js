@@ -310,128 +310,203 @@ export const cancelTransaction = async (req, res) => {
 
 
 // Get transactions with filtering and pagination
+// export const getTransactions = async (req, res) => {
+//   try {
+//     const {
+//       page = 1,
+//       limit = 10,
+//       searchType,
+//       searchValue,
+//       fromDate,
+//       toDate,
+//       branch,
+//       transactionType,
+//       paymentMode,
+//       status,
+//     } = req.query;
+
+//     const query = { isDeleted: false };
+
+//     // ---------------------------------------------------------
+//     // 1. FILTER BY LOGGED-IN USER
+//     // ---------------------------------------------------------
+//     if (!req.user || !req.user.userId) {
+//       return res.status(401).json({ message: "User not authenticated" });
+//     }
+
+//     const userId = req.user.userId;
+
+//     // Find profiles linked to this user
+//     const [individualProfiles, corporateProfiles] = await Promise.all([
+//       IndividualProfile.find({ userId }).select('_id'),
+//       CorporateProfile.find({ userId }).select('_id')
+//     ]);
+
+//     const userProfileIds = [
+//       ...individualProfiles.map(p => p._id),
+//       ...corporateProfiles.map(p => p._id)
+//     ];
+
+//     // If user has no profiles, they have no transactions (or at least none we show)
+//     if (userProfileIds.length === 0) {
+//       return res.status(200).json({
+//         data: [],
+//         pagination: {
+//           total: 0,
+//           page: parseInt(page),
+//           limit: parseInt(limit),
+//           pages: 0
+//         }
+//       });
+//     }
+
+//     // Apply the user constraint
+//     query.customerId = { $in: userProfileIds };
+
+//     // ---------------------------------------------------------
+//     // Optional: Search within User's Transactions
+//     // ---------------------------------------------------------
+//     if (searchValue) {
+//       // Simple search logic considering we already filtered by userProfileIds
+//       const buildProfileQuery = () => {
+//         const profileQuery = { _id: { $in: userProfileIds } };
+//         if (searchType === "Name") {
+//           profileQuery.customerName = { $regex: searchValue, $options: "i" };
+//         } else if (searchType === "Core customer number") {
+//           profileQuery.coreCustId = { $regex: searchValue, $options: "i" };
+//         } else if (searchType === "Mobile") {
+//           profileQuery.mobile = { $regex: searchValue, $options: "i" };
+//         }
+//         return profileQuery;
+//       };
+
+//       const [indResults, corpResults] = await Promise.all([
+//         IndividualProfile.find(buildProfileQuery()).select("_id"),
+//         CorporateProfile.find(buildProfileQuery()).select("_id")
+//       ]);
+
+//       const searchMatchIds = [...indResults.map(p => p._id), ...corpResults.map(p => p._id)];
+
+//       if (searchMatchIds.length === 0) {
+//         query.customerId = null; // Force empty
+//       } else {
+//         query.customerId = { $in: searchMatchIds };
+//       }
+//     }
+
+//     // 2. Other Transaction Filters
+
+//     // Date Range
+//     if (fromDate || toDate) {
+//       query.transactionDate = {};
+//       if (fromDate) {
+//         query.transactionDate.$gte = new Date(fromDate);
+//       }
+//       if (toDate) {
+//         const endQueryParams = new Date(toDate);
+//         endQueryParams.setHours(23, 59, 59, 999);
+//         query.transactionDate.$lte = endQueryParams;
+//       }
+//     }
+
+//     // Branch
+//     if (branch && branch !== 'Select') {
+//       query.branch = branch;
+//     }
+
+//     // Transaction Type
+//     if (transactionType && transactionType !== 'Select') {
+//       query.transactionType = transactionType;
+//     }
+
+//     // Payment Mode
+//     if (paymentMode && paymentMode !== 'Select') {
+//       query["payments.mode"] = paymentMode;
+//     }
+
+//     // Status
+//     if (status && status !== 'Select') {
+//       query.status = status;
+//     }
+
+//     const skip = (page - 1) * limit;
+
+//     const transactions = await Transaction.find(query)
+//       .populate(
+//         "customerId",
+//         "customerName name fullName profileImage mobile email coreCustId"
+//       )
+//       .sort({ transactionDate: -1, createdAt: -1 })
+//       .skip(skip)
+//       .limit(parseInt(limit))
+//       .lean();
+
+//     const formattedTransactions = transactions.map((t) => ({
+//       ...t,
+//       transactionId: t._id,
+//       id: t._id,
+//       // Normalize customer name if needed, though 'customerId' population should give the object
+//       customerName: t.customerId?.customerName || t.customerId?.name || "Unknown",
+//       coreCustId: t.customerId?.coreCustId || "N/A"
+//     }));
+
+//     const total = await Transaction.countDocuments(query);
+
+//     res.status(200).json({
+//       data: formattedTransactions,
+//       pagination: {
+//         total,
+//         page: parseInt(page),
+//         limit: parseInt(limit),
+//         pages: Math.ceil(total / limit),
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Error fetching transactions:", error);
+//     res
+//       .status(500)
+//       .json({ message: "Internal server error", error: error.message });
+//   }
+// };
+
 export const getTransactions = async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 10,
-      customerType,
-      searchType,
-      searchValue,
-      fromDate,
-      toDate,
-      branch,
-      transactionType,
-      paymentMode,
-      status, // keep existing status filter if sent
-    } = req.query;
+    const { page = 1, limit = 10 } = req.query;
 
-    const query = { isDeleted: false };
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
 
-    // 1. Customer Filters (if applicable)
-    if (searchValue) {
-      let matchingCustomerIds = [];
+    const userId = req.user.userId;
 
-      // Helper to build profile query
-      const buildProfileQuery = () => {
-        const profileQuery = { isDeleted: false };
-        if (searchType === "Name") {
-          profileQuery.customerName = { $regex: searchValue, $options: "i" };
-        } else if (searchType === "Core customer number") {
-          profileQuery.coreCustId = { $regex: searchValue, $options: "i" };
-        } else if (searchType === "Mobile") {
-          profileQuery.mobile = { $regex: searchValue, $options: "i" };
+    // Find profiles linked to this user
+    const [individualProfiles, corporateProfiles] = await Promise.all([
+      IndividualProfile.find({ userId }).select("_id"),
+      CorporateProfile.find({ userId }).select("_id")
+    ]);
+
+    const userProfileIds = [
+      ...individualProfiles.map((p) => p._id),
+      ...corporateProfiles.map((p) => p._id)
+    ];
+
+    // If user has no profiles, they have no transactions
+    if (userProfileIds.length === 0) {
+      return res.status(200).json({
+        data: [],
+        pagination: {
+          total: 0,
+          page: parseInt(page),
+          limit: parseInt(limit),
+          pages: 0
         }
-        return profileQuery;
-      };
-
-      const profileOps = [];
-
-      // Determine which collections to search
-      // UI likely sends "Individual" or "Corporate" or "Select" (empty/null)
-      // Mongoose models are "IndividualProfile" and "CorporateProfile"
-      // or check how they are stored in Transaction model (customerType field)
-
-      const shouldSearchIndividual =
-        !customerType ||
-        customerType === "Select" ||
-        customerType === "Individual" ||
-        customerType === "IndividualProfile";
-
-      const shouldSearchCorporate =
-        !customerType ||
-        customerType === "Select" ||
-        customerType === "Corporate" ||
-        customerType === "CorporateProfile";
-
-      if (shouldSearchIndividual) {
-        profileOps.push(IndividualProfile.find(buildProfileQuery()).select("_id"));
-      }
-      if (shouldSearchCorporate) {
-        profileOps.push(CorporateProfile.find(buildProfileQuery()).select("_id"));
-      }
-
-      const results = await Promise.all(profileOps);
-      results.forEach((profiles) => {
-        matchingCustomerIds.push(...profiles.map((p) => p._id));
       });
-
-      // If we searched but found no customers, we should probably return empty or ensure query finds nothing
-      if (matchingCustomerIds.length === 0) {
-        // Force empty result if search criteria yielded no profiles
-        query.customerId = null;
-        // OR: query._id = { $exists: false }; // a way to return 0 docs
-      } else {
-        query.customerId = { $in: matchingCustomerIds };
-      }
-    } else if (customerType && customerType !== 'Select') {
-      // If only customerType is selected but no search value
-      // We might want to filter transactions by customerType field in Transaction model if it exists
-      // Transaction model has `customerType`: 'IndividualProfile' or 'CorporateProfile'
-
-      if (customerType === 'Individual' || customerType === 'IndividualProfile') {
-        query.customerType = 'IndividualProfile';
-      } else if (customerType === 'Corporate' || customerType === 'CorporateProfile') {
-        query.customerType = 'CorporateProfile';
-      }
     }
 
-    // 2. Transaction Filters
-
-    // Date Range
-    if (fromDate || toDate) {
-      query.transactionDate = {};
-      if (fromDate) {
-        query.transactionDate.$gte = new Date(fromDate);
-      }
-      if (toDate) {
-        // Set to end of day if only date string is provided, or rely on client sending full ISO
-        // Usually good to ensure end of day for 'toDate' inclusive
-        const endQueryParams = new Date(toDate);
-        endQueryParams.setHours(23, 59, 59, 999);
-        query.transactionDate.$lte = endQueryParams;
-      }
-    }
-
-    // Branch
-    if (branch && branch !== 'Select') {
-      query.branch = branch;
-    }
-
-    // Transaction Type
-    if (transactionType && transactionType !== 'Select') {
-      query.transactionType = transactionType;
-    }
-
-    // Payment Mode (Array filter)
-    if (paymentMode && paymentMode !== 'Select') {
-      query["payments.mode"] = paymentMode; // Filter if ANY payment mode matches
-    }
-
-    // Status
-    if (status && status !== 'Select') {
-      query.status = status;
-    }
+    const query = {
+      isDeleted: false,
+      customerId: { $in: userProfileIds }
+    };
 
     const skip = (page - 1) * limit;
 
@@ -439,9 +514,7 @@ export const getTransactions = async (req, res) => {
       .populate(
         "customerId",
         "customerName name fullName profileImage mobile email coreCustId"
-      ) // Populate fields. Note: Individual has 'customerName', Corporate has 'customerName'. individual might have fullName/name aliases?
-      // Checking models: Individual has 'customerName', Corporate has 'customerName'.
-      // But standard populated result structure depends on schema.
+      )
       .sort({ transactionDate: -1, createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
@@ -451,8 +524,8 @@ export const getTransactions = async (req, res) => {
       ...t,
       transactionId: t._id,
       id: t._id,
-      // Normalize customer name if needed, though 'customerId' population should give the object
-      customerName: t.customerId?.customerName || t.customerId?.name || "Unknown",
+      customerName:
+        t.customerId?.customerName || t.customerId?.name || "Unknown",
       coreCustId: t.customerId?.coreCustId || "N/A"
     }));
 
@@ -464,14 +537,15 @@ export const getTransactions = async (req, res) => {
         total,
         page: parseInt(page),
         limit: parseInt(limit),
-        pages: Math.ceil(total / limit),
-      },
+        pages: Math.ceil(total / limit)
+      }
     });
   } catch (error) {
     console.error("Error fetching transactions:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
   }
 };
 
