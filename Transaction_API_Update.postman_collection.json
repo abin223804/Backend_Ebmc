@@ -1,0 +1,210 @@
+{
+    "info": {
+        "_postman_id": "e8d4b3a2-1f8e-4b3c-9d6a-55bd593591b2",
+        "name": "EBMC Transaction API (Updated)",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create Transaction",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "customerId",
+                            "value": "YOUR_CUSTOMER_PROFILE_ID",
+                            "type": "text",
+                            "description": "ID of the Individual or Corporate Profile belonging to the logged-in user"
+                        },
+                        {
+                            "key": "customerType",
+                            "value": "IndividualProfile",
+                            "type": "text",
+                            "description": "IndividualProfile or CorporateProfile"
+                        },
+                        {
+                            "key": "transactionDate",
+                            "value": "2023-10-27",
+                            "type": "text"
+                        },
+                        {
+                            "key": "branch",
+                            "value": "Main Branch",
+                            "type": "text"
+                        },
+                        {
+                            "key": "invoiceNumber",
+                            "value": "INV-2023-001",
+                            "type": "text",
+                            "description": "REQUIRED FIELD"
+                        },
+                        {
+                            "key": "transactionType",
+                            "value": "Deposit",
+                            "type": "text"
+                        },
+                        {
+                            "key": "product",
+                            "value": "General Service",
+                            "type": "text"
+                        },
+                        {
+                            "key": "totalAmount",
+                            "value": "150",
+                            "type": "text"
+                        },
+                        {
+                            "key": "payments",
+                            "value": "[{\"mode\": \"Cash\", \"amount\": 150}]",
+                            "type": "text",
+                            "description": "JSON String of payments array"
+                        },
+                        {
+                            "key": "file",
+                            "type": "file",
+                            "src": []
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{base_url}}/transaction/createTransaction",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "transaction",
+                        "createTransaction"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Transactions (User Filtered)",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/transaction/getTransactions?page=1&limit=10",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "transaction",
+                        "getTransactions"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "1"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10"
+                        },
+                        {
+                            "key": "searchType",
+                            "value": "Name",
+                            "disabled": true
+                        },
+                        {
+                            "key": "searchValue",
+                            "value": "",
+                            "disabled": true
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Cancel Transaction",
+            "request": {
+                "method": "PATCH",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/transaction/:transactionId/cancel",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "transaction",
+                        ":transactionId",
+                        "cancel"
+                    ],
+                    "variable": [
+                        {
+                            "key": "transactionId",
+                            "value": "YOUR_TRANSACTION_ID"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Transaction",
+            "request": {
+                "method": "PATCH",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/transaction/:transactionId/delete",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "transaction",
+                        ":transactionId",
+                        "delete"
+                    ],
+                    "variable": [
+                        {
+                            "key": "transactionId",
+                            "value": "YOUR_TRANSACTION_ID"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "YOUR_JWT_TOKEN_HERE",
+            "type": "string"
+        }
+    ]
+}
